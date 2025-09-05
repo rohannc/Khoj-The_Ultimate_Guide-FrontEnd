@@ -9,6 +9,28 @@
           <div class="role-subtitle">as a {{ currentRoleFormatted }}</div>
         </div>
       </div>
+
+      <Transition name="alert-fade">
+        <div v-if="signupError" class="custom-alert">
+          <div class="alert-icon">
+            <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+              viewBox="0 0 20 20">
+              <path
+                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+            </svg>
+          </div>
+          <div class="alert-message">
+            {{ signupError }}
+          </div>
+          <button type="button" class="alert-close-btn" @click="signupError = ''">
+            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+            </svg>
+          </button>
+        </div>
+      </Transition>
+
       <div class="form-container">
         <div class="slide-controls">
           <router-link :to="loginLink" class="slide login">Login</router-link>
@@ -33,8 +55,11 @@
                 </div>
                 <div class="field">
                   <span class="field-icon"><img :src="icons.lock" alt="lock icon"></span>
-                  <input type="password" placeholder="Confirm Password" required
+                  <input :type="isPasswordVisible ? 'text' : 'password'" placeholder="Confirm Password" required
                     v-model="patientData.confirmPassword" />
+                  <button type="button" @click="togglePasswordVisibility" class="password-toggle-btn">
+                    <img :src="isPasswordVisible ? icons.eyeSlash : icons.eye" alt="Toggle Password Visibility">
+                  </button>
                 </div>
               </div>
               <div v-if="passwordError" class="error-text-wrapper">
@@ -178,8 +203,27 @@
 
             <div class="field btn">
               <div class="btn-layer"></div>
-              <input type="submit" value="Signup" />
+              <button type="submit" :disabled="isLoading || isSuccess">
+                <span v-if="!isLoading && !isSuccess">Signup</span>
+                <div v-if="isLoading" role="status" class="spinner">
+                  <svg aria-hidden="true" class="spinner-svg" viewBox="0 0 100 101" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" />
+                    <path
+                      d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                      fill="currentColor" />
+                  </svg>
+                </div>
+                <div v-if="isSuccess" class="success-animation-wrapper">
+                  <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                    <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
+                    <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                  </svg>
+                </div>
+              </button>
             </div>
+
             <div class="login-link">
               Already a member? <router-link :to="loginLink">Login now</router-link>
             </div>
@@ -192,25 +236,35 @@
 
 <script setup>
 import { ref, computed, watch, nextTick, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth';
 
 const signupFormRef = ref(null);
 const formHeight = ref(0);
+const router = useRouter();
+const authStore = useAuthStore();
+
+// --- Form State ---
+const isLoading = ref(false);
+const isSuccess = ref(false);
+const signupError = ref('');
 
 // --- Static Role Data ---
 const currentRoleFormatted = 'Patient';
 const loginLink = '/login/patient';
 const roleIcon = `<img src="https://img.icons8.com/?size=100&id=TSGqpZrEvLju&format=png&color=0059B3" alt="Patient Icon" width="80" height="80">`;
 
-// --- Dynamic Icon URLs ---
 const icons = ref({
-  user: 'https://img.icons8.com/?size=100&id=rGhKliUp2Vji&format=png&color=000000',
-  lock: 'https://img.icons8.com/?size=100&id=qBAODuyTp5A6&format=png&color=000000',
-  email: 'https://img.icons8.com/?size=100&id=D9x0PpvvT1AL&format=png&color=000000',
-  location: 'https://img.icons8.com/?size=100&id=Sk4BAluINF9y&format=png&color=000000',
-  phone: 'https://img.icons8.com/?size=100&id=J9QTpfBIai4P&format=png&color=000000',
-  calendar: 'https://img.icons8.com/?size=100&id=12776&format=png&color=000000',
-  gender: 'https://img.icons8.com/?size=100&id=xl7K3pk1ePmn&format=png&color=000000',
-  blood: 'https://img.icons8.com/?size=100&id=26115&format=png&color=000000',
+  user: 'https://img.icons8.com/?size=100&id=rGhKliUp2Vji&format=png&color=cccccc',
+  lock: 'https://img.icons8.com/?size=100&id=qBAODuyTp5A6&format=png&color=cccccc',
+  email: 'https://img.icons8.com/?size=100&id=D9x0PpvvT1AL&format=png&color=cccccc',
+  location: 'https://img.icons8.com/?size=100&id=Sk4BAluINF9y&format=png&color=cccccc',
+  phone: 'https://img.icons8.com/?size=100&id=J9QTpfBIai4P&format=png&color=cccccc',
+  calendar: 'https://img.icons8.com/?size=100&id=12776&format=png&color=cccccc',
+  gender: 'https://img.icons8.com/?size=100&id=xl7K3pk1ePmn&format=png&color=cccccc',
+  blood: 'https://img.icons8.com/?size=100&id=26115&format=png&color=cccccc',
+  eye: 'https://img.icons8.com/?size=100&id=mGf7Pc8j48LQ&format=png&color=cccccc',
+  eyeSlash: 'https://img.icons8.com/?size=100&id=SQWg80tZBquQ&format=png&color=cccccc',
 });
 
 
@@ -235,9 +289,13 @@ const patientData = ref({
 const passwordError = ref('');
 const usernameError = ref('');
 const emailError = ref('');
+const isPasswordVisible = ref(false);
 
+const togglePasswordVisibility = () => {
+  isPasswordVisible.value = !isPasswordVisible.value;
+};
 
-// State for custom dropdowns
+// --- Dropdown and Calendar Logic ---
 const genderDropdownVisible = ref(false);
 const bloodGroupDropdownVisible = ref(false);
 const selectedGender = ref('Select Gender');
@@ -247,7 +305,6 @@ const genderOptions = ['Male', 'Female', 'Other'];
 const bloodGroupOptions = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-// --- Date of Birth Calendar Logic for Patient ---
 const isDobCalendarVisible = ref(false);
 const selectedDob = ref(null);
 const dobDate = new Date();
@@ -285,7 +342,7 @@ const dobCalendarDays = computed(() => {
     daysArray.push({
       dayNumber: i,
       isCurrentMonth: true,
-      isToday: false, // Today's date is not marked
+      isToday: false,
       isSelected: selectedDob.value ? selectedDob.value.toDateString() === currentDate.toDateString() : false,
       date: currentDate
     });
@@ -299,77 +356,29 @@ const selectDob = (day) => {
   isDobCalendarVisible.value = false;
 };
 
-const prevDobMonth = () => {
-  if (dobCurrentMonth.value === 0) {
-    dobCurrentMonth.value = 11;
-    dobCurrentYear.value--;
-  } else {
-    dobCurrentMonth.value--;
-  }
-};
+const prevDobMonth = () => { if (dobCurrentMonth.value === 0) { dobCurrentMonth.value = 11; dobCurrentYear.value--; } else { dobCurrentMonth.value--; } };
+const nextDobMonth = () => { if (dobCurrentMonth.value === 11) { dobCurrentMonth.value = 0; dobCurrentYear.value++; } else { dobCurrentMonth.value++; } };
+const toggleDropdown = (type) => { if (type === 'gender') { genderDropdownVisible.value = !genderDropdownVisible.value; bloodGroupDropdownVisible.value = false; } else if (type === 'bloodGroup') { bloodGroupDropdownVisible.value = !bloodGroupDropdownVisible.value; genderDropdownVisible.value = false; } };
+const selectGender = (gender) => { selectedGender.value = gender; genderDropdownVisible.value = false; };
+const selectBloodGroup = (group) => { selectedBloodGroup.value = group; bloodGroupDropdownVisible.value = false; };
+const toggleCalendarDropdown = (type) => { if (type === 'month') { monthDropdownVisible.value = !monthDropdownVisible.value; yearDropdownVisible.value = false; } else if (type === 'year') { yearDropdownVisible.value = !yearDropdownVisible.value; monthDropdownVisible.value = false; } };
+const selectMonth = (monthIndex) => { dobCurrentMonth.value = monthIndex; monthDropdownVisible.value = false; };
+const selectYear = (year) => { dobCurrentYear.value = year; yearDropdownVisible.value = false; };
 
-const nextDobMonth = () => {
-  if (dobCurrentMonth.value === 11) {
-    dobCurrentMonth.value = 0;
-    dobCurrentYear.value++;
-  } else {
-    dobCurrentMonth.value++;
-  }
-};
-
-
-const toggleDropdown = (type) => {
-  if (type === 'gender') {
-    genderDropdownVisible.value = !genderDropdownVisible.value;
-    bloodGroupDropdownVisible.value = false;
-  } else if (type === 'bloodGroup') {
-    bloodGroupDropdownVisible.value = !bloodGroupDropdownVisible.value;
-    genderDropdownVisible.value = false;
-  }
-};
-
-const selectGender = (gender) => {
-  selectedGender.value = gender;
-  genderDropdownVisible.value = false;
-};
-
-const selectBloodGroup = (group) => {
-  selectedBloodGroup.value = group;
-  bloodGroupDropdownVisible.value = false;
-};
-
-const toggleCalendarDropdown = (type) => {
-  if (type === 'month') {
-    monthDropdownVisible.value = !monthDropdownVisible.value;
-    yearDropdownVisible.value = false;
-  } else if (type === 'year') {
-    yearDropdownVisible.value = !yearDropdownVisible.value;
-    monthDropdownVisible.value = false;
-  }
-};
-
-const selectMonth = (monthIndex) => {
-  dobCurrentMonth.value = monthIndex;
-  monthDropdownVisible.value = false;
-};
-
-const selectYear = (year) => {
-  dobCurrentYear.value = year;
-  yearDropdownVisible.value = false;
-};
-
-// --- Form Submission Logic ---
+// --- Main Form Submission Logic ---
 const handleSignup = async () => {
-  // Clear all previous errors on a new submission
   passwordError.value = '';
   usernameError.value = '';
   emailError.value = '';
+  signupError.value = '';
 
-  // Client-side validation for password match
   if (patientData.value.password !== patientData.value.confirmPassword) {
     passwordError.value = 'Passwords do not match.';
     return;
   }
+
+  isLoading.value = true;
+  isSuccess.value = false;
 
   const phoneNumbers = [];
   if (patientData.value.primaryPhone) phoneNumbers.push({ number: patientData.value.primaryPhone });
@@ -391,38 +400,56 @@ const handleSignup = async () => {
     phoneNumbers: phoneNumbers,
     bloodGroup: selectedBloodGroup.value === 'Blood Group' ? null : selectedBloodGroup.value,
   };
-  const endpoint = `http://localhost:8080/api/auth/register/patient`;
 
-  console.log('Submitting to:', endpoint);
-  console.log('Payload:', JSON.stringify(formData, null, 2));
+  const apiCall = fetch(`http://localhost:8080/api/auth/register/patient`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(formData),
+  });
+
+  const minLoadingTime = new Promise(resolve => setTimeout(resolve, 2000));
 
   try {
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData),
-    });
+    const [response] = await Promise.all([apiCall, minLoadingTime]);
+    const result = await response.json();
 
-    if (response.ok) {
-      const result = await response.json();
-      alert(`Signup successful for Patient! \nResponse: ${JSON.stringify(result)}`);
-    } else {
-      const errorData = await response.json();
-      const errorMessage = errorData.message || 'An unknown error occurred.';
+    console.log(result);
 
-      // NEW: Check error message and set state accordingly
-      if (errorMessage.toLowerCase().includes('username')) {
-        usernameError.value = errorMessage;
-      } else if (errorMessage.toLowerCase().includes('email')) {
-        emailError.value = errorMessage;
-      } else {
-        // Fallback for other errors
-        alert(`Signup failed: ${errorMessage}`);
-      }
+    if (!response.ok) {
+      throw new Error(result.message || 'An unknown error occurred.');
     }
+
+    // --- On Success ---
+    isLoading.value = false;
+    isSuccess.value = true;
+
+    // 1. Prepare user data and token from the API response
+    const userToStore = {
+      username: result.username,
+      role: result.registeredUserType.toLowerCase()
+    };
+
+    // 2. THIS IS THE KEY STEP: Call the login action from your Pinia auth store.
+    // This saves the user state and token to both Pinia and localStorage.
+    authStore.login(userToStore, result.token);
+
+    // 3. Redirect the user to their dashboard after a short delay for the success animation.
+    // The router guard will also protect this route, ensuring only authenticated users can access it.
+    setTimeout(() => {
+      router.push(`/dashboard/${userToStore.role}`);
+    }, 1500);
+
   } catch (error) {
-    console.error('An error occurred during signup:', error);
-    alert('An error occurred. Please check the console and try again.');
+    isLoading.value = false;
+    const errorMessage = error.message;
+    // Handle specific errors from the backend
+    if (errorMessage.toLowerCase().includes('username')) {
+      usernameError.value = errorMessage;
+    } else if (errorMessage.toLowerCase().includes('email')) {
+      emailError.value = errorMessage;
+    } else {
+      signupError.value = errorMessage;
+    }
   }
 };
 
@@ -434,7 +461,6 @@ const updateHeight = () => {
   });
 };
 
-// --- Watch for password changes ---
 watch(
   [() => patientData.value.password, () => patientData.value.confirmPassword],
   () => {
@@ -448,8 +474,7 @@ watch(
 
 
 watch(
-  // Added usernameError and emailError to the watcher
-  [genderDropdownVisible, bloodGroupDropdownVisible, isDobCalendarVisible, passwordError, usernameError, emailError],
+  [genderDropdownVisible, bloodGroupDropdownVisible, isDobCalendarVisible, passwordError, usernameError, emailError, signupError],
   updateHeight,
   { deep: true }
 );
@@ -550,6 +575,11 @@ onMounted(updateHeight);
   transition: all 0.3s ease;
 }
 
+.form-inner-single form .field input[placeholder="Confirm Password"] {
+  padding-right: 55px;
+}
+
+
 .field-icon {
   position: absolute;
   left: 20px;
@@ -616,6 +646,31 @@ onMounted(updateHeight);
   text-decoration: underline;
 }
 
+.password-toggle-btn {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.password-toggle-btn img {
+  width: 22px;
+  height: 22px;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.password-toggle-btn:hover img {
+  opacity: 0.8;
+}
+
 form .btn {
   height: 50px;
   width: 100%;
@@ -639,7 +694,7 @@ form .btn:hover .btn-layer {
   left: 0;
 }
 
-form .btn input[type='submit'] {
+form .btn button {
   height: 100%;
   width: 100%;
   z-index: 1;
@@ -652,7 +707,15 @@ form .btn input[type='submit'] {
   font-size: 20px;
   font-weight: 500;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
+form .btn button:disabled {
+  cursor: not-allowed;
+}
+
 
 .custom-dropdown {
   position: relative;
@@ -917,9 +980,10 @@ form .btn input[type='submit'] {
   color: #1a75ff;
 }
 
-/* Password Error Styles */
 .error-text-wrapper {
   margin-top: 5px;
+  padding-left: 50%;
+  box-sizing: border-box;
 }
 
 .error-text {
@@ -929,8 +993,153 @@ form .btn input[type='submit'] {
   padding-left: 10px;
 }
 
-/* Field-specific Error Styles */
 .field-error-wrapper {
   margin-top: 5px;
+}
+
+.custom-alert {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  color: #b91c1c;
+  background-color: #fee2e2;
+  border-radius: 0.5rem;
+  margin-top: 20px;
+}
+
+.alert-icon {
+  flex-shrink: 0;
+  width: 1rem;
+  height: 1rem;
+}
+
+.alert-message {
+  margin-left: 0.75rem;
+  font-weight: 500;
+}
+
+.alert-close-btn {
+  margin-left: auto;
+  background-color: transparent;
+  border: none;
+  color: #ef4444;
+  border-radius: 0.5rem;
+  padding: 0.375rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 2rem;
+  width: 2rem;
+  transition: background-color 0.2s;
+}
+
+.alert-close-btn:hover {
+  background-color: #fecaca;
+}
+
+.alert-close-btn .w-3 {
+  width: 0.75rem;
+}
+
+.alert-close-btn .h-3 {
+  height: 0.75rem;
+}
+
+.alert-fade-enter-active,
+.alert-fade-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.alert-fade-enter-from,
+.alert-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.spinner {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+}
+
+.spinner-svg {
+  width: 100%;
+  height: 100%;
+  color: #fff;
+  animation: spin 1s linear infinite;
+}
+
+.spinner-svg path:first-child {
+  fill: rgba(255, 255, 255, 0.3);
+}
+
+.spinner-svg path:last-child {
+  fill: #fff;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.success-animation-wrapper {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.checkmark {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: block;
+  stroke-width: 2.5;
+  stroke: #fff;
+  stroke-miterlimit: 10;
+  animation: scale .3s ease-in-out .9s both;
+}
+
+.checkmark__circle {
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  stroke-width: 2.5;
+  stroke-miterlimit: 10;
+  stroke: #fff;
+  fill: none;
+  animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.checkmark__check {
+  transform-origin: 50% 50%;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+}
+
+@keyframes stroke {
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes scale {
+
+  0%,
+  100% {
+    transform: none;
+  }
+
+  50% {
+    transform: scale3d(1.1, 1.1, 1);
+  }
 }
 </style>

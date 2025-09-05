@@ -9,7 +9,7 @@ Khoj is a comprehensive, multi-role frontend application for a modern healthcare
 
 **[Live Demo (Link to your deployed application)]**
 
-![Khoj Dashboard Showcase](https://i.imgur.com/your-image-url.png)
+![Khoj Dashboard Showcase] In Progress
 
 ## ✨ Key Features
 

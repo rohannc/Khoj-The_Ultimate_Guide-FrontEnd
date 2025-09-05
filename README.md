@@ -30,27 +30,6 @@ Khoj is a comprehensive, multi-role frontend application for a modern healthcare
 * **Build Tool:** [Vite](https://vitejs.dev/)
 * **API Communication:** Native Fetch API
 
-## 📂 Project Structure
-
-The project follows a standard Vue 3 application structure to ensure maintainability and scalability.
-
-khoj-frontend/
-├── public/
-├── src/
-│   ├── assets/         # CSS, fonts, and images
-│   ├── components/     # Reusable Vue components
-│   ├── router/
-│   │   └── index.js    # All application routes and navigation guards
-│   ├── stores/
-│   │   └── auth.js     # Pinia store for authentication state
-│   ├── views/          # Page components (Dashboards, Login, Signup)
-│   ├── App.vue         # Main application component
-│   └── main.js         # Application entry point
-├── .env.example        # Environment variable template
-├── index.html
-├── package.json
-└── README.md
-
 
 ## 🚀 Getting Started
 

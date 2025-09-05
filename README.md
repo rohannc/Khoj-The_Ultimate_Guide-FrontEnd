@@ -1,4 +1,4 @@
-# Khoj: A Modern Healthcare Platform Frontend
+# Khoj: A Modern Healthcare Platform Frontend - In Progress
 
 ![Vue.js](https://img.shields.io/badge/vue.js-3.x-brightgreen.svg)
 ![Pinia](https://img.shields.io/badge/Pinia-2.x-yellow.svg)
@@ -7,7 +7,6 @@
 
 Khoj is a comprehensive, multi-role frontend application for a modern healthcare management system. Built with Vue.js 3 (Composition API) and Pinia for state management, it provides tailored dashboard experiences for patients, doctors, and clinic administrators, ensuring a secure and intuitive user journey.
 
-**[Live Demo (Link to your deployed application)]**  In Progress
 
 ## ✨ Key Features
 

@@ -7,9 +7,7 @@
 
 Khoj is a comprehensive, multi-role frontend application for a modern healthcare management system. Built with Vue.js 3 (Composition API) and Pinia for state management, it provides tailored dashboard experiences for patients, doctors, and clinic administrators, ensuring a secure and intuitive user journey.
 
-**[Live Demo (Link to your deployed application)]**
-
-![Khoj Dashboard Showcase] In Progress
+**[Live Demo (Link to your deployed application)]**  In Progress
 
 ## ✨ Key Features
 
@@ -35,3 +33,88 @@ Khoj is a comprehensive, multi-role frontend application for a modern healthcare
 ## 📂 Project Structure
 
 The project follows a standard Vue 3 application structure to ensure maintainability and scalability.
+
+khoj-frontend/
+├── public/
+├── src/
+│   ├── assets/         # CSS, fonts, and images
+│   ├── components/     # Reusable Vue components
+│   ├── router/
+│   │   └── index.js    # All application routes and navigation guards
+│   ├── stores/
+│   │   └── auth.js     # Pinia store for authentication state
+│   ├── views/          # Page components (Dashboards, Login, Signup)
+│   ├── App.vue         # Main application component
+│   └── main.js         # Application entry point
+├── .env.example        # Environment variable template
+├── index.html
+├── package.json
+└── README.md
+
+
+## 🚀 Getting Started
+
+Follow these instructions to set up and run the project on your local machine.
+
+### Prerequisites
+
+* [Node.js](https://nodejs.org/) (v16 or higher)
+* A package manager like [npm](https://www.npmjs.com/), [yarn](https://yarnpkg.com/), or [pnpm](https://pnpm.io/)
+
+### Installation
+
+1.  **Clone the repository:**
+    ```sh
+    git clone [https://github.com/your-username/khoj-frontend.git](https://github.com/your-username/khoj-frontend.git)
+    ```
+2.  **Navigate to the project directory:**
+    ```sh
+    cd khoj-frontend
+    ```
+3.  **Install dependencies:**
+    ```sh
+    npm install
+    ```
+
+### Environment Variables
+
+This project requires a backend API to function correctly. You need to specify the base URL for the API in an environment file.
+
+1.  Create a `.env` file in the root of the project by copying the example file:
+    ```sh
+    cp .env.example .env
+    ```
+2.  Open the `.env` file and set the `VITE_API_BASE_URL` to your backend server's address.
+    ```env
+    VITE_API_BASE_URL=http://localhost:8080/api
+    ```
+
+### Running the Application
+
+1.  **Start the development server:**
+    ```sh
+    npm run dev
+    ```
+2.  Open your browser and navigate to the local URL provided in the terminal (usually `http://localhost:5173`).
+
+## 🔗 API Backend
+
+This repository contains the **frontend application only**. For full functionality, it needs to be connected to a backend API that provides the necessary endpoints for:
+
+* User registration (`/auth/register/...`)
+* User login (`/auth/login/...`)
+* Fetching role-specific dashboard data
+
+## 🤝 Contributing
+
+Contributions are welcome! If you have suggestions for improvements or want to fix a bug, please feel free to:
+
+1.  Fork the Project
+2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4.  Push to the Branch (`git push origin feature/AmazingFeature`)
+5.  Open a Pull Request
+
+## 📄 License
+
+This project is distributed under the MIT License. See `LICENSE.txt` for more informat

@@ -24,7 +24,7 @@
                 <span class="block text-sm truncate">{{ authStore.user?.username || 'admin@clinic.com' }}</span>
               </div>
               <ul class="dropdown-list">
-                <li><a href="#" class="dropdown-item">Profile</a></li>
+                <li><a href="/profile" class="dropdown-item">Profile</a></li>
                 <li><a href="#" class="dropdown-item">Dashboard</a></li>
                 <li><a @click.prevent="logout" href="#" class="dropdown-item">Sign out</a></li>
               </ul>

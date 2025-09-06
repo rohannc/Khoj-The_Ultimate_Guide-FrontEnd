@@ -9,6 +9,7 @@ import ClinicSignUpView from '@/views/ClinicSignUpView.vue';
 import PatientDashboard from '@/views/PatientDashboard.vue';
 import DoctorDashBoard from '@/views/DoctorDashBoard.vue';
 import ClinicDashBoard from '@/views/ClinicDashBoard.vue';
+import ProfileView from '@/views/ProfileView.vue';
 
 const routes = [
   {
@@ -18,9 +19,9 @@ const routes = [
   },
   {
     path: '/login/:role',
-    name: 'Login', // NOTE: Changed to uppercase 'L' for consistency
+    name: 'Login',
     component: LoginView,
-    meta: { isGuest: true }, // Mark this as a "guest only" route
+    meta: { isGuest: true },
   },
   {
     path: '/signup/doctor',
@@ -57,6 +58,12 @@ const routes = [
     name: 'ClinicDashboard',
     component: ClinicDashBoard,
     meta: { requiresAuth: true, role: 'clinic' },
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: ProfileView,
+    meta: { requiresAuth: true }
   }
 ];
 
@@ -75,18 +82,13 @@ router.beforeEach((to, from, next) => {
 
   if (requiresAuth && !authStore.isLoggedIn) {
     // Case 1: User is not logged in but tries to access a protected page.
-    // Redirect them to a default login page.
     next({ name: 'Login', params: { role: 'patient' } });
   } else if (isGuest && authStore.isLoggedIn) {
-    // Case 2: User is already logged in but tries to access a guest page (like login/signup).
-    // Redirect them to their own dashboard.
-    const dashboardPath = `/dashboard/${authStore.userRole}`;
-    next(dashboardPath);
-  } else if (requiresAuth && authStore.isLoggedIn && requiredRole !== authStore.userRole) {
-    // Case 3: User is logged in but tries to access a dashboard of another role.
-    // Redirect them to their own dashboard.
-    const dashboardPath = `/dashboard/${authStore.userRole}`;
-    next(dashboardPath);
+    // Case 2: User is already logged in but tries to access a guest page.
+    next(`/dashboard/${authStore.userRole}`);
+  } else if (requiresAuth && authStore.isLoggedIn && requiredRole && requiredRole !== authStore.userRole) {
+    // Case 3: User is logged in but tries to access a page of another role. (FIX APPLIED HERE)
+    next(`/dashboard/${authStore.userRole}`);
   }
   else {
     // Case 4: Access is allowed.

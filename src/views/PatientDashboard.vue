@@ -28,7 +28,7 @@
                   <router-link to="/profile" class="dropdown-item">Profile</router-link>
                 </li>
                 <li>
-                  <router-link to="/dashboard/patient" class="dropdown-item">Dashboard</router-link>
+                  <router-link to="#" class="dropdown-item">Dashboard</router-link>
                 </li>
                 <li><a @click.prevent="logout" href="#" class="dropdown-item">Sign out</a></li>
               </ul>

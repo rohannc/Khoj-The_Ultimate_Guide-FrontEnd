@@ -95,4 +95,4 @@ Contributions are welcome! If you have suggestions for improvements or want to f
 
 ## 📄 License
 
-This project is distributed under the MIT License. See `LICENSE.txt` for more informat
+This project is distributed under the MIT License. See `LICENSE.txt` for more information

@@ -14,7 +14,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.1.13",
+    "@heroicons/vue": "^2.2.0",
     "flowbite": "^3.1.2",
     "pinia": "^3.0.3",
     "vue": "^3.5.18",
@@ -22,17 +22,16 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.31.0",
-    "@tailwindcss/cli": "^4.1.12",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vitejs/plugin-vue-jsx": "^5.0.1",
     "@vue/eslint-config-prettier": "^10.2.0",
-    "autoprefixer": "^10.4.21",
+    "autoprefixer": "^10.6.1",
     "eslint": "^9.31.0",
     "eslint-plugin-vue": "~10.3.0",
     "globals": "^16.3.0",
-    "postcss": "^8.5.6",
+    "postcss": "^8.5.28",
     "prettier": "3.6.2",
-    "tailwindcss": "^4.1.13",
+    "tailwindcss": "^3.4.19",
     "vite": "^7.0.6",
     "vite-plugin-vue-devtools": "^8.0.0"
   }

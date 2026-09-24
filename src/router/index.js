@@ -1,6 +1,13 @@
 // src/router/index.js
 import { createRouter, createWebHistory } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
+
+// Layouts
+import DefaultLayout from '@/layouts/DefaultLayout.vue';
+import AuthLayout from '@/layouts/AuthLayout.vue';
+import DashboardLayout from '@/layouts/DashboardLayout.vue';
+
+// Views
 import LandingPageView from '../views/LandingPageView.vue';
 import LoginView from '@/views/LoginView.vue';
 import DoctorSignUpView from '@/views/DoctorSignUpView.vue';
@@ -14,62 +21,99 @@ import ProfileView from '@/views/ProfileView.vue';
 const routes = [
   {
     path: '/',
-    name: 'Landing Page',
-    component: LandingPageView,
+    component: DefaultLayout,
+    children: [
+      {
+        path: '',
+        name: 'Landing Page',
+        component: LandingPageView,
+      }
+    ]
   },
   {
-    path: '/login/:role',
-    name: 'Login',
-    component: LoginView,
-    meta: { isGuest: true },
+    path: '/login',
+    redirect: '/'
   },
   {
-    path: '/signup/doctor',
-    name: 'Doctor Sign Up',
-    component: DoctorSignUpView,
-    meta: { isGuest: true },
+    path: '/signup',
+    redirect: '/'
   },
   {
-    path: '/signup/patient',
-    name: 'Patient Sign Up',
-    component: PatientSignUpView,
-    meta: { isGuest: true },
+    path: '/',
+    component: AuthLayout,
+    children: [
+      {
+        path: 'login/:role',
+        name: 'Login',
+        component: LoginView,
+        meta: { isGuest: true },
+      },
+      {
+        path: 'signup/doctor',
+        name: 'Doctor Sign Up',
+        component: DoctorSignUpView,
+        meta: { isGuest: true },
+      },
+      {
+        path: 'signup/patient',
+        name: 'Patient Sign Up',
+        component: PatientSignUpView,
+        meta: { isGuest: true },
+      },
+      {
+        path: 'signup/clinic',
+        name: 'Clinic Sign Up',
+        component: ClinicSignUpView,
+        meta: { isGuest: true },
+      }
+    ]
   },
   {
-    path: '/signup/clinic',
-    name: 'Clinic Sign Up',
-    component: ClinicSignUpView,
-    meta: { isGuest: true },
-  },
-  {
-    path: '/dashboard/patient',
-    name: 'PatientDashboard',
-    component: PatientDashboard,
-    meta: { requiresAuth: true, role: 'patient' },
-  },
-  {
-    path: '/dashboard/doctor',
-    name: 'DoctorDashboard',
-    component: DoctorDashBoard,
-    meta: { requiresAuth: true, role: 'doctor' },
-  },
-  {
-    path: '/dashboard/clinic',
-    name: 'ClinicDashboard',
-    component: ClinicDashBoard,
-    meta: { requiresAuth: true, role: 'clinic' },
-  },
-  {
-    path: '/profile',
-    name: 'Profile',
-    component: ProfileView,
-    meta: { requiresAuth: true }
+    path: '/dashboard',
+    component: DashboardLayout,
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: 'patient',
+        name: 'PatientDashboard',
+        component: PatientDashboard,
+        meta: { role: 'patient' },
+      },
+      {
+        path: 'doctor',
+        name: 'DoctorDashboard',
+        component: DoctorDashBoard,
+        meta: { role: 'doctor' },
+      },
+      {
+        path: 'clinic',
+        name: 'ClinicDashboard',
+        component: ClinicDashBoard,
+        meta: { role: 'clinic' },
+      },
+      {
+        path: 'profile',
+        name: 'Profile',
+        component: ProfileView,
+      }
+    ]
   }
 ];
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    } else {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve({ top: 0, left: 0 });
+        }, 50);
+      });
+    }
+  }
 });
 
 // UPDATED Navigation Guard

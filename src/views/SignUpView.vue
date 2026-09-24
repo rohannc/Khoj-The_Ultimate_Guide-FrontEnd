@@ -576,7 +576,7 @@
               <input type="submit" value="Signup" />
             </div>
             <div class="login-link">
-              Already a member? <router-link :to="loginLink">Login now</router-link>
+              Already a member? &nbsp;<router-link :to="loginLink">Login now</router-link>
             </div>
           </form>
         </div>

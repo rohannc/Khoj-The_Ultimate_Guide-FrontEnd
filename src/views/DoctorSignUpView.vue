@@ -1,233 +1,339 @@
 <template>
-  <div class="auth-page-container">
-    <div class="wrapper">
-      <div class="role-icon" v-html="roleIcon"></div>
+  <div class="min-h-screen w-full flex bg-white font-jakarta">
+    
 
-      <div class="title-text">
-        <div class="title signup">
-          Signup
-          <div class="role-subtitle">as a {{ currentRoleFormatted }}</div>
+
+    <!-- Left Panel: Presentation (Hidden on mobile, 50% width on desktop) -->
+    <div class="hidden lg:flex flex-col justify-between w-1/2 p-12 lg:p-20 relative overflow-hidden" :style="{ backgroundColor: roleShadow }">
+      <!-- Background Decorative Elements -->
+      <div class="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent"></div>
+      <div class="absolute top-0 right-0 w-96 h-96 bg-white/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+      <div class="absolute bottom-0 left-0 w-96 h-96 bg-white/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+      
+      <div class="relative z-10">
+        <div class="flex items-center gap-6 mb-16">
+          <button @click="router.push('/')" class="flex items-center justify-center w-10 h-10 rounded-xl bg-white/60 hover:bg-white text-slate-600 shadow-sm border border-white/50 transition-all group z-50">
+            <svg class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"></path></svg>
+          </button>
+          <div class="w-px h-8 bg-slate-400/20"></div>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-slate-900 text-white rounded-xl flex items-center justify-center font-bold text-xl shadow-lg">K</div>
+            <span class="font-extrabold text-2xl text-slate-900 tracking-tighter">KhojHealth</span>
+          </div>
+        </div>
+
+        <div v-html="roleIcon" class="mb-8 origin-left transform scale-125"></div>
+        
+        <h1 class="text-5xl font-extrabold text-slate-900 tracking-tighter mb-4 leading-tight">
+          Join the <br />
+          <span :style="{ color: roleColor }">{{ currentRoleFormatted }} Portal</span>
+        </h1>
+        <p class="text-xl text-slate-700 font-medium max-w-md">
+          Create your account to start managing your healthcare journey efficiently and securely.
+        </p>
+      </div>
+
+      <div class="relative z-10 flex items-center gap-2 px-4 py-2 bg-white/60 backdrop-blur-md rounded-full text-sm font-semibold text-slate-700 w-max shadow-sm border border-white/50">
+        <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+        Enterprise-grade Security
+      </div>
+    </div>
+
+    <!-- Right Panel: Form (100% on mobile, 50% on desktop) -->
+    <div class="w-full lg:w-1/2 flex flex-col p-6 sm:p-12 relative mt-16 lg:mt-0 lg:h-screen lg:overflow-y-scroll overflow-x-hidden">
+      <!-- Mobile Header (Visible only on small screens) -->
+      <div class="lg:hidden absolute top-6 left-6 right-6 flex items-center justify-between z-50">
+        <button @click="router.push('/')" class="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-600 shadow-sm border border-slate-200/50 transition-all group">
+          <svg class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"></path></svg>
+        </button>
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-lg text-slate-900 tracking-tighter">KhojHealth</span>
+          <div class="w-8 h-8 bg-slate-900 text-white rounded-lg flex items-center justify-center font-bold shadow-md">K</div>
         </div>
       </div>
 
-      <Transition name="alert-fade">
-        <div v-if="signupError" class="custom-alert">
-          <div class="alert-icon">
-            <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-              viewBox="0 0 20 20">
-              <path
-                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-            </svg>
-          </div>
-          <div class="alert-message">
-            {{ signupError }}
-          </div>
-          <button type="button" class="alert-close-btn" @click="signupError = ''">
-            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-            </svg>
-          </button>
+      <div class="w-full max-w-xl mx-auto pt-12 lg:pt-20 pb-12 flex-shrink-0">
+        <!-- Slide Controls (Login / Signup) -->
+        <div class="flex relative w-full h-14 bg-slate-100 rounded-2xl p-1.5 mb-10">
+          <div class="absolute inset-y-1.5 w-[calc(50%-6px)] bg-white rounded-xl shadow-sm transition-all duration-300 right-1.5" :style="{ boxShadow: `0 4px 14px 0 ${roleShadow}` }"></div>
+          <router-link :to="loginLink" class="relative z-10 flex-1 flex items-center justify-center text-sm font-bold text-slate-500 hover:text-slate-700 transition-colors">Login</router-link>
+          <button class="relative z-10 flex-1 flex items-center justify-center text-sm font-bold text-slate-900 transition-colors">Sign Up</button>
         </div>
-      </Transition>
 
-      <div class="form-container">
-        <div class="slide-controls">
-          <router-link :to="loginLink" class="slide login">Login</router-link>
-          <label class="slide signup">Signup</label>
-          <div class="slider-tab"></div>
+        <div class="mb-8">
+          <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Create Account</h2>
+          <p class="text-slate-500 font-medium mt-1">Please enter your details to register.</p>
         </div>
-        <div class="form-inner-single" :style="{ height: formHeight ? `${formHeight}px` : 'auto' }">
-          <form class="signup" @submit.prevent="handleSignup" ref="signupFormRef">
-            <div>
-              <div class="field">
-                <span class="field-icon"><img :src="icons.user" alt="user icon"></span>
-                <input type="text" placeholder="Username" required v-model="doctorData.username" />
-              </div>
-              <div v-if="usernameError" class="field-error-wrapper">
-                <p class="error-text">{{ usernameError }}</p>
-              </div>
 
-              <div class="field-group">
-                <div class="field">
-                  <span class="field-icon"><img :src="icons.lock" alt="lock icon"></span>
-                  <input type="password" placeholder="Password" required v-model="doctorData.password" />
+        <Transition name="alert-fade">
+          <div v-if="signupError" class="flex items-center p-4 mb-6 text-sm text-red-800 border border-red-200 rounded-2xl bg-red-50">
+            <svg class="flex-shrink-0 inline w-5 h-5 mr-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+            <span class="font-medium">{{ signupError }}</span>
+            <button @click="signupError = ''" class="ml-auto -mx-1.5 -my-1.5 bg-red-50 text-red-500 rounded-lg focus:ring-2 focus:ring-red-400 p-1.5 hover:bg-red-200 inline-flex items-center justify-center h-8 w-8">
+              <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+              </svg>
+            </button>
+          </div>
+        </Transition>
+
+        <form @submit.prevent="handleSignup" class="space-y-5">
+          <!-- Account Details Section -->
+          <div class="space-y-4">
+            <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-2">Account Details</h3>
+            
+            <div class="space-y-2">
+              <label class="block text-sm font-bold text-slate-700">Username</label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                 </div>
-                <div class="field">
-                  <span class="field-icon"><img :src="icons.lock" alt="lock icon"></span>
-                  <input :type="isPasswordVisible ? 'text' : 'password'" placeholder="Confirm Password" required
-                    v-model="doctorData.confirmPassword" />
-                  <button type="button" @click="togglePasswordVisibility" class="password-toggle-btn">
-                    <img :src="isPasswordVisible ? icons.eyeSlash : icons.eye" alt="Toggle Password Visibility">
+                <input type="text" v-model="doctorData.username" required class="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm" :style="{ '--tw-ring-color': roleColor }" placeholder="Choose a username">
+              </div>
+              <p v-if="usernameError" class="text-red-500 text-xs mt-1">{{ usernameError }}</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <label class="block text-sm font-bold text-slate-700">Password</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                  </div>
+                  <input type="password" v-model="doctorData.password" required class="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm" :style="{ '--tw-ring-color': roleColor }" placeholder="Password">
+                </div>
+              </div>
+              <div class="space-y-2">
+                <label class="block text-sm font-bold text-slate-700">Confirm Password</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                  </div>
+                  <input :type="isPasswordVisible ? 'text' : 'password'" v-model="doctorData.confirmPassword" required class="w-full pl-11 pr-12 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-medium" :style="{ '--tw-ring-color': roleColor }" placeholder="Confirm Password">
+                  <button type="button" @click="togglePasswordVisibility" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none">
+                    <svg v-if="!isPasswordVisible" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                    <svg v-else class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
                   </button>
                 </div>
               </div>
-              <div v-if="passwordError" class="error-text-wrapper">
-                <p class="error-text">{{ passwordError }}</p>
-              </div>
+            </div>
+            <p v-if="passwordError" class="text-red-500 text-xs mt-1">{{ passwordError }}</p>
+          </div>
 
-              <div class="field-group">
-                <div class="field">
-                  <span class="field-icon"><img :src="icons.user" alt="user icon"></span>
-                  <input type="text" placeholder="First Name" required v-model="doctorData.firstName" />
+          <!-- Personal Information Section -->
+          <div class="space-y-4 pt-4">
+            <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-2">Personal Information</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <label class="block text-sm font-bold text-slate-700">First Name</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                  </div>
+                  <input type="text" v-model="doctorData.firstName" required class="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm" :style="{ '--tw-ring-color': roleColor }" placeholder="First Name">
                 </div>
-                <div class="field">
-                  <span class="field-icon"><img :src="icons.user" alt="user icon"></span>
-                  <input type="text" placeholder="Last Name" required v-model="doctorData.lastName" />
+              </div>
+              <div class="space-y-2">
+                <label class="block text-sm font-bold text-slate-700">Last Name</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                  </div>
+                  <input type="text" v-model="doctorData.lastName" required class="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm" :style="{ '--tw-ring-color': roleColor }" placeholder="Last Name">
                 </div>
               </div>
-              <div class="field">
-                <span class="field-icon"><img :src="icons.email" alt="email icon"></span>
-                <input type="email" placeholder="Email Address" required v-model="doctorData.email" />
-              </div>
-              <div v-if="emailError" class="field-error-wrapper">
-                <p class="error-text">{{ emailError }}</p>
-              </div>
+            </div>
 
-              <div class="field custom-dropdown">
-                <span class="field-icon"><img :src="icons.gender" alt="gender icon"></span>
-                <button type="button" class="dropdown-button"
-                  :class="{ active: genderDropdownVisible, placeholder: selectedGender === 'Select Gender' }"
-                  @click="toggleMainDropdown('gender')">
+            <div class="space-y-2">
+              <label class="block text-sm font-bold text-slate-700">Email Address</label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                </div>
+                <input type="email" v-model="doctorData.email" required class="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm" :style="{ '--tw-ring-color': roleColor }" placeholder="you@example.com">
+              </div>
+              <p v-if="emailError" class="text-red-500 text-xs mt-1">{{ emailError }}</p>
+            </div>
+
+            <!-- Gender -->
+            <div class="space-y-2 relative">
+              <label class="block text-sm font-bold text-slate-700">Gender</label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                </div>
+                <button type="button" @click="toggleMainDropdown('gender')" class="w-full flex justify-between items-center pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:border-transparent transition-all font-medium" :class="[selectedGender === 'Select Gender' ? 'text-slate-400' : 'text-slate-900', { 'ring-2 border-transparent': genderDropdownVisible }]" :style="{ '--tw-ring-color': roleColor }">
                   <span>{{ selectedGender }}</span>
-                  <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="m1 1 4 4 4-4" />
-                  </svg>
+                  <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': genderDropdownVisible }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </button>
-                <ul v-if="genderDropdownVisible" class="dropdown-menu">
-                  <li v-for="gender in genderOptions" :key="gender" @click="selectGender(gender)">{{ gender }}</li>
+                <ul v-if="genderDropdownVisible" class="absolute z-10 w-full mt-2 bg-white border border-slate-200 rounded-xl shadow-xl max-h-48 overflow-y-auto">
+                  <li v-for="gender in genderOptions" :key="gender" @click="selectGender(gender)" class="px-4 py-3 hover:bg-slate-50 cursor-pointer font-medium text-slate-700 transition-colors">{{ gender }}</li>
                 </ul>
               </div>
-              <div class="field-group">
-                <div class="field">
-                  <span class="field-icon"><img :src="icons.phone" alt="phone icon"></span>
-                  <input type="tel" placeholder="Primary Phone" required v-model="doctorData.primaryPhone" />
-                </div>
-                <div class="field">
-                  <span class="field-icon"><img :src="icons.phone" alt="phone icon"></span>
-                  <input type="tel" placeholder="Secondary Phone" v-model="doctorData.secondaryPhone" />
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <label class="block text-sm font-bold text-slate-700">Primary Phone</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
+                  </div>
+                  <input type="tel" v-model="doctorData.primaryPhone" required class="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm" :style="{ '--tw-ring-color': roleColor }" placeholder="Phone">
                 </div>
               </div>
-              <div class="field">
-                <span class="field-icon"><img :src="icons.registration" alt="registration icon"></span>
-                <input type="text" placeholder="Registration Number" required v-model="doctorData.registrationNumber" />
+              <div class="space-y-2">
+                <label class="block text-sm font-bold text-slate-700">Secondary Phone</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
+                  </div>
+                  <input type="tel" v-model="doctorData.secondaryPhone" class="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm" :style="{ '--tw-ring-color': roleColor }" placeholder="Optional">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Professional Information Section -->
+          <div class="space-y-4 pt-4">
+            <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-2">Professional Details</h3>
+            
+              <div class="space-y-2">
+                <label class="block text-sm font-bold text-slate-700">Registration Number</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" /></svg>
+                  </div>
+                  <input type="text" v-model="doctorData.registrationNumber" required class="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm" :style="{ '--tw-ring-color': roleColor }" placeholder="Reg No">
+                </div>
               </div>
 
-              <div class="field date-picker-wrapper">
-                <span class="field-icon"><img :src="icons.calendar" alt="calendar icon"></span>
-                <button type="button" class="date-picker-button" @click="isCalendarVisible = !isCalendarVisible"
-                  :class="{ 'has-value': selectedDate }">
+              <!-- Registration Date (Custom Component) -->
+              <div class="space-y-2 relative" ref="calendarRef">
+                <label class="block text-sm font-bold text-slate-700">Registration Issue Date</label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                </div>
+                <button type="button" @click="isCalendarVisible = !isCalendarVisible" class="w-full text-left pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:border-transparent transition-all font-medium" :class="selectedDate ? 'text-slate-900' : 'text-slate-400'" :style="{ '--tw-ring-color': roleColor }">
                   {{ formattedSelectedDate }}
                 </button>
               </div>
-              <div v-if="isCalendarVisible" class="calendar-container">
+
+              <!-- Calendar Dropdown -->
+              <div v-if="isCalendarVisible" class="calendar-container shadow-xl">
                 <div class="calendar-header">
-                  <button type="button" @click.stop.prevent="prevMonth">&lt;</button>
+                  <button type="button" @click.stop.prevent="prevMonth" class="p-1 rounded-full hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:border-transparent" :style="{ '--tw-ring-color': roleColor }">
+                    <svg class="w-5 h-5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                  </button>
                   <div class="month-year-selects">
                     <div class="custom-calendar-dropdown">
                       <button type="button" class="calendar-dropdown-button" @click="toggleCalendarDropdown('month')">
                         <span>{{ selectedMonthName }}</span>
-                        <svg :class="{ active: monthDropdownVisible }" aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="m1 1 4 4 4-4" />
+                        <svg :class="{ active: monthDropdownVisible }" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
                         </svg>
                       </button>
-                      <ul v-if="monthDropdownVisible" class="calendar-dropdown-menu">
-                        <li v-for="(month, index) in months" :key="month" @click="selectMonth(index)">{{ month }}</li>
+                      <ul v-if="monthDropdownVisible" class="calendar-dropdown-menu shadow-xl">
+                        <li v-for="(month, index) in months" :key="month" @click="selectMonth(index)" :class="{ 'disabled-month': isMonthDisabled(index) }">{{ month }}</li>
                       </ul>
                     </div>
                     <div class="custom-calendar-dropdown">
                       <button type="button" class="calendar-dropdown-button" @click="toggleCalendarDropdown('year')">
                         <span>{{ currentYear }}</span>
-                        <svg :class="{ active: yearDropdownVisible }" aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="m1 1 4 4 4-4" />
+                        <svg :class="{ active: yearDropdownVisible }" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
                         </svg>
                       </button>
-                      <ul v-if="yearDropdownVisible" class="calendar-dropdown-menu">
+                      <ul v-if="yearDropdownVisible" class="calendar-dropdown-menu shadow-xl">
                         <li v-for="year in years" :key="year" @click="selectYear(year)">{{ year }}</li>
                       </ul>
                     </div>
                   </div>
-                  <button type="button" @click.stop.prevent="nextMonth">&gt;</button>
+                  <button type="button" @click.stop.prevent="nextMonth" :disabled="isNextMonthDisabled" :class="[{ 'opacity-30 cursor-not-allowed': isNextMonthDisabled }, 'p-1 rounded-full hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:border-transparent']" :style="{ '--tw-ring-color': roleColor }">
+                    <svg class="w-5 h-5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                  </button>
                 </div>
                 <div class="calendar-grid">
                   <div class="weekday" v-for="day in weekdays" :key="day">{{ day }}</div>
                   <div class="day-cell" v-for="(day, index) in calendarDays" :key="index"
-                    :class="{ 'other-month': !day.isCurrentMonth, 'today': day.isToday, 'selected': day.isSelected }"
-                    @click="selectDate(day)">
+                    :class="{ 'other-month': !day.isCurrentMonth, 'today': day.isToday, 'selected': day.isSelected, 'disabled': day.isFuture }" @click="selectDate(day)">
                     {{ day.dayNumber }}
                   </div>
                 </div>
               </div>
-              <div class="tag-field-wrapper">
-                <div class="field">
-                  <span class="field-icon"><img :src="icons.specialization" alt="specialization icon"></span>
-                  <input type="text" placeholder="Specializations - Type and Press Enter"
-                    v-model="currentSpecialization" @keydown.enter.prevent="addSpecialization">
-                </div>
-                <div class="tags-container">
-                  <div v-for="(tag, index) in specializations" :key="index" class="tag">
-                    {{ tag }} <span class="remove-tag" @click="removeSpecialization(index)">&times;</span>
-                  </div>
-                </div>
               </div>
-              <div class="tag-field-wrapper">
-                <div class="field">
-                  <span class="field-icon"><img :src="icons.qualification" alt="qualification icon"></span>
-                  <input type="text" placeholder="Qualifications - Type and Press Enter" v-model="currentQualification"
-                    @keydown.enter.prevent="addQualification">
+
+            <!-- Specializations Tag Input -->
+            <div class="space-y-2">
+              <label class="block text-sm font-bold text-slate-700">Specializations</label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>
                 </div>
-                <div class="tags-container">
-                  <div v-for="(tag, index) in qualifications" :key="index" class="tag">
-                    {{ tag }} <span class="remove-tag" @click="removeQualification(index)">&times;</span>
-                  </div>
+                <input type="text" v-model="currentSpecialization" @keydown.enter.prevent="addSpecialization" class="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm" :style="{ '--tw-ring-color': roleColor }" placeholder="Type and press Enter">
+              </div>
+              <div class="flex flex-wrap gap-2 mt-2">
+                <div v-for="(tag, index) in specializations" :key="index" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold" :style="{ backgroundColor: roleShadow, color: roleColor }">
+                  {{ tag }}
+                  <button type="button" @click="removeSpecialization(index)" class="ml-2 hover:opacity-75 focus:outline-none">&times;</button>
                 </div>
               </div>
             </div>
 
-            <div class="field btn">
-              <div class="btn-layer"></div>
-              <button type="submit" :disabled="isLoading || isSuccess">
-                <span v-if="!isLoading && !isSuccess">Signup</span>
-                <div v-if="isLoading" role="status" class="spinner">
-                  <svg aria-hidden="true" class="spinner-svg" viewBox="0 0 100 101" fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path
-                      d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" />
-                    <path
-                      d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                      fill="currentColor" />
-                  </svg>
+            <!-- Qualifications Tag Input -->
+            <div class="space-y-2">
+              <label class="block text-sm font-bold text-slate-700">Qualifications</label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" /></svg>
                 </div>
-                <div v-if="isSuccess" class="success-animation-wrapper">
-                  <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-                    <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
-                    <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
-                  </svg>
+                <input type="text" v-model="currentQualification" @keydown.enter.prevent="addQualification" class="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm" :style="{ '--tw-ring-color': roleColor }" placeholder="Type and press Enter">
+              </div>
+              <div class="flex flex-wrap gap-2 mt-2">
+                <div v-for="(tag, index) in qualifications" :key="index" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold" :style="{ backgroundColor: roleShadow, color: roleColor }">
+                  {{ tag }}
+                  <button type="button" @click="removeQualification(index)" class="ml-2 hover:opacity-75 focus:outline-none">&times;</button>
                 </div>
-              </button>
+              </div>
             </div>
-            <div class="login-link">
-              Already a member? <router-link :to="loginLink">Login now</router-link>
+
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" :disabled="isLoading || isSuccess" class="w-full py-4 mt-6 text-white font-bold rounded-2xl shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl focus:outline-none focus:ring-4 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none flex justify-center items-center h-[56px]" :style="{ backgroundColor: roleColor, boxShadow: `0 10px 15px -3px ${roleShadow}, 0 4px 6px -4px ${roleShadow}` }">
+            <span v-if="!isLoading && !isSuccess">Sign Up</span>
+            <div v-if="isLoading" class="spinner">
+              <svg class="w-6 h-6 animate-spin text-white/80" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path fill="#fff" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
             </div>
-          </form>
-        </div>
+            <div v-if="isSuccess" class="success-icon text-white">
+               <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" /></svg>
+            </div>
+          </button>
+        </form>
+        
+        <p class="mt-8 text-center text-sm font-medium text-slate-500">
+          Already a member?&nbsp;&nbsp;
+          <router-link :to="loginLink" class="ml-1.5 font-bold hover:underline transition-colors" :style="{ color: roleColor }">Login now</router-link>
+        </p>
+
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, watch, nextTick, onMounted } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { useAuthStore } from '@/stores/auth'; // Assuming you have this store
+import { useAuthStore } from '@/stores/auth';
+import { AuthService } from '@/services/auth.service';
 
-const signupFormRef = ref(null);
-const formHeight = ref(0);
 const router = useRouter();
 const authStore = useAuthStore();
 
@@ -235,27 +341,13 @@ const authStore = useAuthStore();
 const isLoading = ref(false);
 const isSuccess = ref(false);
 const signupError = ref('');
-const isPasswordVisible = ref(false);
 
 // --- Static Role Data ---
 const currentRoleFormatted = 'Doctor';
 const loginLink = '/login/doctor';
-const roleIcon = `<img src="https://img.icons8.com/?size=100&id=Dm8KPoTMqylb&format=png&color=0059B3" alt="Medical Doctor Icon" width="80" height="80">`;
-
-// --- Dynamic Icon URLs ---
-const icons = ref({
-  user: 'https://img.icons8.com/?size=100&id=rGhKliUp2Vji&format=png&color=cccccc',
-  lock: 'https://img.icons8.com/?size=100&id=qBAODuyTp5A6&format=png&color=cccccc',
-  email: 'https://img.icons8.com/?size=100&id=D9x0PpvvT1AL&format=png&color=cccccc',
-  phone: 'https://img.icons8.com/?size=100&id=J9QTpfBIai4P&format=png&color=cccccc',
-  calendar: 'https://img.icons8.com/?size=100&id=12776&format=png&color=cccccc',
-  gender: 'https://img.icons8.com/?size=100&id=xl7K3pk1ePmn&format=png&color=cccccc',
-  registration: 'https://img.icons8.com/?size=100&id=edehkE8AAo9h&format=png&color=cccccc',
-  specialization: 'https://img.icons8.com/?size=100&id=14871&format=png&color=cccccc',
-  qualification: 'https://img.icons8.com/?size=100&id=T5ATsUangzQW&format=png&color=cccccc',
-  eye: 'https://img.icons8.com/?size=100&id=mGf7Pc8j48LQ&format=png&color=cccccc',
-  eyeSlash: 'https://img.icons8.com/?size=100&id=SQWg80tZBquQ&format=png&color=cccccc',
-});
+const roleIcon = `<div class="w-16 h-16 bg-teal-600 rounded-2xl flex items-center justify-center shadow-lg shadow-teal-600/30"><svg class="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg></div>`;
+const roleColor = '#0D9488';
+const roleShadow = 'rgba(13, 148, 136, 0.08)';
 
 // --- Form Data ---
 const doctorData = ref({
@@ -274,11 +366,25 @@ const doctorData = ref({
 const passwordError = ref('');
 const usernameError = ref('');
 const emailError = ref('');
+const isPasswordVisible = ref(false);
 
-// State for custom dropdowns
+const togglePasswordVisibility = () => {
+  isPasswordVisible.value = !isPasswordVisible.value;
+};
+
+// --- Dropdown Logic ---
 const genderDropdownVisible = ref(false);
 const selectedGender = ref('Select Gender');
 const genderOptions = ['Male', 'Female', 'Other'];
+
+const toggleMainDropdown = () => {
+  genderDropdownVisible.value = !genderDropdownVisible.value;
+};
+
+const selectGender = (gender) => {
+  selectedGender.value = gender;
+  genderDropdownVisible.value = false;
+};
 
 // --- Tagging Logic ---
 const specializations = ref([]);
@@ -308,7 +414,7 @@ const removeQualification = (index) => {
 };
 
 
-// --- CALENDAR LOGIC ---
+// --- Calendar Logic ---
 const isCalendarVisible = ref(false);
 const selectedDate = ref(null);
 const date = new Date();
@@ -317,7 +423,6 @@ const currentYear = ref(date.getFullYear());
 const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const monthDropdownVisible = ref(false);
 const yearDropdownVisible = ref(false);
-
 
 const months = [...Array(12).keys()].map(i => new Date(0, i).toLocaleString('default', { month: 'long' }));
 
@@ -329,6 +434,10 @@ const years = computed(() => {
 
 const selectedMonthName = computed(() => months[currentMonth.value]);
 
+const isNextMonthDisabled = computed(() => {
+  const today = new Date();
+  return currentYear.value === today.getFullYear() && currentMonth.value >= today.getMonth();
+});
 const formattedSelectedDate = computed(() => {
   if (!selectedDate.value) return 'Select Registration Date';
   return selectedDate.value.toLocaleDateString();
@@ -340,16 +449,23 @@ const calendarDays = computed(() => {
   const firstDayOfMonth = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const daysArray = [];
+  
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
   for (let i = 0; i < firstDayOfMonth; i++) {
-    daysArray.push({ dayNumber: '', isCurrentMonth: false });
+    daysArray.push({ dayNumber: '', isCurrentMonth: false, isFuture: false });
   }
   for (let i = 1; i <= daysInMonth; i++) {
-    const today = new Date();
     const currentDate = new Date(year, month, i);
+    currentDate.setHours(0, 0, 0, 0);
+    const isFuture = currentDate > today;
+    
     daysArray.push({
       dayNumber: i,
       isCurrentMonth: true,
-      isToday: today.toDateString() === currentDate.toDateString(),
+      isToday: today.getTime() === currentDate.getTime(),
+      isFuture: isFuture,
       isSelected: selectedDate.value ? selectedDate.value.toDateString() === currentDate.toDateString() : false,
       date: currentDate
     });
@@ -358,7 +474,7 @@ const calendarDays = computed(() => {
 });
 
 const selectDate = (day) => {
-  if (!day.isCurrentMonth) return;
+  if (!day.isCurrentMonth || day.isFuture) return;
   selectedDate.value = day.date;
   isCalendarVisible.value = false;
 }
@@ -373,6 +489,7 @@ const prevMonth = () => {
 }
 
 const nextMonth = () => {
+  if (isNextMonthDisabled.value) return;
   if (currentMonth.value === 11) {
     currentMonth.value = 0;
     currentYear.value++;
@@ -381,42 +498,55 @@ const nextMonth = () => {
   }
 }
 
-const toggleMainDropdown = () => {
-  genderDropdownVisible.value = !genderDropdownVisible.value;
-};
-
-const selectGender = (gender) => {
-  selectedGender.value = gender;
-  genderDropdownVisible.value = false;
-};
-
-const togglePasswordVisibility = () => {
-  isPasswordVisible.value = !isPasswordVisible.value;
-};
-
 const toggleCalendarDropdown = (type) => {
   if (type === 'month') {
     monthDropdownVisible.value = !monthDropdownVisible.value;
-    yearDropdownVisible.value = false; // Close the other one
+    yearDropdownVisible.value = false;
   } else if (type === 'year') {
     yearDropdownVisible.value = !yearDropdownVisible.value;
-    monthDropdownVisible.value = false; // Close the other one
+    monthDropdownVisible.value = false;
   }
 };
 
 const selectMonth = (monthIndex) => {
+  if (isMonthDisabled(monthIndex)) return;
   currentMonth.value = monthIndex;
   monthDropdownVisible.value = false;
 };
 
+const isMonthDisabled = (monthIndex) => {
+  const today = new Date();
+  return currentYear.value === today.getFullYear() && monthIndex > today.getMonth();
+};
+
 const selectYear = (year) => {
   currentYear.value = year;
+  const today = new Date();
+  if (year === today.getFullYear() && currentMonth.value > today.getMonth()) {
+    currentMonth.value = today.getMonth();
+  }
   yearDropdownVisible.value = false;
 };
 
+// --- Click Outside Logic ---
+const calendarRef = ref(null);
+
+const closeCalendarOnClickOutside = (event) => {
+  if (isCalendarVisible.value && calendarRef.value && !calendarRef.value.contains(event.target)) {
+    isCalendarVisible.value = false;
+  }
+};
+
+onMounted(() => {
+  document.addEventListener('click', closeCalendarOnClickOutside);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', closeCalendarOnClickOutside);
+});
+
 // --- Form Submission Logic ---
 const handleSignup = async () => {
-  // Clear all previous errors
   passwordError.value = '';
   usernameError.value = '';
   emailError.value = '';
@@ -453,28 +583,20 @@ const handleSignup = async () => {
     registrationIssueDate: selectedDate.value ? new Date(selectedDate.value).toISOString().split('T')[0] : null,
   };
 
-  const apiCall = fetch(`http://localhost:8080/api/auth/register/doctor`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(formData),
-  });
-
+  const apiCall = AuthService.registerDoctor(formData);
   const minLoadingTime = new Promise(resolve => setTimeout(resolve, 2000));
 
   try {
-    const [response] = await Promise.all([apiCall, minLoadingTime]);
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(result.message || 'An unknown error occurred.');
-    }
+    const [authResult] = await Promise.all([apiCall, minLoadingTime]);
+    const result = authResult.data;
 
     isLoading.value = false;
     isSuccess.value = true;
 
     const userToStore = {
       username: result.username,
-      role: result.registeredUserType.toLowerCase()
+      role: result.userType?.toLowerCase() || 'doctor',
+      userId: result.userId
     };
     authStore.login(userToStore, result.token);
 
@@ -484,7 +606,7 @@ const handleSignup = async () => {
 
   } catch (error) {
     isLoading.value = false;
-    const errorMessage = error.message;
+    const errorMessage = error.message || "Signup failed";
     if (errorMessage.toLowerCase().includes('username')) {
       usernameError.value = errorMessage;
     } else if (errorMessage.toLowerCase().includes('email')) {
@@ -495,18 +617,12 @@ const handleSignup = async () => {
   }
 };
 
-const updateHeight = () => {
-  nextTick(() => {
-    if (signupFormRef.value) {
-      formHeight.value = signupFormRef.value.scrollHeight;
-    }
-  });
-};
-
 watch(
   () => [doctorData.value.password, doctorData.value.confirmPassword],
-  () => {
-    if (doctorData.value.confirmPassword && doctorData.value.password !== doctorData.value.confirmPassword) {
+  ([password, confirmPassword]) => {
+    if (password && password.length < 8) {
+      passwordError.value = 'Password must be at least 8 characters long.';
+    } else if (confirmPassword && password !== confirmPassword) {
       passwordError.value = 'Passwords do not match.';
     } else {
       passwordError.value = '';
@@ -514,404 +630,34 @@ watch(
   }
 );
 
-watch(
-  [
-    genderDropdownVisible,
-    isCalendarVisible,
-    specializations,
-    qualifications,
-    passwordError,
-    usernameError,
-    emailError,
-    signupError,
-  ],
-  updateHeight,
-  { deep: true }
-);
-
-onMounted(updateHeight);
+watch(() => doctorData.value.email, (newVal) => {
+  if (newVal && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newVal)) {
+    emailError.value = 'Please enter a valid email address.';
+  } else {
+    emailError.value = '';
+  }
+});
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
+.font-jakarta {
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
-::selection {
-  background: #1a75ff;
-  color: #fff;
-}
-
-.auth-page-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  width: 100%;
-  background: -webkit-linear-gradient(left, #003366, #004080, #0059b3, #0073e6);
-  padding: 20px;
-}
-
-.wrapper {
-  overflow: hidden;
-  max-width: 700px;
-  width: 100%;
-  background: #fff;
-  padding: 30px;
-  border-radius: 15px;
-  box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.1);
-}
-
-.role-icon {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 20px;
-  color: #0059b3;
-}
-
-.wrapper .title-text {
-  display: flex;
-  justify-content: center;
-}
-
-.wrapper .title {
-  font-size: 35px;
-  font-weight: 600;
-  text-align: center;
-}
-
-.wrapper .title .role-subtitle {
-  font-size: 16px;
-  font-weight: 400;
-  color: #555;
-  margin-top: 2px;
-  line-height: 1.2;
-}
-
-.wrapper .form-container {
-  width: 100%;
-  overflow: hidden;
-}
-
-.form-inner-single {
-  transition: height 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-.form-inner-single form .field {
-  position: relative;
-  height: 50px;
-  width: 100%;
-  margin-top: 20px;
-}
-
-.form-inner-single form .field input,
-.form-inner-single form .field .dropdown-button,
-.form-inner-single form .field .date-picker-button {
-  height: 100%;
-  width: 100%;
-  outline: none;
-  padding-left: 55px;
-  padding-right: 20px;
-  border-radius: 15px;
-  border: 1px solid lightgrey;
-  border-bottom-width: 2px;
-  font-size: 17px;
-  transition: all 0.3s ease;
-}
-
-.form-inner-single form .field input[placeholder="Confirm Password"] {
-  padding-right: 55px;
-  /* Make space for the icon */
-}
-
-.field-icon {
-  position: absolute;
-  left: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.field-icon img {
-  width: 20px;
-  height: 20px;
-}
-
-.field input:focus~.field-icon img {
-  filter: invert(36%) sepia(98%) saturate(2028%) hue-rotate(211deg) brightness(102%) contrast(101%);
-}
-
-.form-inner-single form .field input::placeholder {
-  color: #999;
-  transition: all 0.3s ease;
-}
-
-.form-inner-single form .field input:focus::placeholder {
-  color: #1a75ff;
-}
-
-.form-inner-single form .field input:focus {
-  border-color: #1a75ff;
-}
-
-.form-inner-single form .field-group {
-  display: flex;
-  gap: 15px;
-  width: 100%;
-  margin-top: 20px;
-}
-
-.form-inner-single form .field-group .field {
-  width: 100%;
-  margin-top: 0;
-}
-
-.form-inner-single form .login-link {
-  text-align: center;
-  margin-top: 30px;
-}
-
-.form-inner-single form .login-link a {
-  color: #1a75ff;
-  text-decoration: none;
-}
-
-.form-inner-single form .login-link a:hover {
-  text-decoration: underline;
-}
-
-.password-toggle-btn {
-  position: absolute;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.password-toggle-btn img {
-  width: 22px;
-  height: 22px;
-  opacity: 0.5;
-  transition: opacity 0.2s;
-}
-
-form .btn {
-  height: 50px;
-  width: 100%;
-  border-radius: 15px;
-  position: relative;
-  overflow: hidden;
-  margin-top: 20px;
-}
-
-form .btn .btn-layer {
-  height: 100%;
-  width: 300%;
-  position: absolute;
-  left: -100%;
-  background: -webkit-linear-gradient(right, #003366, #004080, #0059b3, #0073e6);
-  border-radius: 15px;
-  transition: all 0.4s ease;
-}
-
-form .btn:hover .btn-layer {
-  left: 0;
-}
-
-form .btn button {
-  height: 100%;
-  width: 100%;
-  z-index: 1;
-  position: relative;
-  background: none;
-  border: none;
-  color: #fff;
-  border-radius: 15px;
-  font-size: 20px;
-  font-weight: 500;
-  cursor: pointer;
-  padding-left: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-form .btn button:disabled {
-  cursor: not-allowed;
-}
-
-.custom-dropdown {
-  position: relative;
-}
-
-.dropdown-button {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #fff;
-  cursor: pointer;
-  text-align: left;
-}
-
-.dropdown-button:focus,
-.dropdown-button.active {
-  border-color: #1a75ff;
-}
-
-.dropdown-button span {
-  color: #333;
-}
-
-.dropdown-button.placeholder span {
-  color: #999;
-}
-
-.dropdown-button svg {
-  width: 12px;
-  height: 12px;
-  margin-left: 0.75rem;
-  transition: transform 0.3s ease;
-}
-
-.dropdown-button.active svg {
-  transform: rotate(180deg);
-}
-
-.dropdown-menu {
-  position: absolute;
-  top: 105%;
-  left: 0;
-  width: 100%;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 15px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  z-index: 10;
-  list-style: none;
-  padding: 5px 0;
-  max-height: 145px;
-  overflow-y: auto;
-}
-
-.dropdown-menu li {
-  padding: 10px 15px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.dropdown-menu li:hover {
-  background-color: #f0f5ff;
-  color: #1a75ff;
-}
-
-.slide-controls {
-  position: relative;
-  display: flex;
-  height: 50px;
-  width: 100%;
-  overflow: hidden;
-  margin: 30px 0 10px 0;
-  justify-content: space-between;
-  border: 1px solid lightgrey;
-  border-radius: 15px;
-}
-
-.slide-controls .slide {
-  height: 100%;
-  width: 100%;
-  color: #fff;
-  font-size: 18px;
-  font-weight: 500;
-  text-align: center;
-  line-height: 48px;
-  cursor: pointer;
-  z-index: 1;
-  transition: all 0.6s ease;
-  text-decoration: none;
-}
-
-.slide-controls .slide.login {
-  color: #000;
-}
-
-.slide-controls .slide.signup {
-  color: #fff;
-}
-
-.slide-controls .slider-tab {
-  position: absolute;
-  height: 100%;
-  width: 50%;
-  left: 50%;
-  z-index: 0;
-  border-radius: 15px;
-  background: -webkit-linear-gradient(left, #003366, #004080, #0059b3, #0073e6);
-}
-
-.tag-field-wrapper {
-  margin-top: 20px;
-  margin-bottom: -10px
-}
-
-.tags-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 10px;
-}
-
-.tag {
-  background-color: #e0eafc;
-  color: #1a75ff;
-  padding: 5px 10px;
-  border-radius: 15px;
-  display: inline-flex;
-  align-items: center;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.remove-tag {
-  margin-left: 8px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-/* DATE PICKER STYLES */
-.date-picker-button {
-  text-align: left;
-  background: #fff;
-  cursor: pointer;
-  color: #999;
-}
-
-.date-picker-button.has-value {
-  color: #333;
-}
-
+/* Calendar Styles preserved */
 .calendar-container {
-  border: 1px solid #ddd;
+  border: 1px solid #e2e8f0;
   border-radius: 15px;
   padding: 15px;
   margin-top: 10px;
-  background-color: #fdfdfd;
+  background-color: #fff;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  z-index: 50;
 }
 
 .calendar-header {
@@ -939,7 +685,7 @@ form .btn button:disabled {
 }
 
 .calendar-header button:hover {
-  background-color: #f0f0f0;
+  background-color: #f1f5f9;
 }
 
 .calendar-grid {
@@ -951,8 +697,9 @@ form .btn button:disabled {
 
 .weekday {
   font-weight: 500;
-  color: #999;
+  color: #94a3b8;
   font-size: 14px;
+  margin-bottom: 5px;
 }
 
 .day-cell {
@@ -966,15 +713,18 @@ form .btn button:disabled {
   height: 38px;
   margin: auto;
   border-radius: 8px;
-  font-size: 15px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #334155;
 }
 
 .day-cell:not(.other-month):hover {
-  background-color: #f0f5ff;
+  background-color: #eff6ff;
+  color: #0D9488;
 }
 
 .day-cell.other-month {
-  color: #ccc;
+  color: #cbd5e1;
   cursor: default;
 }
 
@@ -983,11 +733,19 @@ form .btn button:disabled {
 }
 
 .day-cell.selected {
-  background-color: #1a75ff;
+  background-color: #0D9488;
   color: #fff;
 }
 
-/* Calendar Dropdowns */
+.day-cell.disabled {
+  color: #d1d5db;
+  cursor: not-allowed;
+}
+
+.day-cell.disabled:hover {
+  background-color: transparent;
+}
+
 .custom-calendar-dropdown {
   position: relative;
   flex-grow: 1;
@@ -997,16 +755,15 @@ form .btn button:disabled {
   width: 100%;
   height: 40px;
   background-color: #fff;
-  border: 1px solid #ccc;
+  border: 1px solid #e2e8f0;
   border-radius: 8px;
   padding: 5px 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  font-family: 'Poppins', sans-serif;
 }
 
 .calendar-dropdown-button svg {
@@ -1025,9 +782,8 @@ form .btn button:disabled {
   left: 0;
   width: 100%;
   background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 15px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
   z-index: 20;
   list-style: none;
   padding: 5px 0;
@@ -1036,76 +792,20 @@ form .btn button:disabled {
 }
 
 .calendar-dropdown-menu li {
-  padding: 10px 15px;
+  padding: 8px 15px;
   cursor: pointer;
-  font-size: 16px;
-}
-
-.calendar-dropdown-menu li:hover {
-  background-color: #f0f5ff;
-  color: #1a75ff;
-}
-
-/* Error Message Styles */
-.error-text-wrapper {
-  margin-top: 5px;
-  padding-left: 50%;
-  box-sizing: border-box;
-}
-
-.error-text {
-  color: #D93025;
   font-size: 14px;
-  text-align: left;
-  padding-left: 10px;
-}
-
-.field-error-wrapper {
-  margin-top: 5px;
-}
-
-/* Alert Styles */
-.custom-alert {
-  display: flex;
-  align-items: center;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  font-size: 0.875rem;
-  color: #b91c1c;
-  background-color: #fee2e2;
-  border-radius: 0.5rem;
-  margin-top: 20px;
-}
-
-.alert-icon {
-  flex-shrink: 0;
-  width: 1rem;
-  height: 1rem;
-}
-
-.alert-message {
-  margin-left: 0.75rem;
   font-weight: 500;
 }
 
-.alert-close-btn {
-  margin-left: auto;
-  background-color: transparent;
-  border: none;
-  color: #ef4444;
-  border-radius: 0.5rem;
-  padding: 0.375rem;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 2rem;
-  width: 2rem;
-  transition: background-color 0.2s;
+.calendar-dropdown-menu li:hover:not(.disabled-month) {
+  background-color: #eff6ff;
+  color: #0D9488;
 }
 
-.alert-close-btn:hover {
-  background-color: #fecaca;
+.calendar-dropdown-menu li.disabled-month {
+  opacity: 0.3;
+  cursor: not-allowed;
 }
 
 .alert-fade-enter-active,
@@ -1117,90 +817,5 @@ form .btn button:disabled {
 .alert-fade-leave-to {
   opacity: 0;
   transform: translateY(-10px);
-}
-
-/* Spinner and Success Animation */
-.spinner {
-  display: inline-block;
-  width: 28px;
-  height: 28px;
-}
-
-.spinner-svg {
-  width: 100%;
-  height: 100%;
-  color: #fff;
-  animation: spin 1s linear infinite;
-}
-
-.spinner-svg path:first-child {
-  fill: rgba(255, 255, 255, 0.3);
-}
-
-.spinner-svg path:last-child {
-  fill: #fff;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.success-animation-wrapper {
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.checkmark {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  display: block;
-  stroke-width: 2.5;
-  stroke: #fff;
-  stroke-miterlimit: 10;
-  animation: scale .3s ease-in-out .9s both;
-}
-
-.checkmark__circle {
-  stroke-dasharray: 166;
-  stroke-dashoffset: 166;
-  stroke-width: 2.5;
-  stroke-miterlimit: 10;
-  stroke: #fff;
-  fill: none;
-  animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
-}
-
-.checkmark__check {
-  transform-origin: 50% 50%;
-  stroke-dasharray: 48;
-  stroke-dashoffset: 48;
-  animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
-}
-
-@keyframes stroke {
-  100% {
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes scale {
-
-  0%,
-  100% {
-    transform: none;
-  }
-
-  50% {
-    transform: scale3d(1.1, 1.1, 1);
-  }
 }
 </style>

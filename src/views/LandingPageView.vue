@@ -25,7 +25,7 @@
         <div class="relative z-10 max-w-2xl">
           <h1 class="text-5xl lg:text-7xl font-extrabold text-slate-900 tracking-tighter mb-4 leading-[1.05]">
             Healthcare, <br />
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">reimagined.</span>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-blue-700">reimagined.</span>
           </h1>
           <p class="text-lg lg:text-2xl text-slate-500 font-medium tracking-tight">
             Select your designated portal to access a personalized suite of medical tools.
@@ -44,7 +44,7 @@
             </div>
             <!-- Floating flask (Labs) -->
             <div class="absolute -top-4 -right-4 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center border border-slate-50 animate-bounce" style="animation-duration: 3s;">
-               <svg class="w-6 h-6 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+               <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
             </div>
             <!-- Floating cross (First Aid) -->
             <div class="absolute -bottom-2 -left-4 w-14 h-14 bg-white rounded-full shadow-lg flex items-center justify-center border border-slate-50 animate-bounce" style="animation-duration: 4s;">
@@ -57,7 +57,7 @@
       <!-- 2. Patient Box (Massive, Spans 2 columns & 2 rows) -->
       <div 
         @click="navigateToRole('patient')"
-        class="group col-span-1 lg:col-span-2 lg:row-span-2 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-[2.5rem] p-10 lg:p-14 shadow-xl shadow-blue-900/20 ring-1 ring-slate-900/5 flex flex-col justify-between cursor-pointer transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/30 hover:-translate-y-2 relative overflow-hidden"
+        class="group col-span-1 lg:col-span-2 lg:row-span-2 bg-gradient-to-br from-blue-500 to-blue-700 rounded-[2.5rem] p-10 lg:p-14 shadow-xl shadow-blue-900/20 ring-1 ring-slate-900/5 flex flex-col justify-between cursor-pointer transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/30 hover:-translate-y-2 relative overflow-hidden"
       >
         <!-- Watermark icon -->
         <svg class="absolute -bottom-10 -right-10 w-96 h-96 text-white opacity-5 transform rotate-[15deg] group-hover:scale-110 group-hover:opacity-10 transition-all duration-700" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"></path></svg>
@@ -80,15 +80,15 @@
       <!-- 3. Doctor Box (Spans 1 col, 1 row) -->
       <div 
         @click="navigateToRole('doctor')"
-        class="group col-span-1 bg-white rounded-[2.5rem] p-8 lg:p-10 shadow-xl shadow-slate-200/40 ring-1 ring-slate-900/5 flex flex-col justify-between cursor-pointer transition-all duration-500 hover:shadow-2xl hover:shadow-teal-500/20 hover:-translate-y-2 relative overflow-hidden"
+        class="group col-span-1 bg-white rounded-[2.5rem] p-8 lg:p-10 shadow-xl shadow-slate-200/40 ring-1 ring-slate-900/5 flex flex-col justify-between cursor-pointer transition-all duration-500 hover:shadow-2xl hover:shadow-amber-500/20 hover:-translate-y-2 relative overflow-hidden"
       >
-        <svg class="absolute -bottom-6 -right-6 w-48 h-48 text-teal-50 transform rotate-[-15deg] group-hover:scale-110 group-hover:text-teal-100 transition-all duration-700" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+        <svg class="absolute -bottom-6 -right-6 w-48 h-48 text-amber-50 transform rotate-[-15deg] group-hover:scale-110 group-hover:text-amber-100 transition-all duration-700" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
         
         <div class="relative z-10">
-          <div class="w-14 h-14 bg-teal-50 text-teal-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-teal-600 group-hover:text-white transition-colors duration-300">
+          <div class="w-14 h-14 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-amber-500 group-hover:text-white transition-colors duration-300">
             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
           </div>
-          <h2 class="text-3xl font-extrabold text-slate-900 mb-2 group-hover:text-teal-600 transition-colors duration-300 tracking-tight">Doctor Portal</h2>
+          <h2 class="text-3xl font-extrabold text-slate-900 mb-2 group-hover:text-amber-600 transition-colors duration-300 tracking-tight">Doctor Portal</h2>
           <p class="text-slate-500 font-medium text-lg leading-snug tracking-tight">Manage patients and daily schedules.</p>
         </div>
       </div>
@@ -96,15 +96,15 @@
       <!-- 4. Clinic Box (Spans 1 col, 1 row) -->
       <div 
         @click="navigateToRole('clinic')"
-        class="group col-span-1 bg-white rounded-[2.5rem] p-8 lg:p-10 shadow-xl shadow-slate-200/40 ring-1 ring-slate-900/5 flex flex-col justify-between cursor-pointer transition-all duration-500 hover:shadow-2xl hover:shadow-rose-500/20 hover:-translate-y-2 relative overflow-hidden"
+        class="group col-span-1 bg-white rounded-[2.5rem] p-8 lg:p-10 shadow-xl shadow-slate-200/40 ring-1 ring-slate-900/5 flex flex-col justify-between cursor-pointer transition-all duration-500 hover:shadow-2xl hover:shadow-green-500/20 hover:-translate-y-2 relative overflow-hidden"
       >
-        <svg class="absolute -bottom-6 -right-6 w-48 h-48 text-rose-50 transform rotate-[10deg] group-hover:scale-110 group-hover:text-rose-100 transition-all duration-700" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+        <svg class="absolute -bottom-6 -right-6 w-48 h-48 text-green-50 transform rotate-[10deg] group-hover:scale-110 group-hover:text-green-100 transition-all duration-700" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
 
         <div class="relative z-10">
-          <div class="w-14 h-14 bg-rose-50 text-rose-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-rose-600 group-hover:text-white transition-colors duration-300">
+          <div class="w-14 h-14 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-green-600 group-hover:text-white transition-colors duration-300">
             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
           </div>
-          <h2 class="text-3xl font-extrabold text-slate-900 mb-2 group-hover:text-rose-600 transition-colors duration-300 tracking-tight">Clinic Portal</h2>
+          <h2 class="text-3xl font-extrabold text-slate-900 mb-2 group-hover:text-green-600 transition-colors duration-300 tracking-tight">Clinic Portal</h2>
           <p class="text-slate-500 font-medium text-lg leading-snug tracking-tight">Administer overall facility operations.</p>
         </div>
       </div>

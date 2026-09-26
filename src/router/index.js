@@ -17,6 +17,10 @@ import PatientDashboard from '@/views/PatientDashboard.vue';
 import DoctorDashBoard from '@/views/DoctorDashBoard.vue';
 import ClinicDashBoard from '@/views/ClinicDashBoard.vue';
 import ProfileView from '@/views/ProfileView.vue';
+import PatientAppointmentsView from '@/views/patient/PatientAppointmentsView.vue';
+import PatientHealthRecordsView from '@/views/patient/PatientHealthRecordsView.vue';
+import PatientPrescriptionsView from '@/views/patient/PatientPrescriptionsView.vue';
+import PatientNotificationsView from '@/views/patient/PatientNotificationsView.vue';
 
 const routes = [
   {
@@ -77,6 +81,30 @@ const routes = [
         path: 'patient',
         name: 'PatientDashboard',
         component: PatientDashboard,
+        meta: { role: 'patient' },
+      },
+      {
+        path: 'patient/appointments',
+        name: 'PatientAppointments',
+        component: PatientAppointmentsView,
+        meta: { role: 'patient' },
+      },
+      {
+        path: 'patient/records',
+        name: 'PatientHealthRecords',
+        component: PatientHealthRecordsView,
+        meta: { role: 'patient' },
+      },
+      {
+        path: 'patient/notifications',
+        name: 'PatientNotifications',
+        component: PatientNotificationsView,
+        meta: { role: 'patient' },
+      },
+      {
+        path: 'patient/prescriptions',
+        name: 'PatientPrescriptions',
+        component: PatientPrescriptionsView,
         meta: { role: 'patient' },
       },
       {

@@ -1,4 +1,5 @@
 <template>
+  <LogoutModal :show="showLogoutModal" @confirm="confirmLogout" @cancel="showLogoutModal = false" />
   <div class="profile-page-wrapper">
     <nav class="navbar">
       <div class="navbar-container">
@@ -27,7 +28,7 @@
                 <li><a href="#" class="dropdown-item">Profile</a></li>
                 <li><a href="/dashboard/patient" class="dropdown-item">Dashboard</a>
                 </li>
-                <li><a @click.prevent="logout" href="#" class="dropdown-item">Sign out</a></li>
+                <li><a @click.prevent="showLogoutModal = true" href="#" class="dropdown-item">Sign out</a></li>
               </ul>
             </div>
           </div>
@@ -161,16 +162,27 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import { useAuthStore } from '@/stores/auth';
+import { useRouter } from 'vue-router';
+import LogoutModal from '@/components/LogoutModal.vue';
+
+const authStore = useAuthStore();
+const router = useRouter();
 
 // --- Navbar Logic ---
 const isUserDropdownOpen = ref(false);
 const isMobileMenuOpen = ref(false);
 const profileDropdownRef = ref(null);
+const showLogoutModal = ref(false);
 
 const toggleUserDropdown = () => isUserDropdownOpen.value = !isUserDropdownOpen.value;
 const toggleMobileMenu = () => isMobileMenuOpen.value = !isMobileMenuOpen.value;
 
-const logout = () => alert('Signing out...');
+const confirmLogout = async () => {
+  showLogoutModal.value = false;
+  await authStore.logout();
+  router.push('/login/patient');
+};
 
 const handleClickOutside = (event) => {
   if (profileDropdownRef.value && !profileDropdownRef.value.contains(event.target)) {
@@ -186,16 +198,79 @@ onUnmounted(() => document.removeEventListener('mousedown', handleClickOutside))
 // --- Profile Page Logic ---
 const activeTab = ref('personal');
 
+const calculateAge = (dobString) => {
+  if (!dobString) return 30;
+  const dob = new Date(dobString);
+  const diff = Date.now() - dob.getTime();
+  const ageDate = new Date(diff);
+  return Math.abs(ageDate.getUTCFullYear() - 1970);
+};
+
 const patient = ref({
-  firstName: 'Rohan',
-  lastName: 'Chakraborty',
-  age: 34,
-  gender: 'Male',
-  memberSince: 'Aug 2022',
-  contact: { phone: '+91 98765 43210', email: 'rohan.c@example.com' },
-  address: { street: '123, Netaji Subhash Road', city: 'Kanchrapara', state: 'West Bengal', pincode: '743145' },
-  medicalInfo: { bloodGroup: 'O+', allergies: ['Pollen', 'Dust Mites'], chronicConditions: ['Hypertension'] },
-  emergencyContact: { name: 'Anjali Chakraborty', relation: 'Spouse', phone: '+91 98765 43211' },
+  firstName: authStore.user?.firstName || 'Patient',
+  lastName: authStore.user?.lastName || '',
+  age: calculateAge(authStore.user?.dateOfBirth),
+  gender: authStore.user?.gender || 'Not specified',
+  memberSince: '2026',
+  contact: {
+    phone: authStore.user?.primaryMobile || 'Not provided',
+    email: authStore.user?.emailId || authStore.user?.email || 'patient@example.com'
+  },
+  address: { street: '', city: '', state: '', pincode: '' },
+  medicalInfo: { bloodGroup: 'N/A', allergies: [], chronicConditions: [] },
+  emergencyContact: { name: 'Emergency Contact', relation: 'Contact', phone: '' },
+});
+
+onMounted(async () => {
+  const patientId = authStore.user?.userId || authStore.user?.id;
+  if (!patientId) return;
+
+  try {
+    const { apiFetch } = await import('@/services/api');
+    const res = await apiFetch(`/patients/${patientId}`);
+    if (res.data) {
+      const d = res.data;
+      patient.value = {
+        firstName: d.firstName || authStore.user?.firstName || 'Patient',
+        lastName: d.lastName || authStore.user?.lastName || '',
+        age: calculateAge(d.dateOfBirth),
+        gender: d.gender || 'Not specified',
+        memberSince: d.createdAt ? new Date(d.createdAt).getFullYear() : '2026',
+        contact: {
+          phone: d.primaryMobile || '',
+          email: d.emailId || authStore.user?.email || ''
+        },
+        address: {
+          street: d.street || '',
+          city: d.city || '',
+          state: d.state || '',
+          pincode: d.pinCode || ''
+        },
+        medicalInfo: {
+          bloodGroup: d.bloodGroup || 'N/A',
+          allergies: [],
+          chronicConditions: []
+        },
+        emergencyContact: {
+          name: 'Not Provided',
+          relation: '',
+          phone: ''
+        }
+      };
+
+      // Also ensure authStore stays fresh with latest profile info
+      authStore.updateUser({
+        firstName: d.firstName,
+        lastName: d.lastName,
+        emailId: d.emailId,
+        dateOfBirth: d.dateOfBirth,
+        gender: d.gender,
+        primaryMobile: d.primaryMobile,
+      });
+    }
+  } catch (err) {
+    console.warn('Failed to load patient profile from API:', err);
+  }
 });
 
 const editProfile = () => alert('Navigating to the profile edit page...');

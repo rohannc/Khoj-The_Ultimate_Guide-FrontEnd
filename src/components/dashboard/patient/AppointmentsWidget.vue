@@ -3,6 +3,18 @@
     <template #icon>
       <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
     </template>
+
+    <template #headerAction>
+      <router-link
+        to="/dashboard/patient/appointments"
+        class="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-xl border border-indigo-100 transition-all shadow-sm"
+      >
+        <span>Show more</span>
+        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </router-link>
+    </template>
     
     <div class="flex-grow flex flex-col justify-between min-h-0">
       <div class="relative flex-1 min-h-0">
@@ -16,13 +28,27 @@
             <p class="text-xl font-bold text-slate-800 group-hover:text-teal-600 transition-colors">Dr. {{ apt.doctorName }}</p>
             <p class="text-sm font-medium text-slate-500 mb-3">{{ apt.specialty }}</p>
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-              <div class="flex items-center gap-2 text-teal-700 font-semibold text-sm bg-teal-50 px-3 py-1.5 rounded-lg border border-teal-100">
-                <svg class="w-4 h-4 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              <div class="flex items-center gap-1.5 text-slate-700 font-semibold text-xs bg-white px-2.5 py-1.5 rounded-lg border border-slate-200">
+                <svg class="w-3.5 h-3.5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                 {{ apt.date }}
               </div>
-              <div class="flex items-center gap-2 text-teal-700 font-semibold text-sm bg-teal-50 px-3 py-1.5 rounded-lg border border-teal-100">
-                <svg class="w-4 h-4 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                {{ apt.time }}
+              <div class="flex items-center gap-2">
+                <div
+                  class="flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-lg border"
+                  :class="apt.tokenNumber && apt.tokenNumber !== 'Unallocated' ? 'bg-amber-50 text-amber-800 border-amber-200' : 'bg-white text-slate-400 border-slate-200'"
+                >
+                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+                  </svg>
+                  {{ apt.tokenNumber || 'Unallocated' }}
+                </div>
+                <div
+                  class="flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-lg border"
+                  :class="apt.time && apt.time !== 'Unassigned' ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : 'bg-white text-slate-400 border-slate-200'"
+                >
+                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  {{ apt.time || 'Unassigned' }}
+                </div>
               </div>
             </div>
           </div>

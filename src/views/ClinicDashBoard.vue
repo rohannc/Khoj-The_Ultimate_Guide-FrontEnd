@@ -1,4 +1,5 @@
 <template>
+  <LogoutModal :show="showLogoutModal" @confirm="confirmLogout" @cancel="showLogoutModal = false" />
   <div class="min-h-screen bg-indigo-50/50 font-sans">
     <!-- Navbar -->
     <nav class="bg-white border-b border-slate-200/60 shadow-sm sticky top-0 z-40">
@@ -39,7 +40,7 @@
                     <a href="#" class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition-colors">Dashboard</a>
                   </div>
                   <div class="py-1">
-                    <a @click.prevent="logout" href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">Sign out</a>
+                    <a @click.prevent="showLogoutModal = true" href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">Sign out</a>
                   </div>
                 </div>
               </Transition>
@@ -227,6 +228,7 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useRouter } from 'vue-router';
+import LogoutModal from '@/components/LogoutModal.vue';
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -234,12 +236,14 @@ const router = useRouter();
 const isUserDropdownOpen = ref(false);
 const isMobileMenuOpen = ref(false);
 const isAlertVisible = ref(true);
+const showLogoutModal = ref(false);
 const profileDropdownRef = ref(null);
 
 const toggleUserDropdown = () => isUserDropdownOpen.value = !isUserDropdownOpen.value;
 const toggleMobileMenu = () => isMobileMenuOpen.value = !isMobileMenuOpen.value;
 
-const logout = () => {
+const confirmLogout = () => {
+  showLogoutModal.value = false;
   authStore.logout();
   router.push('/login/clinic');
 };

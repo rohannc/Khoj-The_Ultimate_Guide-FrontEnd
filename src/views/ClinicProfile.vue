@@ -1,4 +1,5 @@
 <template>
+  <LogoutModal :show="showLogoutModal" @confirm="confirmLogout" @cancel="showLogoutModal = false" />
   <div class="profile-page-wrapper">
     <nav class="navbar">
       <div class="navbar-container">
@@ -27,7 +28,7 @@
                 <li><a href="/profile" class="dropdown-item">Profile</a></li>
                 <li><a href="/dashboard/clinic" class="dropdown-item">Dashboard</a>
                 </li>
-                <li><a @click.prevent="logout" href="#" class="dropdown-item">Sign out</a></li>
+                <li><a @click.prevent="showLogoutModal = true" href="#" class="dropdown-item">Sign out</a></li>
               </ul>
             </div>
           </div>
@@ -129,16 +130,27 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import { useAuthStore } from '@/stores/auth';
+import { useRouter } from 'vue-router';
+import LogoutModal from '@/components/LogoutModal.vue';
+
+const authStore = useAuthStore();
+const router = useRouter();
 
 // --- Navbar Logic ---
 const isUserDropdownOpen = ref(false);
 const isMobileMenuOpen = ref(false);
 const profileDropdownRef = ref(null);
+const showLogoutModal = ref(false);
 
 const toggleUserDropdown = () => isUserDropdownOpen.value = !isUserDropdownOpen.value;
 const toggleMobileMenu = () => isMobileMenuOpen.value = !isMobileMenuOpen.value;
 
-const logout = () => alert('Signing out...');
+const confirmLogout = () => {
+  showLogoutModal.value = false;
+  authStore.logout();
+  router.push('/login/clinic');
+};
 
 const handleClickOutside = (event) => {
   if (profileDropdownRef.value && !profileDropdownRef.value.contains(event.target)) {

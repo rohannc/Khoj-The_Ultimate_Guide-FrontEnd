@@ -3,6 +3,18 @@
     <template #icon>
       <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
     </template>
+
+    <template #headerAction>
+      <router-link
+        to="/dashboard/patient/prescriptions"
+        class="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-xl border border-indigo-100 transition-all shadow-sm"
+      >
+        <span>Show more</span>
+        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </router-link>
+    </template>
     
     <div class="relative flex-1 min-h-0 mt-2">
       <!-- Top fade -->
@@ -21,12 +33,12 @@
             </div>
             <div>
               <h3 class="font-bold text-slate-800">{{ med.name }}</h3>
-              <p class="text-xs font-medium text-slate-500">{{ med.dosage }} &bull; {{ med.frequency }}</p>
+              <p class="text-xs font-medium text-slate-500">
+                {{ med.dosage }} &bull; {{ med.frequency }}
+                <span v-if="med.durationValue" class="text-slate-400 font-semibold ml-1">({{ formatDuration(med.durationValue, med.durationUnit) }})</span>
+              </p>
             </div>
           </div>
-          <button class="px-3 py-1.5 text-xs font-bold bg-teal-50 hover:bg-teal-100 text-teal-700 rounded-lg transition-colors border border-teal-200">
-            Refill
-          </button>
         </div>
         <div v-if="!prescriptions || prescriptions.length === 0" class="text-center text-slate-400 py-6">
           No active prescriptions.
@@ -45,6 +57,19 @@ defineProps({
     default: () => []
   }
 });
+
+function formatDuration(value, unit) {
+  if (!unit || unit === 'ONGOING') return 'Ongoing';
+  if (!value) return '';
+  const isPlural = Number(value) > 1;
+  const labels = {
+    DAY: isPlural ? 'Days' : 'Day',
+    WEEK: isPlural ? 'Weeks' : 'Week',
+    MONTH: isPlural ? 'Months' : 'Month',
+    YEAR: isPlural ? 'Years' : 'Year'
+  };
+  return `${value} ${labels[unit] || unit}`;
+}
 </script>
 
 <style scoped>

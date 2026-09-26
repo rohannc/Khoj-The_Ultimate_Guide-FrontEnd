@@ -226,13 +226,16 @@ const handleLogin = async () => {
     isLoading.value = false;
     isSuccess.value = true;
     
+    const accessToken = result.accessToken || result.token;
+    const refreshToken = result.refreshToken || null;
+
     const userToStore = {
       username: result.username,
       role: userRole,
       userId: result.userId
     };
 
-    authStore.login(userToStore, result.token);
+    authStore.login(userToStore, accessToken, refreshToken);
 
     setTimeout(() => {
       const dashboardPath = `/dashboard/${userRole}`;

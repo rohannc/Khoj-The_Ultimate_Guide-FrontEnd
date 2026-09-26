@@ -576,13 +576,16 @@ const handleSignup = async () => {
     isLoading.value = false;
     isSuccess.value = true;
 
+    const accessToken = result.accessToken || result.token;
+    const refreshToken = result.refreshToken || null;
+
     const userToStore = {
       username: result.username,
       role: result.userType?.toLowerCase() || 'patient',
       userId: result.userId
     };
 
-    authStore.login(userToStore, result.token);
+    authStore.login(userToStore, accessToken, refreshToken);
 
     setTimeout(() => {
       router.push(`/dashboard/${userToStore.role}`);

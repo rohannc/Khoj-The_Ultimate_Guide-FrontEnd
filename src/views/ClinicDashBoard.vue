@@ -808,6 +808,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { ClinicService } from '@/services/clinic.service';
+import { formatDateDDMMYYYY } from '@/utils/date';
 
 const authStore = useAuthStore();
 
@@ -916,9 +917,7 @@ const isToday = (dateStr) => {
 
 const formattedSelectedDate = computed(() => {
   if (!selectedDate.value) return 'Today';
-  const [year, month, day] = selectedDate.value.split('-');
-  const dateObj = new Date(year, month - 1, day);
-  return dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  return formatDateDDMMYYYY(selectedDate.value);
 });
 
 const changeDate = (days) => {

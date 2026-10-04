@@ -152,6 +152,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { ClinicService } from '@/services/clinic.service';
+import { formatDateDDMMYYYY } from '@/utils/date';
 
 const authStore = useAuthStore();
 
@@ -175,8 +176,7 @@ const statusOptions = [
 const statusFilterLabel = computed(() => statusOptions.find(o => o.value === statusFilter.value)?.label || 'All Status');
 
 const formattedSelectedDate = computed(() => {
-  const d = new Date(selectedDate.value + 'T00:00:00');
-  return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+  return formatDateDDMMYYYY(selectedDate.value);
 });
 
 const isToday = (dateStr) => dateStr === new Date().toISOString().split('T')[0];

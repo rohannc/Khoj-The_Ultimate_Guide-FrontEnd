@@ -107,7 +107,7 @@
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8">
                 <div>
                   <label class="block text-sm font-bold tracking-wide text-slate-500 mb-2 uppercase">Date of Birth</label>
-                  <p class="text-lg font-bold text-slate-900 py-1">{{ formData.dateOfBirth || '-' }}</p>
+                  <p class="text-lg font-bold text-slate-900 py-1">{{ formatDateDDMMYYYY(formData.dateOfBirth) || '-' }}</p>
                 </div>
                 <div>
                   <label class="block text-sm font-bold tracking-wide text-slate-500 mb-2 uppercase">Gender</label>
@@ -508,7 +508,7 @@
                 </div>
                 <div class="sm:col-span-2 md:col-span-1">
                   <label class="block text-sm font-bold text-slate-600 mb-2">Mobile Number</label>
-                  <input type="tel" v-model="formData.primaryMobile" class="w-full bg-white border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 rounded-xl px-4 py-3 text-base font-semibold outline-none transition-all shadow-sm" />
+                  <input type="tel" v-model="formData.primaryMobile" maxlength="10" @input="formData.primaryMobile = formData.primaryMobile.replace(/\D/g, '')" placeholder="10-digit mobile number" class="w-full bg-white border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 rounded-xl px-4 py-3 text-base font-semibold outline-none transition-all shadow-sm" />
                 </div>
               </div>
             </div>
@@ -537,7 +537,7 @@
                   </div>
                   <div>
                     <label class="block text-sm font-bold text-slate-600 mb-2">PIN Code</label>
-                    <input v-model="formData.pinCode" class="w-full bg-white border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 rounded-xl px-4 py-3 text-base font-semibold outline-none transition-all shadow-sm" />
+                    <input v-model="formData.pinCode" maxlength="6" @input="formData.pinCode = formData.pinCode.replace(/\D/g, '')" placeholder="6-digit PIN code" class="w-full bg-white border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 rounded-xl px-4 py-3 text-base font-semibold outline-none transition-all shadow-sm" />
                   </div>
                   <div>
                     <label class="block text-sm font-bold text-slate-600 mb-2">Country</label>
@@ -697,6 +697,7 @@ import { ref, computed, onMounted, onUnmounted, reactive, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import { PatientService } from '@/services/patient.service';
+import { formatDateDDMMYYYY } from '@/utils/date';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -803,8 +804,8 @@ const isNextMonthDisabled = computed(() => {
 });
 
 const formattedSelectedDob = computed(() => {
-  if (!formData.dateOfBirth) return 'YYYY-MM-DD';
-  return formData.dateOfBirth;
+  if (!formData.dateOfBirth) return 'DD/MM/YYYY';
+  return formatDateDDMMYYYY(formData.dateOfBirth);
 });
 
 const dobCalendarDays = computed(() => {
@@ -1078,9 +1079,22 @@ const savePassword = async () => {
 let toastTimeout = null;
 
 const saveProfile = async () => {
-  isSaving.value = true;
   message.text = '';
   if (toastTimeout) clearTimeout(toastTimeout);
+
+  if (formData.primaryMobile && !/^\d{10}$/.test(formData.primaryMobile)) {
+    message.text = 'Mobile number must be exactly 10 digits.';
+    message.type = 'error';
+    return;
+  }
+
+  if (formData.pinCode && !/^\d{6}$/.test(formData.pinCode)) {
+    message.text = 'PIN code must be exactly 6 digits.';
+    message.type = 'error';
+    return;
+  }
+
+  isSaving.value = true;
   
   try {
     const patientId = authStore.user?.userId || authStore.user?.id;

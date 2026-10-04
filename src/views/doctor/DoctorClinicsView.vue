@@ -654,6 +654,7 @@
 import { ref, reactive, computed, onMounted, onUnmounted } from 'vue';
 import { DoctorService } from '@/services/doctor.service';
 import { WEEKDAYS, getDefaultStructuredShifts, serializeDayShift } from '@/utils/affiliationHelper';
+import { formatDateDDMMYYYY } from '@/utils/date';
 
 const searchQuery = ref('');
 const selectedCity = ref('ALL');
@@ -783,11 +784,7 @@ const selectedMonthName = computed(() => months[currentMonth.value]);
 
 const formattedSelectedDate = computed(() => {
   if (!selectedDate.value) return 'Select Date';
-  return selectedDate.value.toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric'
-  });
+  return formatDateDDMMYYYY(selectedDate.value);
 });
 
 const calendarDays = computed(() => {

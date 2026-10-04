@@ -102,7 +102,7 @@
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
                   </div>
-                  <input type="password" v-model="patientData.password" required class="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm" :style="{ '--tw-ring-color': roleColor }" placeholder="Password">
+                  <input type="password" v-model="patientData.password" @input="onPasswordInput" @blur="onPasswordBlur" required class="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm" :style="{ '--tw-ring-color': roleColor }" placeholder="Password">
                 </div>
               </div>
               <div class="space-y-2">
@@ -111,7 +111,7 @@
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
                   </div>
-                  <input :type="isPasswordVisible ? 'text' : 'password'" v-model="patientData.confirmPassword" required class="w-full pl-11 pr-12 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-medium" :style="{ '--tw-ring-color': roleColor }" placeholder="Confirm Password">
+                  <input :type="isPasswordVisible ? 'text' : 'password'" v-model="patientData.confirmPassword" @input="onPasswordInput" @blur="onPasswordBlur" required class="w-full pl-11 pr-12 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-medium" :style="{ '--tw-ring-color': roleColor }" placeholder="Confirm Password">
                   <button type="button" @click="togglePasswordVisibility" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none">
                     <svg v-if="!isPasswordVisible" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                     <svg v-else class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
@@ -153,7 +153,7 @@
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                   </div>
-                  <input type="email" v-model="patientData.email" required class="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm" :style="{ '--tw-ring-color': roleColor }" placeholder="you@example.com">
+                  <input type="email" v-model="patientData.email" @input="onEmailInput" @blur="onEmailBlur" required class="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm" :style="{ '--tw-ring-color': roleColor }" placeholder="you@example.com">
                 </div>
                 <p v-if="emailError" class="text-red-500 text-xs mt-1">{{ emailError }}</p>
               </div>
@@ -293,8 +293,9 @@
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                   </div>
-                  <input type="text" v-model="patientData.pincode" required class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-medium" :style="{ '--tw-ring-color': roleColor }" placeholder="Pincode">
+                  <input type="text" v-model="patientData.pincode" maxlength="6" @input="onPincodeInput" @blur="onPincodeBlur" required class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-medium" :style="{ '--tw-ring-color': roleColor }" placeholder="6-digit PIN code">
                 </div>
+                <p v-if="pincodeError" class="text-red-500 text-xs mt-1">{{ pincodeError }}</p>
               </div>
               <div class="space-y-2">
                 <label class="block text-sm font-bold text-slate-700">Country</label>
@@ -314,8 +315,9 @@
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
                   </div>
-                  <input type="tel" v-model="patientData.primaryPhone" required class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-medium" :style="{ '--tw-ring-color': roleColor }" placeholder="Phone">
+                  <input type="tel" v-model="patientData.primaryPhone" maxlength="10" @input="onPrimaryPhoneInput" @blur="onPrimaryPhoneBlur" required class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-medium" :style="{ '--tw-ring-color': roleColor }" placeholder="10-digit mobile number">
                 </div>
+                <p v-if="phoneError" class="text-red-500 text-xs mt-1">{{ phoneError }}</p>
               </div>
               <div class="space-y-2">
                 <label class="block text-sm font-bold text-slate-700">Secondary Phone</label>
@@ -323,8 +325,9 @@
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
                   </div>
-                  <input type="tel" v-model="patientData.secondaryPhone" class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-medium" :style="{ '--tw-ring-color': roleColor }" placeholder="Optional">
+                  <input type="tel" v-model="patientData.secondaryPhone" maxlength="10" @input="onSecondaryPhoneInput" @blur="onSecondaryPhoneBlur" class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-medium" :style="{ '--tw-ring-color': roleColor }" placeholder="Optional (10 digits)">
                 </div>
+                <p v-if="secondaryPhoneError" class="text-red-500 text-xs mt-1">{{ secondaryPhoneError }}</p>
               </div>
             </div>
           </div>
@@ -355,10 +358,11 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import { AuthService } from '@/services/auth.service';
+import { formatDateDDMMYYYY } from '@/utils/date';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -387,7 +391,7 @@ const patientData = ref({
   city: '',
   state: '',
   pincode: '',
-  country: '',
+  country: 'India',
   primaryPhone: '',
   secondaryPhone: '',
 });
@@ -396,10 +400,142 @@ const patientData = ref({
 const passwordError = ref('');
 const usernameError = ref('');
 const emailError = ref('');
+const pincodeError = ref('');
+const phoneError = ref('');
+const secondaryPhoneError = ref('');
 const isPasswordVisible = ref(false);
 
 const togglePasswordVisibility = () => {
   isPasswordVisible.value = !isPasswordVisible.value;
+};
+
+// --- Timers for 2-second Idle Validation ---
+let emailTimer = null;
+let passwordTimer = null;
+let pincodeTimer = null;
+let phoneTimer = null;
+let secondaryPhoneTimer = null;
+
+const validateEmail = () => {
+  const val = patientData.value.email.trim();
+  if (val && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+    emailError.value = 'Please enter a valid email address.';
+    return false;
+  }
+  emailError.value = '';
+  return true;
+};
+
+const onEmailInput = () => {
+  emailError.value = '';
+  if (emailTimer) clearTimeout(emailTimer);
+  emailTimer = setTimeout(() => {
+    validateEmail();
+  }, 2000);
+};
+
+const onEmailBlur = () => {
+  if (emailTimer) clearTimeout(emailTimer);
+  validateEmail();
+};
+
+const validatePassword = () => {
+  const pwd = patientData.value.password;
+  const cpwd = patientData.value.confirmPassword;
+  if (pwd && pwd.length < 8) {
+    passwordError.value = 'Password must be at least 8 characters long.';
+    return false;
+  } else if (cpwd && pwd !== cpwd) {
+    passwordError.value = 'Passwords do not match.';
+    return false;
+  }
+  passwordError.value = '';
+  return true;
+};
+
+const onPasswordInput = () => {
+  passwordError.value = '';
+  if (passwordTimer) clearTimeout(passwordTimer);
+  passwordTimer = setTimeout(() => {
+    validatePassword();
+  }, 2000);
+};
+
+const onPasswordBlur = () => {
+  if (passwordTimer) clearTimeout(passwordTimer);
+  validatePassword();
+};
+
+const validatePincode = () => {
+  const pin = patientData.value.pincode.trim();
+  if (pin && !/^\d{6}$/.test(pin)) {
+    pincodeError.value = 'PIN code must be exactly 6 numeric digits.';
+    return false;
+  }
+  pincodeError.value = '';
+  return true;
+};
+
+const onPincodeInput = () => {
+  patientData.value.pincode = patientData.value.pincode.replace(/\D/g, '').slice(0, 6);
+  pincodeError.value = '';
+  if (pincodeTimer) clearTimeout(pincodeTimer);
+  pincodeTimer = setTimeout(() => {
+    validatePincode();
+  }, 2000);
+};
+
+const onPincodeBlur = () => {
+  if (pincodeTimer) clearTimeout(pincodeTimer);
+  validatePincode();
+};
+
+const validatePrimaryPhone = () => {
+  const phone = patientData.value.primaryPhone.trim();
+  if (phone && !/^\d{10}$/.test(phone)) {
+    phoneError.value = 'Phone number must be exactly 10 numeric digits.';
+    return false;
+  }
+  phoneError.value = '';
+  return true;
+};
+
+const onPrimaryPhoneInput = () => {
+  patientData.value.primaryPhone = patientData.value.primaryPhone.replace(/\D/g, '').slice(0, 10);
+  phoneError.value = '';
+  if (phoneTimer) clearTimeout(phoneTimer);
+  phoneTimer = setTimeout(() => {
+    validatePrimaryPhone();
+  }, 2000);
+};
+
+const onPrimaryPhoneBlur = () => {
+  if (phoneTimer) clearTimeout(phoneTimer);
+  validatePrimaryPhone();
+};
+
+const validateSecondaryPhone = () => {
+  const phone = patientData.value.secondaryPhone.trim();
+  if (phone && !/^\d{10}$/.test(phone)) {
+    secondaryPhoneError.value = 'Secondary phone must be exactly 10 numeric digits.';
+    return false;
+  }
+  secondaryPhoneError.value = '';
+  return true;
+};
+
+const onSecondaryPhoneInput = () => {
+  patientData.value.secondaryPhone = patientData.value.secondaryPhone.replace(/\D/g, '').slice(0, 10);
+  secondaryPhoneError.value = '';
+  if (secondaryPhoneTimer) clearTimeout(secondaryPhoneTimer);
+  secondaryPhoneTimer = setTimeout(() => {
+    validateSecondaryPhone();
+  }, 2000);
+};
+
+const onSecondaryPhoneBlur = () => {
+  if (secondaryPhoneTimer) clearTimeout(secondaryPhoneTimer);
+  validateSecondaryPhone();
 };
 
 // --- Dropdown and Calendar Logic ---
@@ -436,8 +572,8 @@ const isNextMonthDisabled = computed(() => {
 });
 
 const formattedSelectedDob = computed(() => {
-  if (!selectedDob.value) return 'Select Date of Birth';
-  return selectedDob.value.toLocaleDateString();
+  if (!selectedDob.value) return 'DD/MM/YYYY';
+  return formatDateDDMMYYYY(selectedDob.value);
 });
 
 const dobCalendarDays = computed(() => {
@@ -534,6 +670,11 @@ onMounted(() => {
 
 onUnmounted(() => {
   document.removeEventListener('click', closeDropdownsOnClickOutside);
+  if (emailTimer) clearTimeout(emailTimer);
+  if (passwordTimer) clearTimeout(passwordTimer);
+  if (pincodeTimer) clearTimeout(pincodeTimer);
+  if (phoneTimer) clearTimeout(phoneTimer);
+  if (secondaryPhoneTimer) clearTimeout(secondaryPhoneTimer);
 });
 
 // --- Main Form Submission Logic ---
@@ -541,7 +682,20 @@ const handleSignup = async () => {
   passwordError.value = '';
   usernameError.value = '';
   emailError.value = '';
+  pincodeError.value = '';
+  phoneError.value = '';
+  secondaryPhoneError.value = '';
   signupError.value = '';
+
+  const isEmailValid = validateEmail();
+  const isPwdValid = validatePassword();
+  const isPinValid = validatePincode();
+  const isPhoneValid = validatePrimaryPhone();
+  const isSecPhoneValid = validateSecondaryPhone();
+
+  if (!isEmailValid || !isPwdValid || !isPinValid || !isPhoneValid || !isSecPhoneValid) {
+    return;
+  }
 
   if (patientData.value.password !== patientData.value.confirmPassword) {
     passwordError.value = 'Passwords do not match.';
@@ -567,7 +721,7 @@ const handleSignup = async () => {
     city: patientData.value.city,
     state: patientData.value.state,
     pinCode: patientData.value.pincode,
-    country: patientData.value.country,
+    country: patientData.value.country || 'India',
     phoneNumbers: phoneNumbers,
     bloodGroup: selectedBloodGroup.value === 'Blood Group' ? null : selectedBloodGroup.value,
   };
@@ -609,27 +763,6 @@ const handleSignup = async () => {
     }
   }
 };
-
-watch(
-  [() => patientData.value.password, () => patientData.value.confirmPassword],
-  ([password, confirmPassword]) => {
-    if (password && password.length < 8) {
-      passwordError.value = 'Password must be at least 8 characters long.';
-    } else if (confirmPassword && password !== confirmPassword) {
-      passwordError.value = 'Passwords do not match.';
-    } else {
-      passwordError.value = '';
-    }
-  }
-);
-
-watch(() => patientData.value.email, (newVal) => {
-  if (newVal && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newVal)) {
-    emailError.value = 'Please enter a valid email address.';
-  } else {
-    emailError.value = '';
-  }
-});
 </script>
 
 <style scoped>

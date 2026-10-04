@@ -76,34 +76,15 @@
               class="w-full bg-transparent outline-none border-none focus:ring-0 text-sm text-slate-700 px-2 placeholder-slate-400"
             />
           </div>
-          <!-- City dropdown -->
-          <div class="relative w-36" ref="navbarCityRef">
-            <button
-              type="button"
-              @click="navbarCityOpen = !navbarCityOpen"
-              class="w-full flex items-center gap-1.5 px-3 py-1 text-sm text-slate-500 hover:text-slate-800 transition-colors"
-            >
-              <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-              <span class="truncate">{{ searchLocation || 'City' }}</span>
-              <svg :class="['w-3 h-3 text-slate-400 shrink-0 ml-auto transition-transform', navbarCityOpen ? 'rotate-180' : '']" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-            </button>
-            <div
-              v-if="navbarCityOpen"
-              class="absolute right-0 top-full mt-2 w-44 bg-white border border-slate-100 rounded-xl shadow-xl z-50 overflow-hidden animate-fade-in-up"
-            >
-              <div class="max-h-48 overflow-y-auto p-1.5 space-y-0.5">
-                <div
-                  @click="searchLocation = ''; navbarCityOpen = false; triggerDebouncedSearch();"
-                  :class="['px-3 py-2 rounded-lg cursor-pointer text-sm font-medium transition-colors', searchLocation === '' ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-50']"
-                >All Cities</div>
-                <div
-                  v-for="city in availableLocations"
-                  :key="city"
-                  @click="searchLocation = city; navbarCityOpen = false; triggerDebouncedSearch();"
-                  :class="['px-3 py-2 rounded-lg cursor-pointer text-sm font-medium transition-colors', searchLocation === city ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-50']"
-                >{{ city }}</div>
-              </div>
-            </div>
+          <!-- City text input -->
+          <div class="w-36 flex items-center px-3">
+            <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            <input
+              v-model="searchLocation"
+              type="text"
+              placeholder="City..."
+              class="w-full bg-transparent outline-none border-none focus:ring-0 text-sm text-slate-700 px-2 placeholder-slate-400"
+            />
           </div>
         </template>
 
@@ -850,9 +831,10 @@ onMounted(() => {
   handleWindowScroll();
 });
 
-// Watch searchQuery and searchPincode for live updates
+// Watch all search fields for live updates
 watch(searchQuery, triggerDebouncedSearch);
 watch(searchPincode, triggerDebouncedSearch);
+watch(searchLocation, triggerDebouncedSearch);
 
 onUnmounted(() => {
   document.removeEventListener('click', closeDropdown);

@@ -41,13 +41,11 @@
       <!-- Unified Context-Aware Search Bar -->
       <div class="hidden md:flex flex-1 max-w-2xl mx-6 items-center bg-slate-50/90 rounded-2xl border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] backdrop-blur-md focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all p-1.5 gap-0">
 
-        <!-- DOCTORS MODE: single search field -->
         <template v-if="searchType === 'doctors'">
           <div class="flex-1 flex items-center px-3">
             <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
             <input
               v-model="searchQuery"
-              @keyup.enter="handleSearch"
               type="text"
               placeholder="Search by doctor name..."
               class="w-full bg-transparent outline-none border-none focus:ring-0 text-sm text-slate-700 px-2 placeholder-slate-400"
@@ -55,14 +53,12 @@
           </div>
         </template>
 
-        <!-- CLINICS MODE: name + pincode + location city -->
         <template v-else>
           <!-- Clinic Name -->
           <div class="flex-1 flex items-center px-3 border-r border-slate-200">
             <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
             <input
               v-model="searchQuery"
-              @keyup.enter="handleSearch"
               type="text"
               placeholder="Clinic name..."
               class="w-full bg-transparent outline-none border-none focus:ring-0 text-sm text-slate-700 px-2 placeholder-slate-400"
@@ -73,7 +69,6 @@
             <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path></svg>
             <input
               v-model="searchPincode"
-              @keyup.enter="handleSearch"
               type="text"
               inputmode="numeric"
               maxlength="6"
@@ -98,13 +93,13 @@
             >
               <div class="max-h-48 overflow-y-auto p-1.5 space-y-0.5">
                 <div
-                  @click="searchLocation = ''; navbarCityOpen = false; handleSearch();"
+                  @click="searchLocation = ''; navbarCityOpen = false; triggerDebouncedSearch();"
                   :class="['px-3 py-2 rounded-lg cursor-pointer text-sm font-medium transition-colors', searchLocation === '' ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-50']"
                 >All Cities</div>
                 <div
                   v-for="city in availableLocations"
                   :key="city"
-                  @click="searchLocation = city; navbarCityOpen = false; handleSearch();"
+                  @click="searchLocation = city; navbarCityOpen = false; triggerDebouncedSearch();"
                   :class="['px-3 py-2 rounded-lg cursor-pointer text-sm font-medium transition-colors', searchLocation === city ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-50']"
                 >{{ city }}</div>
               </div>
@@ -835,6 +830,17 @@ const changePage = (page) => {
   }
 };
 
+// Debounced live search — fires 350ms after user stops typing
+let searchDebounceTimer = null;
+const triggerDebouncedSearch = () => {
+  if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+  searchDebounceTimer = setTimeout(() => {
+    currentPage.value = 0;
+    updateUrlParams();
+    fetchResults();
+  }, 350);
+};
+
 // Initial load
 onMounted(() => {
   initFromUrl();
@@ -843,6 +849,10 @@ onMounted(() => {
   window.addEventListener('scroll', handleWindowScroll, { passive: true });
   handleWindowScroll();
 });
+
+// Watch searchQuery and searchPincode for live updates
+watch(searchQuery, triggerDebouncedSearch);
+watch(searchPincode, triggerDebouncedSearch);
 
 onUnmounted(() => {
   document.removeEventListener('click', closeDropdown);

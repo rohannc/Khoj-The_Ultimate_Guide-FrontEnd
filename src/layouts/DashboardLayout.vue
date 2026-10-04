@@ -5,13 +5,22 @@
     <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-indigo-200/20 blur-3xl pointer-events-none"></div>
     <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-teal-200/20 blur-3xl pointer-events-none"></div>
 
-    <!-- Modern Clean Full-Width Sticky Header -->
+    <!-- Frosted Top Blur Curtain (Fixes content bleed above floating island seamlessly) -->
+    <div 
+      v-if="!$route.meta.hideNavbar"
+      class="fixed top-0 left-0 right-0 h-28 pointer-events-none z-40 transition-opacity duration-300 bg-gradient-to-b from-[#f8fafc]/95 via-[#f8fafc]/80 to-transparent backdrop-blur-md [mask-image:linear-gradient(to_bottom,black_60%,transparent_100%)]"
+      :class="isScrolled ? 'opacity-100' : 'opacity-0'"
+    ></div>
+
+    <!-- Floating Island Navbar (Sleek pill design with premium glassmorphism) -->
     <header 
       v-if="!$route.meta.hideNavbar" 
-      class="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-xl border-b border-slate-200/80 transition-all duration-300"
-      :class="isScrolled ? 'shadow-md shadow-slate-900/5 bg-white/95 py-2.5' : 'shadow-sm py-3.5'"
+      class="sticky top-3 sm:top-4 z-50 mx-auto max-w-[1600px] w-[calc(100%-1.5rem)] sm:w-[calc(100%-3rem)] rounded-2xl sm:rounded-3xl transition-all duration-300"
+      :class="isScrolled 
+        ? 'bg-white/95 backdrop-blur-2xl border border-slate-200/90 shadow-xl shadow-indigo-950/10 py-2.5 px-4 sm:px-6 ring-1 ring-slate-900/5' 
+        : 'bg-white/80 backdrop-blur-xl border border-white/90 shadow-lg shadow-indigo-900/5 py-3 px-4 sm:px-6 ring-1 ring-slate-900/[0.03]'"
     >
-      <div class="mx-auto max-w-[1600px] w-full px-4 sm:px-6 flex items-center justify-between">
+      <div class="w-full flex items-center justify-between">
       
       <!-- Logo -->
       <div class="flex items-center gap-3">

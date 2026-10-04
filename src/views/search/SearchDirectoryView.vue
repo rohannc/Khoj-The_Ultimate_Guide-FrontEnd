@@ -1,12 +1,19 @@
 <template>
   <div class="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col">
-    <!-- Modern Clean Full-Width Sticky Header (Adapts dynamically to Logged-in vs Guest) -->
+    <!-- Frosted Top Blur Curtain (Fixes content bleed above floating island seamlessly) -->
+    <div 
+      class="fixed top-0 left-0 right-0 h-28 pointer-events-none z-40 transition-opacity duration-300 bg-gradient-to-b from-slate-50/95 via-slate-50/80 to-transparent backdrop-blur-md [mask-image:linear-gradient(to_bottom,black_60%,transparent_100%)]"
+      :class="isScrolled ? 'opacity-100' : 'opacity-0'"
+    ></div>
+
+    <!-- Floating Island Navbar (Adapts dynamically to Logged-in vs Guest) -->
     <header 
-      class="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-xl border-b border-slate-200/80 transition-all duration-300"
-      :class="isScrolled ? 'shadow-md shadow-slate-900/5 bg-white/95 py-2.5' : 'shadow-sm py-3.5'"
+      class="sticky top-3 sm:top-4 z-50 mx-auto max-w-[1600px] w-[calc(100%-1.5rem)] sm:w-[calc(100%-3rem)] rounded-2xl sm:rounded-3xl transition-all duration-300 px-4 sm:px-6 flex items-center justify-between"
+      :class="isScrolled 
+        ? 'bg-white/95 backdrop-blur-2xl border border-slate-200/90 shadow-xl shadow-slate-900/10 py-2.5 ring-1 ring-slate-900/5' 
+        : 'bg-white/85 backdrop-blur-xl border border-white/90 shadow-lg shadow-slate-900/5 py-3 ring-1 ring-slate-900/[0.03]'"
     >
-      <div class="mx-auto max-w-[1600px] w-full px-4 sm:px-6 flex items-center justify-between">
-        <div class="flex items-center gap-3">
+      <div class="flex items-center gap-3">
         <router-link to="/" class="flex items-center gap-3 group">
           <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-indigo-700 text-white rounded-xl flex items-center justify-center font-black shadow-lg shadow-indigo-300 text-xl transform group-hover:rotate-12 transition-transform cursor-pointer">K</div>
           <div>
@@ -99,7 +106,6 @@
             Join Free
           </router-link>
         </template>
-      </div>
       </div>
     </header>
 
@@ -224,6 +230,23 @@
                 </div>
               </div>
             </div>
+
+            <!-- Location Filter for Doctors -->
+            <div class="relative" ref="dropdownCityRef">
+              <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">City / Location</h4>
+              <div @click="dropdownCity = !dropdownCity" class="w-full bg-white border border-slate-200 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-200 rounded-xl pl-4 pr-10 py-2.5 text-sm font-semibold text-slate-700 transition-all shadow-sm cursor-pointer hover:border-indigo-300 flex items-center justify-between">
+                <span>{{ searchLocation || 'All Locations' }}</span>
+                <svg :class="['w-5 h-5 text-slate-400 transition-transform duration-200 absolute right-3', dropdownCity ? 'rotate-180' : '']" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+              </div>
+              
+              <!-- Dropdown List -->
+              <div v-if="dropdownCity" class="absolute z-50 w-full mt-2 bg-white border border-slate-100 rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] overflow-hidden animate-fade-in-up">
+                <div class="max-h-[188px] overflow-y-auto p-1.5 space-y-1">
+                  <div @click="selectLocation('')" :class="['px-4 py-2.5 rounded-lg cursor-pointer font-semibold text-sm transition-colors', searchLocation === '' ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900']">All Locations</div>
+                  <div v-for="city in availableLocations" :key="city" @click="selectLocation(city)" :class="['px-4 py-2.5 rounded-lg cursor-pointer font-semibold text-sm transition-colors', searchLocation === city ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900']">{{ city }}</div>
+                </div>
+              </div>
+            </div>
             
             <div>
               <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Gender</h4>
@@ -244,6 +267,43 @@
                   <input type="radio" v-model="filterGender" value="OTHER" class="text-blue-600 focus:ring-blue-500" />
                   <span class="text-sm text-slate-700">Other</span>
                 </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Clinic Filters (Location / City) -->
+          <div v-else class="space-y-6">
+            <div class="relative" ref="dropdownCityRef">
+              <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Clinic Location / City</h4>
+              <div @click="dropdownCity = !dropdownCity" class="w-full bg-white border border-slate-200 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-200 rounded-xl pl-4 pr-10 py-2.5 text-sm font-semibold text-slate-700 transition-all shadow-sm cursor-pointer hover:border-indigo-300 flex items-center justify-between">
+                <span>{{ searchLocation || 'All Locations' }}</span>
+                <svg :class="['w-5 h-5 text-slate-400 transition-transform duration-200 absolute right-3', dropdownCity ? 'rotate-180' : '']" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+              </div>
+              
+              <!-- Dropdown List -->
+              <div v-if="dropdownCity" class="absolute z-50 w-full mt-2 bg-white border border-slate-100 rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] overflow-hidden animate-fade-in-up">
+                <div class="max-h-[220px] overflow-y-auto p-1.5 space-y-1">
+                  <div @click="selectLocation('')" :class="['px-4 py-2.5 rounded-lg cursor-pointer font-semibold text-sm transition-colors', searchLocation === '' ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900']">All Locations</div>
+                  <div v-for="city in availableLocations" :key="city" @click="selectLocation(city)" :class="['px-4 py-2.5 rounded-lg cursor-pointer font-semibold text-sm transition-colors', searchLocation === city ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900']">
+                    {{ city }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Popular Cities tags -->
+            <div>
+              <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5">Popular Cities</h4>
+              <div class="flex flex-wrap gap-1.5">
+                <button
+                  v-for="city in ['Mumbai', 'Bengaluru', 'New Delhi', 'Hyderabad']"
+                  :key="city"
+                  @click="selectLocation(searchLocation === city ? '' : city); applyFilters();"
+                  class="px-2.5 py-1 rounded-lg text-xs font-semibold transition-all"
+                  :class="searchLocation === city ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-200' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'"
+                >
+                  {{ city }}
+                </button>
               </div>
             </div>
           </div>
@@ -488,6 +548,21 @@ const filterGender = ref('');
 
 const dropdownSpecialization = ref(false);
 const dropdownRef = ref(null);
+const dropdownCity = ref(false);
+const dropdownCityRef = ref(null);
+
+const availableLocations = [
+  'Bengaluru',
+  'Chennai',
+  'Gurugram',
+  'Hyderabad',
+  'Kochi',
+  'Kolkata',
+  'Mumbai',
+  'New Delhi',
+  'Pune'
+];
+
 const specialties = [
   'Cardiologist',
   'Dentist',
@@ -503,9 +578,17 @@ const selectSpecialization = (spec) => {
   dropdownSpecialization.value = false;
 };
 
+const selectLocation = (city) => {
+  searchLocation.value = city;
+  dropdownCity.value = false;
+};
+
 const closeDropdown = (e) => {
   if (dropdownRef.value && !dropdownRef.value.contains(e.target)) {
     dropdownSpecialization.value = false;
+  }
+  if (dropdownCityRef.value && !dropdownCityRef.value.contains(e.target)) {
+    dropdownCity.value = false;
   }
 };
 

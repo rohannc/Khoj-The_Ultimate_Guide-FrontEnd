@@ -33,3 +33,52 @@ html {
   scrollbar-width: thin;
   scrollbar-color: #cbd5e1 transparent;
 }
+
+/* 
+  Global Interactive Cursor Rules:
+  Ensure all clickable, tappable, and hover-reactive elements have cursor: pointer by default.
+*/
+button,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+input[type="checkbox"],
+input[type="radio"],
+select,
+summary,
+a {
+  cursor: pointer;
+}
+
+/* Ensure disabled elements show not-allowed rather than pointer */
+button:disabled,
+input:disabled,
+select:disabled,
+[aria-disabled="true"],
+.disabled {
+  cursor: not-allowed !important;
+}
+
+/* 
+  Catch-all for Tailwind hover classes:
+  Any element that declares a hover state automatically receives cursor: pointer
+*/
+[class*="hover:"]:not(input:not([type="button"]):not([type="submit"]):not([type="reset"])):not(textarea):not(button:disabled):not(:disabled) {
+  cursor: pointer;
+}
+
+[class*="group-hover:"]:not(input:not([type="button"]):not([type="submit"]):not([type="reset"])):not(textarea):not(button:disabled):not(:disabled) {
+  cursor: pointer;
+}
+
+/* 
+  Enforce static position on hover:
+  Hover effects should only modify shadows and colors, never shift element positions.
+*/
+[class*="hover:-translate"],
+[class*="hover:translate"],
+[class*="group-hover:-translate"],
+[class*="group-hover:translate"] {
+  transform: none !important;
+}

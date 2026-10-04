@@ -6,11 +6,11 @@
     
     <div v-if="vitals && vitals.length > 0" class="grid grid-cols-2 md:grid-cols-3 gap-4">
       <div v-for="(vital, index) in vitals" :key="index" 
-        class="bg-slate-50 border border-slate-100 rounded-xl p-4 hover:bg-slate-100 transition-colors flex flex-col items-center text-center">
+        class="bg-white border border-slate-100 rounded-[1.5rem] p-5 shadow-[0_2px_10px_rgb(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:-translate-y-0.5 hover:border-indigo-100 transition-all duration-300 flex flex-col items-center text-center">
         
         <!-- Icon on top -->
-        <div class="w-10 h-10 rounded-full flex items-center justify-center mb-3" :class="getIconBgClass(vital.type)">
-          <component :is="getIcon(vital.type)" class="w-5 h-5" :class="getIconColorClass(vital.type)" />
+        <div class="w-12 h-12 rounded-[1rem] flex items-center justify-center mb-4 shadow-sm" :class="getIconBgClass(vital.type)">
+          <component :is="getIcon(vital.type)" class="w-6 h-6" :class="getIconColorClass(vital.type)" />
         </div>
 
         <!-- Label -->

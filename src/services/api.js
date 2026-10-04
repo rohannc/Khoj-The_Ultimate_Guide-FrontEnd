@@ -4,10 +4,44 @@ const api = axios.create({
   baseURL: 'http://localhost:8080/api',
 });
 
-// 1. Request interceptor: Attach access token
-api.interceptors.request.use((config) => {
-  const accessToken = localStorage.getItem('accessToken') || localStorage.getItem('authToken');
-  if (accessToken && !config.headers['Authorization']) {
+// 1. Request interceptor: Attach access token & proactive expiry refresh
+api.interceptors.request.use(async (config) => {
+  let accessToken = localStorage.getItem('accessToken') || localStorage.getItem('authToken');
+  const refreshToken = localStorage.getItem('refreshToken');
+  const url = config.url || '';
+  const isAuthEndpoint = url.includes('/auth/login') || url.includes('/auth/register') || url.includes('/auth/refresh');
+
+  // If token is expired and we have a refreshToken, proactively refresh before sending
+  if (!isAuthEndpoint && refreshToken) {
+    const { isTokenExpired } = await import('@/utils/jwt');
+    if (!accessToken || isTokenExpired(accessToken)) {
+      try {
+        const refreshRes = await axios.post('http://localhost:8080/api/auth/refresh', { refreshToken });
+        const { accessToken: newAccessToken, refreshToken: newRefreshToken } = refreshRes.data;
+        if (newAccessToken) {
+          accessToken = newAccessToken;
+          localStorage.setItem('accessToken', newAccessToken);
+          localStorage.setItem('authToken', newAccessToken);
+          if (newRefreshToken) {
+            localStorage.setItem('refreshToken', newRefreshToken);
+          }
+          try {
+            const { useAuthStore } = await import('@/stores/auth');
+            const authStore = useAuthStore();
+            authStore.token = newAccessToken;
+          } catch { /* ignore */ }
+        }
+      } catch (err) {
+        console.warn('Proactive token refresh attempt failed:', err);
+        // If refresh token was rejected (e.g. 401/400) or failed, force clean logout to login page
+        handleClientLogout();
+        return Promise.reject(err);
+      }
+    }
+  }
+
+  if (accessToken) {
+    config.headers = config.headers || {};
     config.headers['Authorization'] = `Bearer ${accessToken}`;
   }
   return config;
@@ -33,7 +67,10 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     // If 401 and not already retried
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    const url = originalRequest.url || '';
+    const isAuthEndpoint = url.includes('/auth/login') || url.includes('/auth/register');
+
+    if (error.response?.status === 401 && !originalRequest._retry && !isAuthEndpoint) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
@@ -65,6 +102,13 @@ api.interceptors.response.use(
         if (newRefreshToken) {
           localStorage.setItem('refreshToken', newRefreshToken);
         }
+        
+        try {
+          const { useAuthStore } = await import('@/stores/auth');
+          const authStore = useAuthStore();
+          authStore.token = newAccessToken;
+        } catch { /* ignore */ }
+
         api.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
         originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
         processQueue(null, newAccessToken);
@@ -82,9 +126,38 @@ api.interceptors.response.use(
 );
 
 export function handleClientLogout() {
-  const role = localStorage.getItem('userType')?.toLowerCase() || 'patient';
+  let role = 'patient';
+  try {
+    const authUser = localStorage.getItem('authUser');
+    if (authUser) {
+      const parsed = JSON.parse(authUser);
+      if (parsed?.role) {
+        role = parsed.role.toLowerCase();
+      }
+    }
+  } catch { /* ignore parse error */ }
+
+  if (!role || role === 'patient') {
+    const userType = localStorage.getItem('userType')?.toLowerCase();
+    if (userType) {
+      role = userType;
+    } else if (window.location.pathname.includes('/doctor')) {
+      role = 'doctor';
+    } else if (window.location.pathname.includes('/clinic')) {
+      role = 'clinic';
+    }
+  }
+
+  // Clear storage and cookies
   localStorage.clear();
   sessionStorage.clear();
+  document.cookie.split(';').forEach((cookie) => {
+    const eqPos = cookie.indexOf('=');
+    const name = eqPos > -1 ? cookie.substring(0, eqPos).trim() : cookie.trim();
+    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+  });
+
+  // Navigate to corresponding login page
   window.location.href = `/login/${role}`;
 }
 

@@ -23,9 +23,9 @@
       <div class="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-white to-transparent z-10 pointer-events-none rounded-b-xl"></div>
       
       <div class="space-y-3 h-full overflow-y-auto pr-2 scroll-accent rounded-xl p-3 pt-4 pb-5">
-        <div v-for="(med, index) in prescriptions" :key="index" class="flex items-center justify-between bg-slate-50 p-4 rounded-xl border border-slate-100 shadow-sm hover:shadow-md hover:bg-slate-100 transition-all">
+        <div v-for="(med, index) in prescriptions" :key="index" class="flex items-center justify-between bg-white p-5 rounded-2xl border border-slate-100 shadow-[0_2px_10px_rgb(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:border-indigo-100 transition-all">
           <div class="flex items-center gap-4">
-            <div class="w-10 h-10 rounded-full bg-teal-50 flex items-center justify-center text-teal-600 border border-teal-100">
+            <div class="w-12 h-12 rounded-[1rem] bg-indigo-50 flex items-center justify-center text-indigo-600 border border-indigo-100/50 shadow-sm">
               <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 8.25l-7.5 7.5a4.596 4.596 0 01-6.5-6.5l7.5-7.5a4.596 4.596 0 016.5 6.5z" />
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 9.75l4.5 4.5" />

@@ -1,5 +1,24 @@
 <template>
   <div class="auth-page-container">
+    <!-- Global Toast Notification -->
+    <Transition name="toast-fade">
+      <div v-if="toastMessage.text" :class="[
+        'fixed top-6 right-6 z-[100] px-6 py-4 rounded-xl shadow-2xl flex items-center gap-4 max-w-sm border backdrop-blur-md',
+        toastMessage.type === 'error' ? 'bg-red-50/90 border-red-200 text-red-800' : 'bg-emerald-50/90 border-emerald-200 text-emerald-800'
+      ]">
+        <svg v-if="toastMessage.type === 'error'" class="w-6 h-6 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <svg v-else class="w-6 h-6 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <p class="font-semibold text-sm leading-snug">{{ toastMessage.text }}</p>
+        <button @click="toastMessage.text = ''" class="ml-auto text-slate-400 hover:text-slate-600 transition-colors">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+    </Transition>
+
     <div class="wrapper">
       <div class="role-icon" v-html="roleIcon"></div>
 
@@ -586,12 +605,24 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, nextTick, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { ref, computed, watch, nextTick, onMounted, reactive } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();
+const router = useRouter();
 const signupFormRef = ref(null);
 const formHeight = ref(0);
+
+const toastMessage = reactive({ text: '', type: '' });
+let toastTimeout = null;
+const showToast = (text, type = 'error') => {
+  toastMessage.text = text;
+  toastMessage.type = type;
+  if (toastTimeout) clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => {
+    toastMessage.text = '';
+  }, 5000);
+};
 
 // --- Role-based Form Data (Aligned with form fields) ---
 const doctorData = ref({
@@ -879,7 +910,7 @@ const handleSignup = async () => {
 
   if (role === 'doctor') {
     if (doctorData.value.password !== doctorData.value.confirmPassword) {
-      alert("Passwords do not match.");
+      showToast("Passwords do not match.");
       return;
     }
 
@@ -904,7 +935,7 @@ const handleSignup = async () => {
 
   } else if (role === 'patient') {
     if (patientData.value.password !== patientData.value.confirmPassword) {
-      alert("Passwords do not match.");
+      showToast("Passwords do not match.");
       return;
     }
 
@@ -932,7 +963,7 @@ const handleSignup = async () => {
 
   } else if (role === 'clinic') {
     if (clinicData.value.password !== clinicData.value.confirmPassword) {
-      alert("Passwords do not match.");
+      showToast("Passwords do not match.");
       return;
     }
 
@@ -968,7 +999,7 @@ const handleSignup = async () => {
     endpoint = `http://localhost:8080/api/auth/register/clinic`;
 
   } else {
-    alert('Invalid role for signup.');
+    showToast('Invalid role for signup.');
     return;
   }
 
@@ -983,15 +1014,36 @@ const handleSignup = async () => {
     });
 
     if (response.ok) {
-      const result = await response.json();
-      alert(`Signup successful for ${role}! \nResponse: ${JSON.stringify(result)}`);
+      showToast(`Signup successful for ${role}! You can now login.`, 'success');
+      setTimeout(() => {
+        router.push(loginLink.value);
+      }, 1500);
     } else {
-      const errorData = await response.json();
-      alert(`Signup failed: ${errorData.message || response.statusText}`);
+      const errorText = await response.text();
+      let errorMessage = response.statusText;
+      try {
+        const errorData = JSON.parse(errorText);
+        errorMessage = errorData.message || errorMessage;
+        if (errorData.details) {
+           if (typeof errorData.details === 'string') {
+               errorMessage += ' - ' + errorData.details;
+           } else if (Array.isArray(errorData.details)) {
+               errorMessage += ' - ' + errorData.details.join(', ');
+           } else if (typeof errorData.details === 'object') {
+               errorMessage += ' - ' + Object.values(errorData.details).join(', ');
+           }
+        }
+      } catch (e) {
+        // Not JSON, just use the raw text if available
+        if (errorText) {
+          errorMessage = errorText;
+        }
+      }
+      showToast(errorMessage);
     }
   } catch (error) {
     console.error('An error occurred during signup:', error);
-    alert('An error occurred. Please check the console and try again.');
+    showToast('An error occurred. Please check your connection and try again.');
   }
 };
 
@@ -1552,5 +1604,16 @@ form .btn input[type='submit'] {
   margin-left: 8px;
   cursor: pointer;
   font-weight: bold;
+}
+
+/* Toast Transitions */
+.toast-fade-enter-active,
+.toast-fade-leave-active {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.toast-fade-enter-from,
+.toast-fade-leave-to {
+  opacity: 0;
+  transform: translateX(40px) scale(0.95);
 }
 </style>

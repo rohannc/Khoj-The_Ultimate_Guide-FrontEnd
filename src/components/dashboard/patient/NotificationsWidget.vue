@@ -14,8 +14,8 @@
         <div
           v-for="notification in notifications"
           :key="notification.id"
-          class="flex items-start justify-between gap-3 p-3.5 rounded-xl border transition-all relative overflow-hidden group"
-          :class="notification.isRead ? 'bg-slate-50/70 border-slate-100 opacity-75' : 'bg-white border-indigo-100 shadow-xs hover:border-indigo-200'"
+          class="flex items-start justify-between gap-3 p-4 rounded-2xl border transition-all relative overflow-hidden group"
+          :class="notification.isRead ? 'bg-slate-50/70 border-slate-100 opacity-75' : 'bg-white border-indigo-50 shadow-[0_2px_10px_rgb(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:border-indigo-100'"
         >
           <!-- Colored edge indicator based on read status -->
           <div

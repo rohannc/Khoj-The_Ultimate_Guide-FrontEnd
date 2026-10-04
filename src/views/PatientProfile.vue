@@ -117,8 +117,7 @@
                 <h3>Address</h3>
                 <div class="detail-item">
                   <label>Street Address</label>
-                  <span>{{ patient.address.street }}, {{ patient.address.city }}, {{ patient.address.state }} - {{
-                    patient.address.pincode }}</span>
+                  <span>{{ formatAddress(patient.address) }}</span>
                 </div>
               </div>
 
@@ -165,6 +164,7 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useRouter } from 'vue-router';
 import LogoutModal from '@/components/LogoutModal.vue';
+import { formatAddress } from '@/utils/address';
 
 const authStore = useAuthStore();
 const router = useRouter();

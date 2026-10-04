@@ -1,7 +1,23 @@
 <template>
-  <div class="min-h-screen w-full flex bg-white font-jakarta">
-    
-
+  <div class="min-h-screen w-full flex bg-white font-jakarta relative overflow-hidden">
+    <!-- Global Toast Notification -->
+    <Transition name="toast-fade">
+      <div v-if="toastMessage.text" :class="[
+        'fixed top-6 right-6 z-[100] px-6 py-4 rounded-xl shadow-2xl flex items-center gap-4 max-w-sm border backdrop-blur-md',
+        toastMessage.type === 'error' ? 'bg-red-50/90 border-red-200 text-red-800' : 'bg-emerald-50/90 border-emerald-200 text-emerald-800'
+      ]">
+        <svg v-if="toastMessage.type === 'error'" class="w-6 h-6 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <svg v-else class="w-6 h-6 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <p class="font-semibold text-sm leading-snug">{{ toastMessage.text }}</p>
+        <button @click="toastMessage.text = ''" class="ml-auto text-slate-400 hover:text-slate-600 transition-colors">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+    </Transition>
 
     <!-- Left Panel: Presentation (Hidden on mobile, 50% width on desktop) -->
     <div class="hidden lg:flex flex-col justify-between w-1/2 p-12 lg:p-20 relative overflow-hidden" :style="{ backgroundColor: roleShadow }">
@@ -65,19 +81,7 @@
           <p class="text-slate-500 font-medium mt-1">Please enter your details to continue.</p>
         </div>
 
-        <Transition name="alert-fade">
-          <div v-if="loginError" class="flex items-center p-4 mb-6 text-sm text-red-800 border border-red-200 rounded-2xl bg-red-50">
-            <svg class="flex-shrink-0 inline w-5 h-5 mr-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-            </svg>
-            <span class="font-medium">{{ loginError }}</span>
-            <button @click="loginError = ''" class="ml-auto -mx-1.5 -my-1.5 bg-red-50 text-red-500 rounded-lg focus:ring-2 focus:ring-red-400 p-1.5 hover:bg-red-200 inline-flex items-center justify-center h-8 w-8">
-              <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-              </svg>
-            </button>
-          </div>
-        </Transition>
+
 
         <form @submit.prevent="handleLogin" class="space-y-5">
           <!-- Username -->
@@ -146,8 +150,17 @@ const authStore = useAuthStore();
 
 const isLoading = ref(false);
 const isSuccess = ref(false);
-const loginError = ref('');
 const isPasswordVisible = ref(false);
+
+const toastMessage = ref({ text: '', type: '' });
+let toastTimeout = null;
+const showToast = (text, type = 'error') => {
+  toastMessage.value = { text, type };
+  if (toastTimeout) clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => {
+    toastMessage.value.text = '';
+  }, 5000);
+};
 
 const togglePasswordVisibility = () => {
   isPasswordVisible.value = !isPasswordVisible.value;
@@ -202,7 +215,6 @@ const roleIcon = computed(() => {
 });
 
 const handleLogin = async () => {
-  loginError.value = '';
   isLoading.value = true;
   isSuccess.value = false;
 
@@ -245,7 +257,29 @@ const handleLogin = async () => {
   } catch (error) {
     isLoading.value = false;
     isSuccess.value = false;
-    loginError.value = error.message || "An error occurred during login.";
+    
+    let errorMsg = "An error occurred during login.";
+    if (error.response && error.response.data) {
+      const data = error.response.data;
+      if (typeof data === 'string') {
+        errorMsg = data;
+      } else {
+        errorMsg = data.message || errorMsg;
+        if (data.details) {
+          if (typeof data.details === 'string') {
+            errorMsg += ' - ' + data.details;
+          } else if (Array.isArray(data.details)) {
+            errorMsg += ' - ' + data.details.join(', ');
+          } else if (typeof data.details === 'object') {
+            errorMsg += ' - ' + Object.values(data.details).join(', ');
+          }
+        }
+      }
+    } else if (error.message) {
+      errorMsg = error.message;
+    }
+    
+    showToast(errorMsg);
   }
 };
 </script>
@@ -257,14 +291,14 @@ const handleLogin = async () => {
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
-.alert-fade-enter-active,
-.alert-fade-leave-active {
-  transition: opacity 0.3s ease, transform 0.3s ease;
+/* Toast Transitions */
+.toast-fade-enter-active,
+.toast-fade-leave-active {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
-.alert-fade-enter-from,
-.alert-fade-leave-to {
+.toast-fade-enter-from,
+.toast-fade-leave-to {
   opacity: 0;
-  transform: translateY(-10px);
+  transform: translateX(40px) scale(0.95);
 }
 </style>

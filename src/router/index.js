@@ -16,7 +16,6 @@ import ClinicSignUpView from '@/views/ClinicSignUpView.vue';
 import PatientDashboard from '@/views/PatientDashboard.vue';
 import DoctorDashBoard from '@/views/DoctorDashBoard.vue';
 import ClinicDashBoard from '@/views/ClinicDashBoard.vue';
-import ProfileView from '@/views/ProfileView.vue';
 import PatientAppointmentsView from '@/views/patient/PatientAppointmentsView.vue';
 import PatientHealthRecordsView from '@/views/patient/PatientHealthRecordsView.vue';
 import PatientPrescriptionsView from '@/views/patient/PatientPrescriptionsView.vue';
@@ -31,6 +30,11 @@ const routes = [
         path: '',
         name: 'Landing Page',
         component: LandingPageView,
+      },
+      {
+        path: 'search',
+        name: 'Search Directory',
+        component: () => import('@/views/search/SearchDirectoryView.vue'),
       }
     ]
   },
@@ -99,7 +103,7 @@ const routes = [
         path: 'patient/notifications',
         name: 'PatientNotifications',
         component: PatientNotificationsView,
-        meta: { role: 'patient' },
+        meta: { role: 'patient', hideNavbar: true },
       },
       {
         path: 'patient/prescriptions',
@@ -114,15 +118,100 @@ const routes = [
         meta: { role: 'doctor' },
       },
       {
+        path: 'doctor/appointments',
+        name: 'DoctorAppointments',
+        component: () => import('@/views/doctor/DoctorAppointmentsView.vue'),
+        meta: { role: 'doctor' },
+      },
+      {
+        path: 'doctor/patients',
+        name: 'DoctorPatients',
+        component: () => import('@/views/doctor/DoctorPatientsView.vue'),
+        meta: { role: 'doctor' },
+      },
+      {
+        path: 'doctor/prescriptions',
+        name: 'DoctorPrescriptions',
+        component: () => import('@/views/doctor/DoctorPrescriptionsView.vue'),
+        meta: { role: 'doctor', simpleNavbar: true },
+      },
+      {
+        path: 'doctor/affiliations',
+        name: 'DoctorAffiliations',
+        component: () => import('@/views/doctor/DoctorAffiliationsView.vue'),
+        meta: { role: 'doctor' },
+      },
+      {
+        path: 'doctor/schedule',
+        name: 'DoctorSchedule',
+        component: () => import('@/views/doctor/DoctorScheduleView.vue'),
+        meta: { role: 'doctor', simpleNavbar: true },
+      },
+      {
+        path: 'doctor/earnings',
+        name: 'DoctorEarnings',
+        component: () => import('@/views/doctor/DoctorEarningsView.vue'),
+        meta: { role: 'doctor' },
+      },
+      {
+        path: 'doctor/profile',
+        name: 'DoctorProfile',
+        component: () => import('@/views/doctor/DoctorProfileView.vue'),
+        meta: { role: 'doctor', hideNavbar: true },
+      },
+      {
+        path: 'doctor/notifications',
+        name: 'DoctorNotifications',
+        component: () => import('@/views/doctor/DoctorNotificationsView.vue'),
+        meta: { role: 'doctor', hideNavbar: true },
+      },
+      {
+        path: 'doctor/clinics',
+        name: 'DoctorClinics',
+        component: () => import('@/views/doctor/DoctorClinicsView.vue'),
+        meta: { role: 'doctor' },
+      },
+      {
         path: 'clinic',
         name: 'ClinicDashboard',
         component: ClinicDashBoard,
         meta: { role: 'clinic' },
       },
       {
-        path: 'profile',
-        name: 'Profile',
-        component: ProfileView,
+        path: 'clinic/doctors',
+        name: 'ClinicDoctors',
+        component: () => import('@/views/clinic/ClinicDoctorsView.vue'),
+        meta: { role: 'clinic' },
+      },
+      {
+        path: 'clinic/consultations',
+        name: 'ClinicConsultations',
+        component: () => import('@/views/clinic/ClinicConsultationsView.vue'),
+        meta: { role: 'clinic' },
+      },
+      {
+        path: 'clinic/appointments',
+        name: 'ClinicAppointments',
+        component: () => import('@/views/clinic/ClinicAppointmentsView.vue'),
+        meta: { role: 'clinic' },
+      },
+      {
+        path: 'clinic/profile',
+        name: 'ClinicProfile',
+        component: () => import('@/views/clinic/ClinicProfileView.vue'),
+        meta: { role: 'clinic', hideNavbar: true },
+      },
+      {
+        path: 'patient/profile',
+        name: 'PatientProfile',
+        component: () => import('@/views/patient/PatientProfileView.vue'),
+        meta: { role: 'patient', hideNavbar: true },
+      },
+      {
+        path: 'patient/book-appointment',
+        name: 'BookAppointment',
+        component: () => import('@/views/patient/BookAppointmentView.vue'),
+        meta: { role: 'patient' },
       }
     ]
   }
@@ -154,12 +243,27 @@ router.beforeEach((to, from, next) => {
 
   if (requiresAuth && !authStore.isLoggedIn) {
     // Case 1: User is not logged in but tries to access a protected page.
-    next({ name: 'Login', params: { role: 'patient' } });
+    let targetRole = requiredRole || authStore.userRole;
+    if (!targetRole) {
+      const storedUser = localStorage.getItem('authUser');
+      if (storedUser) {
+        try { targetRole = JSON.parse(storedUser)?.role; } catch { /* ignore */ }
+      }
+      if (!targetRole) {
+        targetRole = localStorage.getItem('userType')?.toLowerCase();
+      }
+    }
+    if (!targetRole) {
+      if (to.path.includes('/doctor')) targetRole = 'doctor';
+      else if (to.path.includes('/clinic')) targetRole = 'clinic';
+      else targetRole = 'patient';
+    }
+    next({ name: 'Login', params: { role: targetRole } });
   } else if (isGuest && authStore.isLoggedIn) {
     // Case 2: User is already logged in but tries to access a guest page.
     next(`/dashboard/${authStore.userRole}`);
   } else if (requiresAuth && authStore.isLoggedIn && requiredRole && requiredRole !== authStore.userRole) {
-    // Case 3: User is logged in but tries to access a page of another role. (FIX APPLIED HERE)
+    // Case 3: User is logged in but tries to access a page of another role.
     next(`/dashboard/${authStore.userRole}`);
   }
   else {

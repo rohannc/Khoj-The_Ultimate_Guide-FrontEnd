@@ -24,8 +24,8 @@
         <div class="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-white to-transparent z-10 pointer-events-none rounded-b-xl"></div>
         
         <div v-if="appointments && appointments.length > 0" class="space-y-4 h-full overflow-y-auto pr-2 scroll-accent rounded-xl p-3 pt-4 pb-5">
-          <div v-for="(apt, index) in appointments.slice(0, 3)" :key="apt.id || index" class="bg-slate-50 rounded-xl p-4 border border-slate-100 shadow-sm hover:shadow-md hover:bg-slate-100 transition-all cursor-pointer group">
-            <p class="text-xl font-bold text-slate-800 group-hover:text-teal-600 transition-colors">Dr. {{ apt.doctorName }}</p>
+          <div v-for="(apt, index) in appointments.slice(0, 3)" :key="apt.id || index" class="bg-white rounded-2xl p-4 border border-slate-100 shadow-[0_2px_10px_rgb(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:border-indigo-100 transition-all cursor-pointer group">
+            <p class="text-xl font-bold text-slate-800 group-hover:text-indigo-600 transition-colors">Dr. {{ apt.doctorName }}</p>
             <p class="text-sm font-medium text-slate-500 mb-3">{{ apt.specialty }}</p>
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div class="flex items-center gap-1.5 text-slate-700 font-semibold text-xs bg-white px-2.5 py-1.5 rounded-lg border border-slate-200">

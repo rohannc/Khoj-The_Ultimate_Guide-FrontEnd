@@ -11,13 +11,13 @@
       <div class="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-white to-transparent z-10 pointer-events-none rounded-b-xl"></div>
       
       <div class="space-y-3 h-full overflow-y-auto pr-2 scroll-accent rounded-xl p-3 pt-4 pb-5">
-        <div v-for="(action, index) in actions" :key="index" class="flex items-start gap-4 p-4 rounded-xl bg-orange-50/50 border border-orange-100 hover:bg-orange-50 transition-all shadow-sm">
+        <div v-for="(action, index) in actions" :key="index" class="flex items-start gap-4 p-5 rounded-2xl bg-white border border-orange-100 hover:border-orange-200 shadow-[0_2px_10px_rgb(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-all">
           <div class="mt-1">
             <input type="checkbox" class="w-5 h-5 rounded border-orange-200 bg-white text-orange-500 focus:ring-orange-500/50 cursor-pointer" />
           </div>
           <div>
-            <h4 class="font-bold text-orange-900">{{ action.title }}</h4>
-            <p class="text-sm text-orange-800/80 mt-1 font-medium">{{ action.description }}</p>
+            <h4 class="font-bold text-slate-800">{{ action.title }}</h4>
+            <p class="text-sm text-slate-500 mt-1 font-medium">{{ action.description }}</p>
             <button class="mt-3 text-xs font-bold text-orange-600 hover:text-orange-700 transition-colors uppercase tracking-wider">
               {{ action.cta }} &rarr;
             </button>

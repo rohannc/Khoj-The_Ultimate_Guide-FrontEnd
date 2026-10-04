@@ -26,9 +26,9 @@
         <div class="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-white to-transparent z-10 pointer-events-none rounded-b-xl"></div>
         
         <div v-if="records && records.length > 0" class="space-y-4 h-full overflow-y-auto pr-2 scroll-accent rounded-xl p-3 pt-4 pb-5">
-          <div v-for="(rec, index) in records.slice(0, 3)" :key="rec.id || index" class="bg-slate-50 rounded-xl p-4 border border-slate-100 shadow-sm hover:shadow-md hover:bg-slate-100 transition-all cursor-pointer group flex items-center justify-between">
+          <div v-for="(rec, index) in records.slice(0, 3)" :key="rec.id || index" class="bg-white rounded-2xl p-4 border border-slate-100 shadow-[0_2px_10px_rgb(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:border-indigo-100 transition-all cursor-pointer group flex items-center justify-between">
             <div>
-              <p class="text-base font-bold text-slate-800 group-hover:text-teal-600 transition-colors">{{ rec.documentTitle }}</p>
+              <p class="text-base font-bold text-slate-800 group-hover:text-indigo-600 transition-colors">{{ rec.documentTitle }}</p>
               <p class="text-xs font-medium text-slate-500">{{ rec.documentType }}</p>
             </div>
             <div class="flex items-center gap-2 text-teal-700 font-semibold text-xs bg-teal-50 px-2 py-1 rounded-lg border border-teal-100">

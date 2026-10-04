@@ -10,7 +10,10 @@ export const useAuthStore = defineStore('auth', {
 
   getters: {
     isLoggedIn: (state) => {
-      return !!state.token && !!state.user && !isTokenExpired(state.token);
+      if (!state.user) return false;
+      const hasValidToken = state.token && !isTokenExpired(state.token);
+      const hasRefreshToken = !!localStorage.getItem('refreshToken');
+      return hasValidToken || hasRefreshToken;
     },
     userRole: (state) => state.user?.role || null,
   },

@@ -42,13 +42,12 @@
       <!-- Vitals Strip (Full Width) -->
       <VitalsWidget :vitals="dashboardData.vitals" />
       
-      <!-- Single Column sequence -->
-      <div class="flex flex-col gap-8">
-
-        <AppointmentsWidget :appointments="dashboardData.upcomingAppointments" />
-        <PrescriptionsWidget :prescriptions="dashboardData.activePrescriptions" />
-        <HealthRecordsWidget :records="dashboardData.healthRecords" />
-        <PendingActionsWidget :actions="dashboardData.pendingActions" />
+      <!-- Grid layout for widgets -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <AppointmentsWidget class="h-96" :appointments="dashboardData.upcomingAppointments" />
+        <PrescriptionsWidget class="h-96" :prescriptions="dashboardData.activePrescriptions" />
+        <HealthRecordsWidget class="h-96" :records="dashboardData.healthRecords" />
+        <PendingActionsWidget class="h-96" :actions="dashboardData.pendingActions" />
       </div>
 
       <!-- Quick Actions at the very bottom -->

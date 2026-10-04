@@ -6,7 +6,7 @@
     <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-teal-200/20 blur-3xl pointer-events-none"></div>
 
     <!-- Floating Glass Navbar -->
-    <header class="sticky top-0 sm:top-6 z-50 sm:mx-6 lg:mx-auto max-w-[1600px] w-full sm:w-[calc(100%-3rem)] sm:rounded-2xl bg-white/80 backdrop-blur-xl border-b sm:border border-white/60 shadow-sm sm:shadow-lg shadow-indigo-900/5 px-4 sm:px-6 py-3 flex items-center justify-between transition-all">
+    <header v-if="!$route.meta.hideNavbar" class="sticky top-0 sm:top-6 z-50 sm:mx-6 lg:mx-auto max-w-[1600px] w-full sm:w-[calc(100%-3rem)] sm:rounded-2xl bg-white/80 backdrop-blur-xl border-b sm:border border-white/60 shadow-sm sm:shadow-lg shadow-indigo-900/5 px-4 sm:px-6 py-3 flex items-center justify-between transition-all">
       
       <!-- Logo -->
       <div class="flex items-center gap-3">
@@ -15,7 +15,8 @@
       </div>
 
       <!-- Desktop Nav (Modern Pill Segmented Controller) -->
-      <nav v-if="authStore.userRole === 'patient'" class="hidden md:flex items-center gap-1.5 bg-slate-50/90 p-1.5 rounded-2xl border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] backdrop-blur-md">
+      <!-- Patient Nav -->
+      <nav v-if="!$route.meta.simpleNavbar && authStore.userRole === 'patient'" class="hidden md:flex items-center gap-1.5 bg-slate-50/90 p-1.5 rounded-2xl border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] backdrop-blur-md">
         <router-link
           to="/dashboard/patient"
           exact-active-class="bg-white text-indigo-600 shadow-sm shadow-indigo-500/10 font-bold border border-slate-200/60"
@@ -39,14 +40,14 @@
         </router-link>
 
         <router-link
-          to="/dashboard/patient/notifications"
+          to="/dashboard/patient/records"
           active-class="bg-white text-indigo-600 shadow-sm shadow-indigo-500/10 font-bold border border-slate-200/60"
           class="relative px-4 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:text-slate-900 hover:bg-white/60 transition-all duration-200 flex items-center gap-2 group"
         >
           <svg class="w-4 h-4 text-slate-400 group-hover:text-indigo-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
-          <span>Notifications</span>
+          <span>Health Records</span>
         </router-link>
 
         <router-link
@@ -60,6 +61,115 @@
           <span>Prescriptions</span>
         </router-link>
       </nav>
+
+      <!-- Doctor Nav (Clean 4 Core Options) -->
+      <nav v-else-if="!$route.meta.simpleNavbar && authStore.userRole === 'doctor'" class="hidden md:flex items-center gap-1.5 bg-slate-50/90 p-1.5 rounded-2xl border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] backdrop-blur-md">
+        <router-link
+          to="/dashboard/doctor"
+          exact-active-class="bg-white text-indigo-600 shadow-sm shadow-indigo-500/10 font-bold border border-slate-200/60"
+          class="relative px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:text-slate-900 hover:bg-white/60 transition-all duration-200 flex items-center gap-1.5 group"
+        >
+          <svg class="w-4 h-4 text-slate-400 group-hover:text-indigo-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
+          <span>Dashboard</span>
+        </router-link>
+
+        <router-link
+          to="/dashboard/doctor/appointments"
+          active-class="bg-white text-indigo-600 shadow-sm shadow-indigo-500/10 font-bold border border-slate-200/60"
+          class="relative px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:text-slate-900 hover:bg-white/60 transition-all duration-200 flex items-center gap-1.5 group"
+        >
+          <svg class="w-4 h-4 text-slate-400 group-hover:text-indigo-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <span>Appointments</span>
+        </router-link>
+
+        <router-link
+          to="/dashboard/doctor/patients"
+          active-class="bg-white text-indigo-600 shadow-sm shadow-indigo-500/10 font-bold border border-slate-200/60"
+          class="relative px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:text-slate-900 hover:bg-white/60 transition-all duration-200 flex items-center gap-1.5 group"
+        >
+          <svg class="w-4 h-4 text-slate-400 group-hover:text-indigo-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          <span>Patients</span>
+        </router-link>
+
+        <router-link
+          to="/dashboard/doctor/clinics"
+          active-class="bg-white text-indigo-600 shadow-sm shadow-indigo-500/10 font-bold border border-slate-200/60"
+          class="relative px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:text-slate-900 hover:bg-white/60 transition-all duration-200 flex items-center gap-1.5 group"
+        >
+          <svg class="w-4 h-4 text-slate-400 group-hover:text-indigo-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+          </svg>
+          <span>Clinics</span>
+        </router-link>
+
+        <router-link
+          to="/dashboard/doctor/affiliations"
+          active-class="bg-white text-indigo-600 shadow-sm shadow-indigo-500/10 font-bold border border-slate-200/60"
+          class="relative px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:text-slate-900 hover:bg-white/60 transition-all duration-200 flex items-center gap-1.5 group"
+        >
+          <svg class="w-4 h-4 text-slate-400 group-hover:text-indigo-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+          </svg>
+          <span>Affiliations</span>
+        </router-link>
+      </nav>
+
+      <!-- Clinic Nav (Expanded with 4 Core Options) -->
+      <nav v-else-if="!$route.meta.simpleNavbar && authStore.userRole === 'clinic'" class="hidden md:flex items-center gap-1 bg-slate-50/90 p-1.5 rounded-2xl border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] backdrop-blur-md">
+        <router-link
+          to="/dashboard/clinic"
+          exact-active-class="bg-white text-indigo-600 shadow-sm shadow-indigo-500/10 font-bold border border-slate-200/60"
+          class="relative px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:text-slate-900 hover:bg-white/60 transition-all duration-200 flex items-center gap-1.5 group"
+        >
+          <svg class="w-4 h-4 text-slate-400 group-hover:text-indigo-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
+          <span>Dashboard</span>
+        </router-link>
+
+        <!-- Patient Consultations -->
+        <router-link
+          to="/dashboard/clinic/consultations"
+          active-class="bg-white text-indigo-600 shadow-sm shadow-indigo-500/10 font-bold border border-slate-200/60"
+          class="relative px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:text-slate-900 hover:bg-white/60 transition-all duration-200 flex items-center gap-1.5 group"
+        >
+          <svg class="w-4 h-4 text-slate-400 group-hover:text-indigo-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <span>Patient Consultations</span>
+        </router-link>
+
+        <!-- Affiliated Doctors -->
+        <router-link
+          to="/dashboard/clinic/doctors"
+          active-class="bg-white text-indigo-600 shadow-sm shadow-indigo-500/10 font-bold border border-slate-200/60"
+          class="relative px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:text-slate-900 hover:bg-white/60 transition-all duration-200 flex items-center gap-1.5 group"
+        >
+          <svg class="w-4 h-4 text-slate-400 group-hover:text-indigo-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+          <span>Affiliated Doctors</span>
+        </router-link>
+
+        <!-- Facility Appointments Queue -->
+        <router-link
+          to="/dashboard/clinic/appointments"
+          active-class="bg-white text-indigo-600 shadow-sm shadow-indigo-500/10 font-bold border border-slate-200/60"
+          class="relative px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:text-slate-900 hover:bg-white/60 transition-all duration-200 flex items-center gap-1.5 group"
+        >
+          <svg class="w-4 h-4 text-slate-400 group-hover:text-indigo-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <span>Appointments Queue</span>
+        </router-link>
+      </nav>
+
 
       <!-- User & Actions -->
       <div class="flex items-center gap-2 sm:gap-4">
@@ -242,8 +352,11 @@
                </div>
 
                <!-- Footer -->
-               <div class="px-4 py-2.5 text-center" style="background: rgba(248,250,252,0.95); border-top: 1px solid rgba(226,232,240,0.6);">
+               <div class="px-4 py-3 flex items-center justify-between" style="background: rgba(248,250,252,0.95); border-top: 1px solid rgba(226,232,240,0.6);">
                  <span class="text-[10px] text-slate-400 font-medium">{{ recentNotifications.length }} unread notification{{ recentNotifications.length !== 1 ? `s` : `` }} shown</span>
+                 <router-link :to="`/dashboard/${authStore.userRole || 'patient'}/notifications`" @click="isNotificationDropdownOpen = false" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors">
+                   View All
+                 </router-link>
                </div>
              </div>
            </Transition>
@@ -255,10 +368,10 @@
                <p class="text-[10px] uppercase font-black text-indigo-500 tracking-wider">{{ authStore.user?.role || 'Patient' }}</p>
             </div>
             
-            <button class="focus:outline-none hover:ring-4 hover:ring-indigo-100 transition-all rounded-xl relative group">
+            <router-link :to="`/dashboard/${authStore.userRole || 'patient'}/profile`" class="focus:outline-none hover:ring-4 hover:ring-indigo-100 transition-all rounded-xl relative group" title="Account Profile">
               <img class="w-10 h-10 rounded-xl object-cover shadow-sm" :src="`https://ui-avatars.com/api/?name=${authStore.user?.firstName || 'G'}+${authStore.user?.lastName || 'U'}&background=4f46e5&color=fff`" alt="Avatar">
               <div class="absolute inset-0 rounded-xl ring-1 ring-inset ring-black/10"></div>
-            </button>
+            </router-link>
             
             <button @click="showLogoutModal = true" id="navbar-logout-btn" class="hidden sm:flex p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all" title="Logout">
               <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
@@ -266,7 +379,7 @@
          </div>
 
          <!-- Mobile Menu Toggle -->
-         <button @click="toggleMobileMenu" class="md:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-xl">
+         <button v-if="!$route.meta.simpleNavbar" @click="toggleMobileMenu" class="md:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-xl">
            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path v-if="!isMobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
               <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -276,7 +389,7 @@
     </header>
 
     <!-- Mobile Nav Overlay -->
-    <div v-if="isMobileMenuOpen" class="md:hidden fixed inset-0 z-40 bg-white/95 backdrop-blur-xl pt-24 px-6 flex flex-col gap-3 animate-fade-in-up">
+    <div v-if="isMobileMenuOpen && !$route.meta.hideNavbar && !$route.meta.simpleNavbar" class="md:hidden fixed inset-0 z-40 bg-white/95 backdrop-blur-xl pt-24 px-6 flex flex-col gap-3 animate-fade-in-up">
         <template v-if="authStore.userRole === 'patient'">
           <router-link
             to="/dashboard/patient"
@@ -303,15 +416,15 @@
           </router-link>
 
           <router-link
-            to="/dashboard/patient/notifications"
+            to="/dashboard/patient/records"
             @click="isMobileMenuOpen = false"
             active-class="bg-indigo-50 text-indigo-600 font-bold border-indigo-200"
             class="px-4 py-3 rounded-2xl border border-slate-100 text-slate-700 font-semibold flex items-center gap-3 transition-colors"
           >
             <svg class="w-5 h-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-            Notifications
+            Health Records
           </router-link>
 
           <router-link
@@ -324,6 +437,116 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
             </svg>
             Recent Prescriptions
+          </router-link>
+        </template>
+        <template v-else-if="authStore.userRole === 'doctor'">
+          <router-link
+            to="/dashboard/doctor"
+            @click="isMobileMenuOpen = false"
+            exact-active-class="bg-indigo-50 text-indigo-600 font-bold border-indigo-200"
+            class="px-4 py-3 rounded-2xl border border-slate-100 text-slate-700 font-semibold flex items-center gap-3 transition-colors"
+          >
+            <svg class="w-5 h-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            Dashboard
+          </router-link>
+
+          <router-link
+            to="/dashboard/doctor/appointments"
+            @click="isMobileMenuOpen = false"
+            active-class="bg-indigo-50 text-indigo-600 font-bold border-indigo-200"
+            class="px-4 py-3 rounded-2xl border border-slate-100 text-slate-700 font-semibold flex items-center gap-3 transition-colors"
+          >
+            <svg class="w-5 h-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            Appointments
+          </router-link>
+
+          <router-link
+            to="/dashboard/doctor/patients"
+            @click="isMobileMenuOpen = false"
+            active-class="bg-indigo-50 text-indigo-600 font-bold border-indigo-200"
+            class="px-4 py-3 rounded-2xl border border-slate-100 text-slate-700 font-semibold flex items-center gap-3 transition-colors"
+          >
+            <svg class="w-5 h-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            Patients
+          </router-link>
+
+          <router-link
+            to="/dashboard/doctor/clinics"
+            @click="isMobileMenuOpen = false"
+            active-class="bg-indigo-50 text-indigo-600 font-bold border-indigo-200"
+            class="px-4 py-3 rounded-2xl border border-slate-100 text-slate-700 font-semibold flex items-center gap-3 transition-colors"
+          >
+            <svg class="w-5 h-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            </svg>
+            Clinics
+          </router-link>
+
+          <router-link
+            to="/dashboard/doctor/affiliations"
+            @click="isMobileMenuOpen = false"
+            active-class="bg-indigo-50 text-indigo-600 font-bold border-indigo-200"
+            class="px-4 py-3 rounded-2xl border border-slate-100 text-slate-700 font-semibold flex items-center gap-3 transition-colors"
+          >
+            <svg class="w-5 h-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+            </svg>
+            Affiliations
+          </router-link>
+        </template>
+        <template v-else-if="authStore.userRole === 'clinic'">
+          <router-link
+            to="/dashboard/clinic"
+            @click="isMobileMenuOpen = false"
+            exact-active-class="bg-indigo-50 text-indigo-600 font-bold border-indigo-200"
+            class="px-4 py-3 rounded-2xl border border-slate-100 text-slate-700 font-semibold flex items-center gap-3 transition-colors"
+          >
+            <svg class="w-5 h-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            Dashboard
+          </router-link>
+
+          <router-link
+            to="/dashboard/clinic/consultations"
+            @click="isMobileMenuOpen = false"
+            active-class="bg-indigo-50 text-indigo-600 font-bold border-indigo-200"
+            class="px-4 py-3 rounded-2xl border border-slate-100 text-slate-700 font-semibold flex items-center gap-3 transition-colors"
+          >
+            <svg class="w-5 h-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+            Patient Consultations
+          </router-link>
+
+          <router-link
+            to="/dashboard/clinic/doctors"
+            @click="isMobileMenuOpen = false"
+            active-class="bg-indigo-50 text-indigo-600 font-bold border-indigo-200"
+            class="px-4 py-3 rounded-2xl border border-slate-100 text-slate-700 font-semibold flex items-center gap-3 transition-colors"
+          >
+            <svg class="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            Our Doctors
+          </router-link>
+
+          <router-link
+            to="/dashboard/clinic/appointments"
+            @click="isMobileMenuOpen = false"
+            active-class="bg-indigo-50 text-indigo-600 font-bold border-indigo-200"
+            class="px-4 py-3 rounded-2xl border border-slate-100 text-slate-700 font-semibold flex items-center gap-3 transition-colors"
+          >
+            <svg class="w-5 h-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            Facility Appointments Queue
           </router-link>
         </template>
 
@@ -339,7 +562,7 @@
     </main>
 
     <!-- Minimal Footer -->
-    <footer class="max-w-[1600px] mx-auto w-full py-6 px-6 flex flex-col sm:flex-row items-center justify-between text-slate-400 text-xs sm:text-sm font-medium z-10 gap-4">
+    <footer v-if="!$route.meta.hideNavbar" class="max-w-[1600px] mx-auto w-full py-6 px-6 flex flex-col sm:flex-row items-center justify-between text-slate-400 text-xs sm:text-sm font-medium z-10 gap-4">
        <p>&copy; 2026 KhojHealth. All rights reserved.</p>
        <div class="flex gap-6">
          <a href="#" class="hover:text-indigo-600 transition-colors">Privacy Policy</a>
@@ -368,6 +591,14 @@ const router = useRouter();
 const isMobileMenuOpen = ref(false);
 const showLogoutModal = ref(false);
 
+// Clinic navbar dropdown state
+const clinicConsultDropdownOpen = ref(false);
+const clinicDoctorsDropdownOpen = ref(false);
+const clinicApptDropdownOpen = ref(false);
+const clinicConsultDropdownRef = ref(null);
+const clinicDoctorsDropdownRef = ref(null);
+const clinicApptDropdownRef = ref(null);
+
 // Notification State
 const isNotificationDropdownOpen = ref(false);
 const notificationDropdownRef = ref(null);
@@ -389,26 +620,72 @@ const toggleNotificationDropdown = () => {
   }
 };
 
+
+
 const fetchNotifications = async () => {
   try {
     const userId = authStore.user?.userId || authStore.user?.id;
-    const username = authStore.user?.username;
-    if (!userId && !username) return;
+    if (!userId) return;
 
-    const list = await PatientService.getNotifications(userId, username);
-    if (list && list.length > 0) {
-      notificationsList.value = list;
+    const role = (authStore.userRole || '').toLowerCase();
+
+    if (role === 'patient') {
+      const username = authStore.user?.username;
+      const list = await PatientService.getNotifications(userId, username);
+      if (list && list.length > 0) {
+        notificationsList.value = list;
+      } else {
+        const dash = await PatientService.getDashboardData(userId, username);
+        notificationsList.value = (dash.notifications || []).map(n => ({
+          ...n,
+          isRead: Boolean(n.isRead),
+          time: n.createdAt ? new Date(n.createdAt).toLocaleDateString() : 'Recently'
+        }));
+      }
     } else {
-      // Fallback to unread notifications from dashboard
-      const dash = await PatientService.getDashboardData(userId, username);
-      notificationsList.value = (dash.notifications || []).map(n => ({
-        ...n,
+      // For doctor and clinic roles: Call general notifications endpoint directly
+      const { default: api } = await import('@/services/api');
+      const res = await api.get(`/notifications/user/${userId}`);
+      const rawList = Array.isArray(res?.data) ? res.data : (res?.data?.data || []);
+      notificationsList.value = rawList.map(n => ({
+        id: n.id,
+        title: n.title || 'Notification',
+        message: n.message || '',
+        type: n.type || 'INFO',
         isRead: Boolean(n.isRead),
-        time: n.createdAt ? new Date(n.createdAt).toLocaleDateString() : 'Recently'
+        createdAt: n.createdAt,
+        time: n.createdAt ? new Date(n.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Recently'
       }));
     }
   } catch (err) {
     console.warn('Failed to fetch notifications in layout:', err);
+  }
+};
+
+
+
+const formatTime = (dateStr) => {
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diff = Math.floor((now - date) / 1000);
+  if (diff < 60) return 'Just now';
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+};
+
+const handleClickOutside = (event) => {
+  if (notificationDropdownRef.value && !notificationDropdownRef.value.contains(event.target)) {
+    isNotificationDropdownOpen.value = false;
+  }
+  if (clinicConsultDropdownRef.value && !clinicConsultDropdownRef.value.contains(event.target)) {
+    clinicConsultDropdownOpen.value = false;
+  }
+  if (clinicDoctorsDropdownRef.value && !clinicDoctorsDropdownRef.value.contains(event.target)) {
+    clinicDoctorsDropdownOpen.value = false;
+  }
+  if (clinicApptDropdownRef.value && !clinicApptDropdownRef.value.contains(event.target)) {
+    clinicApptDropdownOpen.value = false;
   }
 };
 
@@ -433,23 +710,6 @@ const markAllAsRead = async () => {
   await new Promise(r => setTimeout(r, 350));
   unread.forEach(n => { n.isRead = true; n._marking = false; });
   isNotificationDropdownOpen.value = false;
-};
-
-const formatTime = (dateStr) => {
-  const date = new Date(dateStr);
-  const now = new Date();
-  const diff = Math.floor((now - date) / 1000);
-  if (diff < 60) return 'Just now';
-  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-};
-
-// Handle outside clicks to close notification dropdown
-const handleClickOutside = (event) => {
-  if (notificationDropdownRef.value && !notificationDropdownRef.value.contains(event.target)) {
-    isNotificationDropdownOpen.value = false;
-  }
 };
 
 onMounted(() => {

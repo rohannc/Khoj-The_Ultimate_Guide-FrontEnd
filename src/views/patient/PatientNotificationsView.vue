@@ -7,6 +7,14 @@
       <div class="absolute -top-24 -right-24 w-48 h-48 bg-indigo-400 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
       <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
 
+      <!-- Back button -->
+      <button @click="router.push('/dashboard/patient')" class="relative z-10 flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors mb-6 group">
+        <div class="p-1.5 rounded-lg bg-slate-50 group-hover:bg-indigo-50 transition-colors">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+        </div>
+        Back to Dashboard
+      </button>
+
       <div class="relative flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div class="flex items-center gap-5">
           <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-3xl bg-gradient-to-br from-indigo-500 via-indigo-600 to-blue-600 flex items-center justify-center shadow-lg shadow-indigo-300/40 transition-transform duration-300 hover:scale-105">
@@ -95,14 +103,14 @@
           <!-- Icon -->
           <div
             class="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center ml-1 transition-all duration-300"
-            :class="item.isRead ? 'bg-slate-100' : 'bg-indigo-100'"
+            :class="getIconConfig(item.type, item.isRead).bgClass"
           >
             <svg
               class="w-5 h-5 transition-colors duration-300"
-              :class="item.isRead ? 'text-slate-400' : 'text-indigo-600'"
+              :class="getIconConfig(item.type, item.isRead).textClass"
               fill="none" viewBox="0 0 24 24" stroke="currentColor"
             >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="getIconConfig(item.type, item.isRead).path" />
             </svg>
           </div>
 
@@ -175,13 +183,71 @@
 import { ref, computed, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { PatientService } from '@/services/patient.service';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const authStore = useAuthStore();
 const isLoading = ref(true);
 const error = ref('');
 const allNotifications = ref([]);
 const activeFilter = ref('all');
 const isMarkingAll = ref(false);
+
+const getIconConfig = (type, isRead) => {
+  const isReadBg = 'bg-slate-100';
+  const isReadText = 'text-slate-400';
+  
+  let bgClass = isReadBg;
+  let textClass = isReadText;
+  let path = 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z';
+
+  if (!isRead) {
+    switch (type) {
+      case 'ALERT':
+        bgClass = 'bg-rose-100';
+        textClass = 'text-rose-600';
+        break;
+      case 'ACTION_REQUIRED':
+        bgClass = 'bg-amber-100';
+        textClass = 'text-amber-600';
+        break;
+      case 'APPOINTMENT_REMINDER':
+        bgClass = 'bg-teal-100';
+        textClass = 'text-teal-600';
+        break;
+      case 'AFFILIATION_REQUEST':
+        bgClass = 'bg-blue-100';
+        textClass = 'text-blue-600';
+        break;
+      case 'INFO':
+      default:
+        bgClass = 'bg-indigo-100';
+        textClass = 'text-indigo-600';
+        break;
+    }
+  }
+
+  switch (type) {
+    case 'ALERT':
+      path = 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z';
+      break;
+    case 'ACTION_REQUIRED':
+      path = 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z';
+      break;
+    case 'APPOINTMENT_REMINDER':
+      path = 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z';
+      break;
+    case 'AFFILIATION_REQUEST':
+      path = 'M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z';
+      break;
+    case 'INFO':
+    default:
+      path = 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z';
+      break;
+  }
+
+  return { bgClass, textClass, path };
+};
 
 const filterTabs = [
   { label: 'All', value: 'all' },

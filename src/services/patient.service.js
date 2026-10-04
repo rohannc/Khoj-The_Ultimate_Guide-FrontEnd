@@ -407,11 +407,77 @@ export const PatientService = {
         activePrescriptions: this.transformPrescriptions(data.activePrescriptions),
         healthRecords: this.transformHealthRecords(data.recentHealthRecords),
         notifications: data.unreadNotifications || [],
-        pendingActions: [] // Kept empty as requested
+        pendingActions: [
+          {
+            title: 'Confirm Appointment',
+            description: 'Your appointment with Dr. Sharma is unconfirmed.',
+            cta: 'Confirm Now'
+          },
+          {
+            title: 'Upload Previous Records',
+            description: 'Please upload MRI reports before the next visit.',
+            cta: 'Upload'
+          }
+        ]
       };
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
       throw error;
     }
+  },
+
+  /**
+   * Fetch patient profile details
+   */
+  async getPatientProfile(patientId, username = null) {
+    const id = await this.resolvePatientId(patientId, username);
+    if (!id) throw new Error("No patient ID resolved");
+    const res = await apiFetch(`/patients/${id}`);
+    return res?.data || {};
+  },
+
+  /**
+   * Update patient profile details
+   */
+  async updatePatientProfile(patientId, profileData) {
+    if (!patientId) throw new Error("No patient ID provided");
+    const res = await apiFetch(`/patients/${patientId}`, {
+      method: 'PATCH',
+      body: profileData
+    });
+    return res?.data || {};
+  },
+
+  /**
+   * Check if a username is available
+   */
+  async checkUsernameAvailability(username) {
+    if (!username) throw new Error("No username provided");
+    const res = await apiFetch(`/patients/username/available?username=${encodeURIComponent(username)}`);
+    return res?.data || {};
+  },
+
+  /**
+   * Update patient username
+   */
+  async updatePatientUsername(patientId, newUsername) {
+    if (!patientId) throw new Error("No patient ID provided");
+    const res = await apiFetch(`/patients/${patientId}/username`, {
+      method: 'PATCH',
+      body: { newUsername }
+    });
+    return res?.data || {};
+  },
+
+  /**
+   * Update patient password
+   */
+  async updatePatientPassword(patientId, currentPassword, newPassword) {
+    if (!patientId) throw new Error("No patient ID provided");
+    const res = await apiFetch(`/patients/${patientId}/password`, {
+      method: 'PATCH',
+      body: { currentPassword, newPassword }
+    });
+    return res?.data || {};
   }
 };

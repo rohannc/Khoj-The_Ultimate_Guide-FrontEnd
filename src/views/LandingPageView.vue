@@ -3,15 +3,27 @@
     
     <!-- Navbar / Logo Area -->
     <div class="w-full max-w-7xl flex justify-between items-center mb-8 lg:mb-12">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 bg-slate-900 text-white rounded-xl flex items-center justify-center font-bold text-xl shadow-lg">K</div>
+      <router-link to="/" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 bg-slate-900 text-white rounded-xl flex items-center justify-center font-bold text-xl shadow-lg group-hover:scale-105 transition-transform">K</div>
         <span class="font-extrabold text-2xl text-slate-900 tracking-tighter">KhojHealth</span>
+      </router-link>
+      
+      <div class="flex items-center gap-3">
+        <!-- Dynamic User Status / Action Button -->
+        <router-link 
+          v-if="authStore.isLoggedIn" 
+          :to="`/dashboard/${authStore.userRole}`" 
+          class="inline-flex items-center gap-2 px-5 py-2.5 bg-white hover:bg-slate-50 text-indigo-600 rounded-full text-sm font-bold shadow-sm ring-1 ring-slate-900/10 hover:ring-indigo-300 transition-all hover:shadow-md"
+        >
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>My Dashboard</span>
+          <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+        </router-link>
+        <div v-else class="flex items-center gap-2 px-4 py-2 bg-white rounded-full text-sm font-semibold text-slate-600 shadow-sm ring-1 ring-slate-900/5">
+          <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+          Secure & Encrypted
+        </div>
       </div>
-      <div class="hidden sm:flex items-center gap-2 px-4 py-2 bg-white rounded-full text-sm font-semibold text-slate-600 shadow-sm ring-1 ring-slate-900/5">
-        <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-        Secure & Encrypted
-      </div>
-
     </div>
 
     <!-- Bento Grid Container -->
@@ -28,8 +40,72 @@
             <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-blue-700">reimagined.</span>
           </h1>
           <p class="text-lg lg:text-2xl text-slate-500 font-medium tracking-tight">
-            Select your designated portal to access a personalized suite of medical tools.
+            Find the right care, right now. Or log in to your portal.
           </p>
+
+          <!-- Middle Search Directory (Enhanced & Styled) -->
+          <div class="mt-8 bg-white/95 backdrop-blur-md p-2.5 rounded-2xl sm:rounded-full shadow-2xl shadow-indigo-500/10 border-2 border-indigo-100 hover:border-indigo-300 focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-100/60 transition-all flex flex-col sm:flex-row items-stretch sm:items-center gap-2 max-w-3xl relative z-20 group">
+            
+            <!-- Query Input -->
+            <div class="flex-1 flex items-center px-4 py-2 sm:py-1 gap-3 sm:border-r border-slate-200/80">
+              <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center flex-shrink-0 group-focus-within:bg-indigo-600 group-focus-within:text-white transition-colors duration-200">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Search Doctor / Clinic</label>
+                <input 
+                  v-model="searchQuery" 
+                  @keyup.enter="handleSearch" 
+                  type="text" 
+                  placeholder="e.g. Cardiologist, Apollo..." 
+                  class="w-full bg-transparent outline-none text-slate-800 placeholder-slate-400 font-semibold text-sm sm:text-base border-none p-0 focus:ring-0" 
+                />
+              </div>
+            </div>
+
+            <!-- Location Input -->
+            <div class="flex-1 flex items-center px-4 py-2 sm:py-1 gap-3">
+              <div class="w-9 h-9 rounded-xl bg-slate-50 text-slate-500 flex items-center justify-center flex-shrink-0 group-focus-within:bg-indigo-50 group-focus-within:text-indigo-600 transition-colors duration-200">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Location</label>
+                <input 
+                  v-model="searchLocation" 
+                  @keyup.enter="handleSearch" 
+                  type="text" 
+                  placeholder="City or 6-digit Pincode" 
+                  class="w-full bg-transparent outline-none text-slate-800 placeholder-slate-400 font-semibold text-sm sm:text-base border-none p-0 focus:ring-0" 
+                />
+              </div>
+            </div>
+
+            <!-- Search Action Button -->
+            <button 
+              @click="handleSearch" 
+              class="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-3.5 rounded-xl sm:rounded-full font-bold transition-all shadow-md shadow-indigo-300 hover:shadow-xl hover:shadow-indigo-400 hover:-translate-y-0.5 flex items-center justify-center gap-2 text-sm sm:text-base cursor-pointer"
+            >
+              <span>Explore</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </button>
+          </div>
+
+          <!-- Quick Discovery Links -->
+          <div class="mt-4 flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-500 relative z-20">
+            <span class="text-slate-400 font-bold uppercase tracking-wider text-[10px]">Quick Filters:</span>
+            <router-link to="/search?type=doctors" class="px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all font-bold hover:scale-105">
+              👨‍⚕️ All Doctors
+            </router-link>
+            <router-link to="/search?type=clinics" class="px-3.5 py-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 transition-all font-bold hover:scale-105 border border-emerald-200/50">
+              🏥 Clinics & Hospitals
+            </router-link>
+            <router-link to="/search?type=doctors&specialization=Cardiologist" class="px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all font-bold hover:scale-105">
+              Cardiology
+            </router-link>
+            <router-link to="/search?type=doctors&specialization=Dentist" class="px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all font-bold hover:scale-105">
+              Dentistry
+            </router-link>
+          </div>
         </div>
         
 
@@ -114,9 +190,23 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth';
 
 const router = useRouter();
+const authStore = useAuthStore();
+
+const searchQuery = ref('');
+const searchLocation = ref('');
+
+const handleSearch = () => {
+  const query = {};
+  if (searchQuery.value) query.q = searchQuery.value;
+  if (searchLocation.value) query.location = searchLocation.value;
+  
+  router.push({ path: '/search', query });
+};
 
 const navigateToRole = (role) => {
   router.push(`/login/${role}`);

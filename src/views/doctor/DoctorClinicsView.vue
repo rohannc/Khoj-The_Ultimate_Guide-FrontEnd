@@ -929,10 +929,14 @@ const handleClickOutside = (event) => {
   if (cityDropdownRef.value && !cityDropdownRef.value.contains(event.target)) {
     cityDropdownOpen.value = false;
   }
-  if (calendarRef.value && !calendarRef.value.contains(event.target)) {
-    isCalendarVisible.value = false;
-    monthDropdownVisible.value = false;
-    yearDropdownVisible.value = false;
+  if (calendarRef.value) {
+    const isInsideCalendar = calendarRef.value.contains(event.target) || 
+      (event.target && event.target.closest && (event.target.closest('.calendar-container') || event.target.closest('.custom-calendar-dropdown')));
+    if (!isInsideCalendar) {
+      isCalendarVisible.value = false;
+      monthDropdownVisible.value = false;
+      yearDropdownVisible.value = false;
+    }
   }
 };
 

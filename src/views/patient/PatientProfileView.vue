@@ -730,8 +730,14 @@ const closeDropdownsOnOutsideClick = (e) => {
     dropdowns.gender = false;
     dropdowns.bloodGroup = false;
   }
-  if (isDobCalendarVisible.value && calendarRef.value && !calendarRef.value.contains(e.target)) {
-    isDobCalendarVisible.value = false;
+  if (isDobCalendarVisible.value && calendarRef.value) {
+    const isInsideCalendar = calendarRef.value.contains(e.target) || 
+      (e.target && e.target.closest && (e.target.closest('.calendar-container') || e.target.closest('.custom-calendar-dropdown')));
+    if (!isInsideCalendar) {
+      isDobCalendarVisible.value = false;
+      monthDropdownVisible.value = false;
+      yearDropdownVisible.value = false;
+    }
   }
 };
 

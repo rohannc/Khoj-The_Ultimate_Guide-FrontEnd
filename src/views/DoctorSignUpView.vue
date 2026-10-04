@@ -231,25 +231,25 @@
                   </button>
                   <div class="month-year-selects">
                     <div class="custom-calendar-dropdown">
-                      <button type="button" class="calendar-dropdown-button" @click="toggleCalendarDropdown('month')">
+                      <button type="button" class="calendar-dropdown-button" @click.stop.prevent="toggleCalendarDropdown('month')">
                         <span>{{ selectedMonthName }}</span>
                         <svg :class="{ active: monthDropdownVisible }" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
                         </svg>
                       </button>
                       <ul v-if="monthDropdownVisible" class="calendar-dropdown-menu shadow-xl">
-                        <li v-for="(month, index) in months" :key="month" @click="selectMonth(index)" :class="{ 'disabled-month': isMonthDisabled(index) }">{{ month }}</li>
+                        <li v-for="(month, index) in months" :key="month" @click.stop.prevent="selectMonth(index)" :class="{ 'disabled-month': isMonthDisabled(index) }">{{ month }}</li>
                       </ul>
                     </div>
                     <div class="custom-calendar-dropdown">
-                      <button type="button" class="calendar-dropdown-button" @click="toggleCalendarDropdown('year')">
+                      <button type="button" class="calendar-dropdown-button" @click.stop.prevent="toggleCalendarDropdown('year')">
                         <span>{{ currentYear }}</span>
                         <svg :class="{ active: yearDropdownVisible }" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
                         </svg>
                       </button>
                       <ul v-if="yearDropdownVisible" class="calendar-dropdown-menu shadow-xl">
-                        <li v-for="year in years" :key="year" @click="selectYear(year)">{{ year }}</li>
+                        <li v-for="year in years" :key="year" @click.stop.prevent="selectYear(year)">{{ year }}</li>
                       </ul>
                     </div>
                   </div>
@@ -532,8 +532,14 @@ const selectYear = (year) => {
 const calendarRef = ref(null);
 
 const closeCalendarOnClickOutside = (event) => {
-  if (isCalendarVisible.value && calendarRef.value && !calendarRef.value.contains(event.target)) {
-    isCalendarVisible.value = false;
+  if (isCalendarVisible.value && calendarRef.value) {
+    const isInsideCalendar = calendarRef.value.contains(event.target) || 
+      (event.target && event.target.closest && (event.target.closest('.calendar-container') || event.target.closest('.custom-calendar-dropdown')));
+    if (!isInsideCalendar) {
+      isCalendarVisible.value = false;
+      monthDropdownVisible.value = false;
+      yearDropdownVisible.value = false;
+    }
   }
 };
 

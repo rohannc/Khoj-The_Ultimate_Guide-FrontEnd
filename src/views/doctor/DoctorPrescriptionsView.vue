@@ -370,25 +370,25 @@
                     </button>
                     <div class="month-year-selects">
                       <div class="custom-calendar-dropdown">
-                        <button type="button" class="calendar-dropdown-button" @click="toggleAddCalDropdown('month')">
+                        <button type="button" class="calendar-dropdown-button" @click.stop.prevent="toggleAddCalDropdown('month')">
                           <span>{{ months[addCalMonth] }}</span>
                           <svg :class="{ active: addMonthDropdownVisible }" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
                           </svg>
                         </button>
                         <ul v-if="addMonthDropdownVisible" class="calendar-dropdown-menu shadow-xl">
-                          <li v-for="(month, index) in months" :key="month" @click="selectAddMonth(index)">{{ month }}</li>
+                          <li v-for="(month, index) in months" :key="month" @click.stop.prevent="selectAddMonth(index)">{{ month }}</li>
                         </ul>
                       </div>
                       <div class="custom-calendar-dropdown">
-                        <button type="button" class="calendar-dropdown-button" @click="toggleAddCalDropdown('year')">
+                        <button type="button" class="calendar-dropdown-button" @click.stop.prevent="toggleAddCalDropdown('year')">
                           <span>{{ addCalYear }}</span>
                           <svg :class="{ active: addYearDropdownVisible }" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
                           </svg>
                         </button>
                         <ul v-if="addYearDropdownVisible" class="calendar-dropdown-menu shadow-xl">
-                          <li v-for="year in calYears" :key="year" @click="selectAddYear(year)">{{ year }}</li>
+                          <li v-for="year in calYears" :key="year" @click.stop.prevent="selectAddYear(year)">{{ year }}</li>
                         </ul>
                       </div>
                     </div>
@@ -558,25 +558,25 @@
                     </button>
                     <div class="month-year-selects">
                       <div class="custom-calendar-dropdown">
-                        <button type="button" class="calendar-dropdown-button" @click="toggleEditCalDropdown('month')">
+                        <button type="button" class="calendar-dropdown-button" @click.stop.prevent="toggleEditCalDropdown('month')">
                           <span>{{ months[editCalMonth] }}</span>
                           <svg :class="{ active: editMonthDropdownVisible }" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
                           </svg>
                         </button>
                         <ul v-if="editMonthDropdownVisible" class="calendar-dropdown-menu shadow-xl">
-                          <li v-for="(month, index) in months" :key="month" @click="selectEditMonth(index)">{{ month }}</li>
+                          <li v-for="(month, index) in months" :key="month" @click.stop.prevent="selectEditMonth(index)">{{ month }}</li>
                         </ul>
                       </div>
                       <div class="custom-calendar-dropdown">
-                        <button type="button" class="calendar-dropdown-button" @click="toggleEditCalDropdown('year')">
+                        <button type="button" class="calendar-dropdown-button" @click.stop.prevent="toggleEditCalDropdown('year')">
                           <span>{{ editCalYear }}</span>
                           <svg :class="{ active: editYearDropdownVisible }" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
                           </svg>
                         </button>
                         <ul v-if="editYearDropdownVisible" class="calendar-dropdown-menu shadow-xl">
-                          <li v-for="year in calYears" :key="year" @click="selectEditYear(year)">{{ year }}</li>
+                          <li v-for="year in calYears" :key="year" @click.stop.prevent="selectEditYear(year)">{{ year }}</li>
                         </ul>
                       </div>
                     </div>
@@ -1343,7 +1343,38 @@ const submitDeleteMed = async () => {
   }
 };
 
-onMounted(loadData);
+const addCalendarRef = ref(null);
+const editCalendarRef = ref(null);
+
+const handlePrescriptionsClickOutside = (event) => {
+  if (isAddCalendarVisible.value && addCalendarRef.value) {
+    const isInside = addCalendarRef.value.contains(event.target) || 
+      (event.target && event.target.closest && (event.target.closest('.calendar-container') || event.target.closest('.custom-calendar-dropdown')));
+    if (!isInside) {
+      isAddCalendarVisible.value = false;
+      addMonthDropdownVisible.value = false;
+      addYearDropdownVisible.value = false;
+    }
+  }
+  if (isEditCalendarVisible.value && editCalendarRef.value) {
+    const isInside = editCalendarRef.value.contains(event.target) || 
+      (event.target && event.target.closest && (event.target.closest('.calendar-container') || event.target.closest('.custom-calendar-dropdown')));
+    if (!isInside) {
+      isEditCalendarVisible.value = false;
+      editMonthDropdownVisible.value = false;
+      editYearDropdownVisible.value = false;
+    }
+  }
+};
+
+onMounted(() => {
+  loadData();
+  document.addEventListener('click', handlePrescriptionsClickOutside);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', handlePrescriptionsClickOutside);
+});
 </script>
 
 <style scoped>

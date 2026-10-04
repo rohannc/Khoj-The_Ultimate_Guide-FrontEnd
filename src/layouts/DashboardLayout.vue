@@ -728,10 +728,13 @@ const toggleMobileMenu = () => {
 const confirmLogout = async () => {
   showLogoutModal.value = false;
   isMobileMenuOpen.value = false;
-  // Capture role BEFORE logout clears the user state
-  const role = authStore.userRole || 'patient';
+  const role = (authStore.userRole || 'patient').toLowerCase();
   await authStore.logout();
-  router.push(`/login/${role}`);
+  try {
+    await router.push(`/login/${role}`);
+  } catch {
+    window.location.href = `/login/${role}`;
+  }
 };
 </script>
 

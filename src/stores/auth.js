@@ -43,30 +43,31 @@ export const useAuthStore = defineStore('auth', {
 
     async logout() {
       const refreshToken = localStorage.getItem('refreshToken');
+
+      // 1. Wipe client state and storage immediately so UI/guards recognize logout instantly
+      this.user = null;
+      this.token = null;
+
       try {
-        if (refreshToken) {
-          const { default: api } = await import('@/services/api');
-          await api.post('/auth/logout', { refreshToken });
-        }
-      } catch (err) {
-        console.warn('Backend logout notification error:', err);
-      } finally {
-        // Clear Pinia state
-        this.user = null;
-        this.token = null;
-
-        // Wipe all localStorage keys
         localStorage.clear();
-
-        // Wipe sessionStorage too
         sessionStorage.clear();
-
-        // Clear any cookies set for this domain
         document.cookie.split(';').forEach((cookie) => {
           const eqPos = cookie.indexOf('=');
           const name = eqPos > -1 ? cookie.substring(0, eqPos).trim() : cookie.trim();
           document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
         });
+      } catch (e) {
+        console.warn('Storage wipe error:', e);
+      }
+
+      // 2. Notify backend to revoke refresh token (fire-and-forget with timeout, never block redirect)
+      if (refreshToken) {
+        try {
+          const { default: api } = await import('@/services/api');
+          await api.post('/auth/logout', { refreshToken }, { timeout: 3000 });
+        } catch (err) {
+          console.warn('Backend logout notification skipped or timed out:', err);
+        }
       }
     },
 

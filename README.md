@@ -48,26 +48,36 @@
 
 ---
 
-## 🏗️ System Architecture & Portals
+## 🏗️️ System Architecture & Portals
 
-```
-                      ┌────────────────────────────┐
-                      │    Khoj Landing Page &     │
-                      │  Search Directory (/search)│
-                      └──────────────┬─────────────┘
-                                     │
-                    ┌────────────────┼────────────────┐
-                    │                │                │
-            ┌───────▼──────┐  ┌──────▼──────┐  ┌──────▼──────┐
-            │   Patient    │  │   Doctor    │  │   Clinic    │
-            │    Portal    │  │   Portal    │  │   Portal    │
-            ├──────────────┤  ├──────────────┤  ├──────────────┤
-            │ Appointments │  │ Appointments │  │ Consultation│
-            │ Prescriptions│  │ Schedule     │  │ Doctors     │
-            │ Records      │  │ Patients     │  │ Queue       │
-            │ Profile      │  │ Affiliations │  │ Profile     │
-            └──────────────┘  └──────────────┘  └──────────────┘
-```
+### Khoj Landing Page & Search Directory (`/search`)
+
+| Portal | Core Features & Modules |
+| :--- | :--- |
+| **Patient Portal** | • Appointments<br>• Prescriptions<br>• Records<br>• Profile |
+| **Doctor Portal** | • Appointments<br>• Schedule<br>• Patients<br>• Affiliations |
+| **Clinic Portal** | • Consultation<br>• Doctors<br>• Queue<br>• Profile |
+
+---
+
+### Portal Hierarchy
+
+* **Khoj Landing Page & Search Directory (`/search`)**
+  * **Patient Portal**
+    * Appointments
+    * Prescriptions
+    * Records
+    * Profile
+  * **Doctor Portal**
+    * Appointments
+    * Schedule
+    * Patients
+    * Affiliations
+  * **Clinic Portal**
+    * Consultation
+    * Doctors
+    * Queue
+    * Profile
 
 ---
 

@@ -5,12 +5,21 @@
     <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-indigo-200/20 blur-3xl pointer-events-none"></div>
     <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-teal-200/20 blur-3xl pointer-events-none"></div>
 
-    <!-- Frosted Top Blur Curtain (Fixes content bleed above floating island seamlessly) -->
+    <!-- Frosted Top Curtain (always-on, prevents content bleed at any scroll speed) -->
+    <!-- Two-layer approach: solid top strip + fade zone, no JS-dependent opacity toggle -->
     <div 
       v-if="!$route.meta.hideNavbar"
-      class="fixed top-0 left-0 right-0 h-28 pointer-events-none z-40 transition-opacity duration-300 bg-gradient-to-b from-[#f8fafc]/95 via-[#f8fafc]/80 to-transparent backdrop-blur-md [mask-image:linear-gradient(to_bottom,black_60%,transparent_100%)]"
-      :class="isScrolled ? 'opacity-100' : 'opacity-0'"
-    ></div>
+      class="fixed top-0 left-0 right-0 pointer-events-none z-40"
+      style="height: 80px;"
+    >
+      <!-- Fully opaque top band that matches the page background — always covers the very top -->
+      <div class="absolute inset-x-0 top-0" style="height: 20px; background: #f8fafc;"></div>
+      <!-- Gradient fade zone that softens the transition into page content -->
+      <div 
+        class="absolute inset-x-0"
+        style="top: 20px; height: 60px; background: linear-gradient(to bottom, #f8fafc 0%, rgba(248,250,252,0.85) 40%, transparent 100%);"
+      ></div>
+    </div>
 
     <!-- Floating Island Navbar (Sleek pill design with premium glassmorphism) -->
     <header 

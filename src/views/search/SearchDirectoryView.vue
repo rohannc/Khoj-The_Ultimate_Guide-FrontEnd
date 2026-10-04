@@ -2,13 +2,13 @@
   <div class="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col">
     <!-- Sticky Top Bar / Navbar (Adapts dynamically to Logged-in vs Guest, fills top on scroll to prevent content bleed) -->
     <header 
-      class="sticky top-0 z-50 transition-all duration-300 w-full"
-      :class="isScrolled ? 'bg-white/95 backdrop-blur-md shadow-md shadow-slate-900/5 border-b border-slate-200/80 py-2.5' : 'py-3 sm:py-4 bg-transparent'"
+      class="sticky top-0 z-50 w-full transition-[padding,background-color,border-color,box-shadow] duration-500 ease-out"
+      :class="isScrolled ? 'py-2 bg-white/95 backdrop-blur-md shadow-md shadow-slate-900/5 border-b border-slate-200/80' : 'py-3 sm:py-4 bg-transparent border-b border-transparent'"
     >
-      <div class="mx-auto max-w-[1600px] w-full px-4 sm:px-6 transition-all duration-300">
+      <div class="mx-auto max-w-[1600px] w-full px-4 sm:px-6">
         <div 
-          class="w-full flex items-center justify-between transition-all duration-300"
-          :class="isScrolled ? 'bg-transparent py-0 px-0' : 'bg-white/90 backdrop-blur-xl border border-slate-200/80 shadow-sm sm:shadow-lg shadow-slate-900/5 rounded-2xl px-4 sm:px-6 py-2.5'"
+          class="w-full flex items-center justify-between transition-[padding,background-color,border-color,box-shadow,border-radius] duration-500 ease-out"
+          :class="isScrolled ? 'bg-transparent py-0 px-0 rounded-none border border-transparent shadow-none' : 'bg-white/90 backdrop-blur-xl border border-slate-200/80 shadow-sm sm:shadow-lg shadow-slate-900/5 rounded-2xl px-4 sm:px-6 py-2.5'"
         >
           <div class="flex items-center gap-3">
         <router-link to="/" class="flex items-center gap-3 group">

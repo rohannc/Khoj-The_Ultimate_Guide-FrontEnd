@@ -1,10 +1,10 @@
 <template>
   <div class="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col">
-    <!-- Frosted Top Blur Curtain (Fixes content bleed above floating island seamlessly) -->
-    <div 
-      class="fixed top-0 left-0 right-0 h-28 pointer-events-none z-40 transition-opacity duration-300 bg-gradient-to-b from-slate-50/95 via-slate-50/80 to-transparent backdrop-blur-md [mask-image:linear-gradient(to_bottom,black_60%,transparent_100%)]"
-      :class="isScrolled ? 'opacity-100' : 'opacity-0'"
-    ></div>
+    <!-- Frosted Top Curtain (always-on) -->
+    <div class="fixed top-0 left-0 right-0 pointer-events-none z-40" style="height: 80px;">
+      <div class="absolute inset-x-0 top-0" style="height: 20px; background: #f8fafc;"></div>
+      <div class="absolute inset-x-0" style="top: 20px; height: 60px; background: linear-gradient(to bottom, #f8fafc 0%, rgba(248,250,252,0.85) 40%, transparent 100%);"></div>
+    </div>
 
     <!-- Floating Island Navbar (Adapts dynamically to Logged-in vs Guest) -->
     <header 
@@ -38,17 +38,82 @@
         </span>
       </div>
       
-      <!-- Inline Search in Header -->
-      <div class="hidden md:flex flex-1 max-w-2xl mx-8 bg-slate-50/90 rounded-2xl border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] backdrop-blur-md focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all p-1.5">
-        <div class="flex-1 flex items-center px-3 border-r border-slate-200">
-          <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-          <input v-model="searchQuery" @keyup.enter="handleSearch" type="text" placeholder="Search doctors, clinics..." class="w-full bg-transparent outline-none border-none focus:ring-0 text-sm text-slate-700 px-2 placeholder-slate-400" />
-        </div>
-        <div class="flex-1 flex items-center px-3">
-          <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-          <input v-model="searchLocation" @keyup.enter="handleSearch" type="text" placeholder="City or PinCode" class="w-full bg-transparent outline-none border-none focus:ring-0 text-sm text-slate-700 px-2 placeholder-slate-400" />
-        </div>
-        <button @click="handleSearch" class="bg-indigo-600 hover:bg-indigo-700 text-white p-2 rounded-xl transition-colors shadow-sm shadow-indigo-200">
+      <!-- Unified Context-Aware Search Bar -->
+      <div class="hidden md:flex flex-1 max-w-2xl mx-6 items-center bg-slate-50/90 rounded-2xl border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] backdrop-blur-md focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all p-1.5 gap-0">
+
+        <!-- DOCTORS MODE: single search field -->
+        <template v-if="searchType === 'doctors'">
+          <div class="flex-1 flex items-center px-3">
+            <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            <input
+              v-model="searchQuery"
+              @keyup.enter="handleSearch"
+              type="text"
+              placeholder="Search by doctor name..."
+              class="w-full bg-transparent outline-none border-none focus:ring-0 text-sm text-slate-700 px-2 placeholder-slate-400"
+            />
+          </div>
+        </template>
+
+        <!-- CLINICS MODE: name + pincode + location city -->
+        <template v-else>
+          <!-- Clinic Name -->
+          <div class="flex-1 flex items-center px-3 border-r border-slate-200">
+            <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+            <input
+              v-model="searchQuery"
+              @keyup.enter="handleSearch"
+              type="text"
+              placeholder="Clinic name..."
+              class="w-full bg-transparent outline-none border-none focus:ring-0 text-sm text-slate-700 px-2 placeholder-slate-400"
+            />
+          </div>
+          <!-- Pincode -->
+          <div class="w-28 flex items-center px-3 border-r border-slate-200">
+            <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path></svg>
+            <input
+              v-model="searchPincode"
+              @keyup.enter="handleSearch"
+              type="text"
+              inputmode="numeric"
+              maxlength="6"
+              placeholder="Pincode"
+              class="w-full bg-transparent outline-none border-none focus:ring-0 text-sm text-slate-700 px-2 placeholder-slate-400"
+            />
+          </div>
+          <!-- City dropdown -->
+          <div class="relative w-36" ref="navbarCityRef">
+            <button
+              type="button"
+              @click="navbarCityOpen = !navbarCityOpen"
+              class="w-full flex items-center gap-1.5 px-3 py-1 text-sm text-slate-500 hover:text-slate-800 transition-colors"
+            >
+              <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+              <span class="truncate">{{ searchLocation || 'City' }}</span>
+              <svg :class="['w-3 h-3 text-slate-400 shrink-0 ml-auto transition-transform', navbarCityOpen ? 'rotate-180' : '']" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+            <div
+              v-if="navbarCityOpen"
+              class="absolute right-0 top-full mt-2 w-44 bg-white border border-slate-100 rounded-xl shadow-xl z-50 overflow-hidden animate-fade-in-up"
+            >
+              <div class="max-h-48 overflow-y-auto p-1.5 space-y-0.5">
+                <div
+                  @click="searchLocation = ''; navbarCityOpen = false; handleSearch();"
+                  :class="['px-3 py-2 rounded-lg cursor-pointer text-sm font-medium transition-colors', searchLocation === '' ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-50']"
+                >All Cities</div>
+                <div
+                  v-for="city in availableLocations"
+                  :key="city"
+                  @click="searchLocation = city; navbarCityOpen = false; handleSearch();"
+                  :class="['px-3 py-2 rounded-lg cursor-pointer text-sm font-medium transition-colors', searchLocation === city ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-50']"
+                >{{ city }}</div>
+              </div>
+            </div>
+          </div>
+        </template>
+
+        <!-- Search Button (always shown) -->
+        <button @click="handleSearch" class="bg-indigo-600 hover:bg-indigo-700 text-white p-2 rounded-xl transition-colors shadow-sm shadow-indigo-200 ml-1 shrink-0">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
         </button>
       </div>
@@ -543,6 +608,7 @@ const userDisplayRole = computed(() => {
 const searchType = ref('doctors');
 const searchQuery = ref('');
 const searchLocation = ref('');
+const searchPincode = ref('');
 const filterSpecialization = ref('');
 const filterGender = ref('');
 
@@ -550,6 +616,8 @@ const dropdownSpecialization = ref(false);
 const dropdownRef = ref(null);
 const dropdownCity = ref(false);
 const dropdownCityRef = ref(null);
+const navbarCityOpen = ref(false);
+const navbarCityRef = ref(null);
 
 const availableLocations = [
   'Bengaluru',
@@ -590,6 +658,9 @@ const closeDropdown = (e) => {
   if (dropdownCityRef.value && !dropdownCityRef.value.contains(e.target)) {
     dropdownCity.value = false;
   }
+  if (navbarCityRef.value && !navbarCityRef.value.contains(e.target)) {
+    navbarCityOpen.value = false;
+  }
 };
 
 const results = ref([]);
@@ -602,6 +673,7 @@ const initFromUrl = () => {
   searchType.value = route.query.type === 'clinics' ? 'clinics' : 'doctors';
   searchQuery.value = route.query.q || '';
   searchLocation.value = route.query.location || '';
+  searchPincode.value = route.query.pincode || '';
   filterSpecialization.value = route.query.specialization || '';
   filterGender.value = route.query.gender || '';
   currentPage.value = parseInt(route.query.page) || 0;
@@ -613,6 +685,7 @@ const updateUrlParams = () => {
   };
   if (searchQuery.value) query.q = searchQuery.value;
   if (searchLocation.value) query.location = searchLocation.value;
+  if (searchPincode.value) query.pincode = searchPincode.value;
   if (filterSpecialization.value) query.specialization = filterSpecialization.value;
   if (filterGender.value) query.gender = filterGender.value;
   if (currentPage.value > 0) query.page = currentPage.value;
@@ -637,12 +710,12 @@ const fetchResults = async () => {
       if (searchLocation.value) params.append('city', searchLocation.value);
     } else {
       url = '/clinics/search';
+      // Use dedicated pincode field first, then fall back to location
+      if (searchPincode.value && /^\d{6}$/.test(searchPincode.value)) {
+        params.append('pinCode', searchPincode.value);
+      }
       if (searchLocation.value) {
-        if (/^\d{6}$/.test(searchLocation.value)) {
-          params.append('pinCode', searchLocation.value);
-        } else {
-          params.append('city', searchLocation.value);
-        }
+        params.append('city', searchLocation.value);
       }
     }
 
@@ -735,6 +808,7 @@ const clearFilters = () => {
   filterGender.value = '';
   searchQuery.value = '';
   searchLocation.value = '';
+  searchPincode.value = '';
   currentPage.value = 0;
   updateUrlParams();
   fetchResults();
@@ -742,9 +816,11 @@ const clearFilters = () => {
 
 const setSearchType = (type) => {
   searchType.value = type;
-  // Clear filters that don't apply
+  // Clear filters that don't apply to the new mode
   filterSpecialization.value = '';
   filterGender.value = '';
+  searchPincode.value = '';
+  searchLocation.value = '';
   currentPage.value = 0;
   updateUrlParams();
   fetchResults();

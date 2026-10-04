@@ -1,8 +1,16 @@
 <template>
   <div class="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col">
-    <!-- Top Bar / Navbar (Adapts dynamically to Logged-in vs Guest) -->
-    <header class="sticky top-0 sm:top-4 z-50 sm:mx-6 lg:mx-auto max-w-[1600px] w-full sm:w-[calc(100%-3rem)] sm:rounded-2xl bg-white/90 backdrop-blur-xl border-b sm:border border-slate-200/80 shadow-sm sm:shadow-lg shadow-slate-900/5 px-4 sm:px-6 py-3 flex items-center justify-between transition-all">
-      <div class="flex items-center gap-3">
+    <!-- Sticky Top Bar / Navbar (Adapts dynamically to Logged-in vs Guest, fills top on scroll to prevent content bleed) -->
+    <header 
+      class="sticky top-0 z-50 transition-all duration-300 w-full"
+      :class="isScrolled ? 'bg-white/95 backdrop-blur-md shadow-md shadow-slate-900/5 border-b border-slate-200/80 py-2.5' : 'py-3 sm:py-4 bg-transparent'"
+    >
+      <div class="mx-auto max-w-[1600px] w-full px-4 sm:px-6 transition-all duration-300">
+        <div 
+          class="w-full flex items-center justify-between transition-all duration-300"
+          :class="isScrolled ? 'bg-transparent py-0 px-0' : 'bg-white/90 backdrop-blur-xl border border-slate-200/80 shadow-sm sm:shadow-lg shadow-slate-900/5 rounded-2xl px-4 sm:px-6 py-2.5'"
+        >
+          <div class="flex items-center gap-3">
         <router-link to="/" class="flex items-center gap-3 group">
           <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-indigo-700 text-white rounded-xl flex items-center justify-center font-black shadow-lg shadow-indigo-300 text-xl transform group-hover:rotate-12 transition-transform cursor-pointer">K</div>
           <div>
@@ -95,6 +103,8 @@
             Join Free
           </router-link>
         </template>
+      </div>
+        </div>
       </div>
     </header>
 
@@ -449,6 +459,11 @@ const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
 const showLogoutModal = ref(false);
+const isScrolled = ref(false);
+
+const handleWindowScroll = () => {
+  isScrolled.value = window.scrollY > 15;
+};
 
 const confirmLogout = async () => {
   showLogoutModal.value = false;
@@ -671,10 +686,13 @@ onMounted(() => {
   initFromUrl();
   fetchResults();
   document.addEventListener('click', closeDropdown);
+  window.addEventListener('scroll', handleWindowScroll, { passive: true });
+  handleWindowScroll();
 });
 
 onUnmounted(() => {
   document.removeEventListener('click', closeDropdown);
+  window.removeEventListener('scroll', handleWindowScroll);
 });
 
 // Watch for route changes to reload data (e.g. user hits back button)

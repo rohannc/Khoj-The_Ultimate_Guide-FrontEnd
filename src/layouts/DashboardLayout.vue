@@ -5,8 +5,19 @@
     <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-indigo-200/20 blur-3xl pointer-events-none"></div>
     <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-teal-200/20 blur-3xl pointer-events-none"></div>
 
-    <!-- Floating Glass Navbar -->
-    <header v-if="!$route.meta.hideNavbar" class="sticky top-0 sm:top-6 z-50 sm:mx-6 lg:mx-auto max-w-[1600px] w-full sm:w-[calc(100%-3rem)] sm:rounded-2xl bg-white/80 backdrop-blur-xl border-b sm:border border-white/60 shadow-sm sm:shadow-lg shadow-indigo-900/5 px-4 sm:px-6 py-3 flex items-center justify-between transition-all">
+    <!-- Sticky Navbar Wrapper with background fill on scroll to prevent content bleed -->
+    <header 
+      v-if="!$route.meta.hideNavbar" 
+      class="sticky top-0 z-50 transition-all duration-300 w-full"
+      :class="isScrolled ? 'bg-white/95 backdrop-blur-md shadow-md shadow-indigo-950/5 border-b border-slate-200/80 py-2.5' : 'py-3 sm:py-5 bg-transparent'"
+    >
+      <div 
+        class="mx-auto max-w-[1600px] w-full px-4 sm:px-6 transition-all duration-300"
+      >
+        <div 
+          class="w-full flex items-center justify-between transition-all duration-300"
+          :class="isScrolled ? 'bg-transparent py-0 px-0' : 'bg-white/85 backdrop-blur-xl border border-white/80 shadow-sm sm:shadow-lg shadow-indigo-900/5 rounded-2xl px-4 sm:px-6 py-2.5'"
+        >
       
       <!-- Logo -->
       <div class="flex items-center gap-3">
@@ -384,9 +395,11 @@
               <path v-if="!isMobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
               <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
-         </button>
+          </button>
+        </div>
       </div>
-    </header>
+    </div>
+  </header>
 
     <!-- Mobile Nav Overlay -->
     <div v-if="isMobileMenuOpen && !$route.meta.hideNavbar && !$route.meta.simpleNavbar" class="md:hidden fixed inset-0 z-40 bg-white/95 backdrop-blur-xl pt-24 px-6 flex flex-col gap-3 animate-fade-in-up">
@@ -590,6 +603,11 @@ const authStore = useAuthStore();
 const router = useRouter();
 const isMobileMenuOpen = ref(false);
 const showLogoutModal = ref(false);
+const isScrolled = ref(false);
+
+const handleWindowScroll = () => {
+  isScrolled.value = window.scrollY > 15;
+};
 
 // Clinic navbar dropdown state
 const clinicConsultDropdownOpen = ref(false);
@@ -714,11 +732,14 @@ const markAllAsRead = async () => {
 
 onMounted(() => {
   document.addEventListener('click', handleClickOutside);
+  window.addEventListener('scroll', handleWindowScroll, { passive: true });
+  handleWindowScroll();
   fetchNotifications();
 });
 
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside);
+  window.removeEventListener('scroll', handleWindowScroll);
 });
 
 const toggleMobileMenu = () => {

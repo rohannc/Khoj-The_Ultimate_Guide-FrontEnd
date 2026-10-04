@@ -229,8 +229,9 @@
                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                   <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
                 </div>
-                <input type="url" v-model="clinicData.website" class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-medium" :style="{ '--tw-ring-color': roleColor }" placeholder="https://">
+                <input type="url" v-model="clinicData.website" @input="onWebsiteInput" @blur="validateWebsite(true)" class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-medium" :style="{ '--tw-ring-color': roleColor }" placeholder="https://example.com">
               </div>
+              <p v-if="websiteError" class="text-red-500 text-xs mt-1">{{ websiteError }}</p>
             </div>
           </div>
 
@@ -330,6 +331,7 @@ const emailError = ref('');
 const pincodeError = ref('');
 const phoneError = ref('');
 const secondaryPhoneError = ref('');
+const websiteError = ref('');
 const isPasswordVisible = ref(false);
 
 let emailDebounceTimer = null;
@@ -337,6 +339,36 @@ let passwordDebounceTimer = null;
 let pincodeDebounceTimer = null;
 let phoneDebounceTimer = null;
 let secondaryPhoneDebounceTimer = null;
+let websiteDebounceTimer = null;
+
+const isValidUrl = (urlStr) => {
+  if (!urlStr) return true;
+  try {
+    const parsed = new URL(urlStr.startsWith('http://') || urlStr.startsWith('https://') ? urlStr : `https://${urlStr}`);
+    return Boolean(parsed.hostname && parsed.hostname.includes('.'));
+  } catch (_) {
+    return false;
+  }
+};
+
+const validateWebsite = (immediate = false) => {
+  if (websiteDebounceTimer) clearTimeout(websiteDebounceTimer);
+  const run = () => {
+    const val = clinicData.value.website ? clinicData.value.website.trim() : '';
+    if (val && !isValidUrl(val)) {
+      websiteError.value = 'Please enter a valid website URL (e.g. https://example.com).';
+    } else {
+      websiteError.value = '';
+    }
+  };
+  if (immediate) run();
+  else websiteDebounceTimer = setTimeout(run, 2000);
+};
+
+const onWebsiteInput = () => {
+  websiteError.value = '';
+  validateWebsite(false);
+};
 
 const validateEmail = (immediate = false) => {
   if (emailDebounceTimer) clearTimeout(emailDebounceTimer);
@@ -466,6 +498,7 @@ const handleSignup = async () => {
   pincodeError.value = '';
   phoneError.value = '';
   secondaryPhoneError.value = '';
+  websiteError.value = '';
   signupError.value = '';
 
   validatePasswords(true);
@@ -475,8 +508,11 @@ const handleSignup = async () => {
   if (clinicData.value.secondaryPhone) {
     validateSecondaryPhone(true);
   }
+  if (clinicData.value.website) {
+    validateWebsite(true);
+  }
 
-  if (passwordError.value || emailError.value || pincodeError.value || phoneError.value || secondaryPhoneError.value) {
+  if (passwordError.value || emailError.value || pincodeError.value || phoneError.value || secondaryPhoneError.value || websiteError.value) {
     return;
   }
 

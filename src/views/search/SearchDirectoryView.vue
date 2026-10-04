@@ -545,7 +545,6 @@ const fetchResults = async () => {
     } else {
       url = '/clinics/search';
       if (searchLocation.value) {
-        // Simple logic: if 6 digits, pinCode, else city
         if (/^\d{6}$/.test(searchLocation.value)) {
           params.append('pinCode', searchLocation.value);
         } else {
@@ -554,17 +553,67 @@ const fetchResults = async () => {
       }
     }
 
-    const qs = params.toString();
-    const { data } = await apiFetch(`${url}${qs ? '?' + qs : ''}`);
-    
-    if (data && data.content) {
-      results.value = data.content;
-      totalPages.value = data.totalPages;
-      totalElements.value = data.totalElements;
-    } else {
-      results.value = [];
-      totalPages.value = 0;
-      totalElements.value = 0;
+    let searchSucceeded = false;
+    try {
+      const qs = params.toString();
+      const { data } = await apiFetch(`${url}${qs ? '?' + qs : ''}`);
+      if (data && (Array.isArray(data.content) || Array.isArray(data))) {
+        const list = Array.isArray(data) ? data : data.content;
+        results.value = list;
+        totalPages.value = data.totalPages !== undefined ? data.totalPages : Math.ceil(list.length / 10);
+        totalElements.value = data.totalElements !== undefined ? data.totalElements : list.length;
+        searchSucceeded = true;
+      }
+    } catch (err) {
+      console.warn(`Search endpoint ${url} failed or returned error, attempting fallback to full directory list:`, err);
+    }
+
+    // Fallback: If backend search endpoint fails (e.g. 500), fetch from standard /doctors or /clinics
+    if (!searchSucceeded) {
+      const fallbackUrl = searchType.value === 'doctors' ? '/doctors' : '/clinics';
+      const { data } = await apiFetch(fallbackUrl);
+      let list = Array.isArray(data) ? data : (data?.content || []);
+
+      const q = (searchQuery.value || '').trim().toLowerCase();
+      const loc = (searchLocation.value || '').trim().toLowerCase();
+
+      if (searchType.value === 'doctors') {
+        if (q) {
+          list = list.filter(d => 
+            `${d.firstName || ''} ${d.lastName || ''}`.toLowerCase().includes(q) ||
+            (d.specializations || '').toLowerCase().includes(q) ||
+            (d.qualifications || '').toLowerCase().includes(q)
+          );
+        }
+        if (filterSpecialization.value) {
+          list = list.filter(d => (d.specializations || '').toLowerCase().includes(filterSpecialization.value.toLowerCase()));
+        }
+        if (filterGender.value) {
+          list = list.filter(d => (d.gender || '').toUpperCase() === filterGender.value.toUpperCase());
+        }
+        if (loc) {
+          list = list.filter(d => (d.city || '').toLowerCase().includes(loc));
+        }
+      } else {
+        if (q) {
+          list = list.filter(c => 
+            (c.name || '').toLowerCase().includes(q) ||
+            (c.city || '').toLowerCase().includes(q) ||
+            (c.street || '').toLowerCase().includes(q)
+          );
+        }
+        if (loc) {
+          list = list.filter(c => 
+            (c.city || '').toLowerCase().includes(loc) ||
+            (c.pinCode || '').toLowerCase().includes(loc)
+          );
+        }
+      }
+
+      totalElements.value = list.length;
+      totalPages.value = Math.ceil(list.length / 10) || 1;
+      const startIndex = currentPage.value * 10;
+      results.value = list.slice(startIndex, startIndex + 10);
     }
   } catch (error) {
     console.error('Failed to fetch search results', error);

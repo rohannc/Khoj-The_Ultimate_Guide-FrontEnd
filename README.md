@@ -1,98 +1,176 @@
-# Khoj: A Modern Healthcare Platform Frontend - In Progress
+# Khoj: The Ultimate Healthcare Platform (FrontEnd)
 
-![Vue.js](https://img.shields.io/badge/vue.js-3.x-brightgreen.svg)
-![Pinia](https://img.shields.io/badge/Pinia-2.x-yellow.svg)
-![Vue Router](https://img.shields.io/badge/Vue_Router-4.x-blue.svg)
-![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
+[![Vue.js](https://img.shields.io/badge/Vue.js-3.5-brightgreen.svg?logo=vuedotjs)](https://vuejs.org/)
+[![Pinia](https://img.shields.io/badge/Pinia-3.0-yellow.svg)](https://pinia.vuejs.org/)
+[![Vue Router](https://img.shields.io/badge/Vue_Router-4.5-blue.svg)](https://router.vuejs.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC.svg?logo=tailwind-css)](https://tailwindcss.com/)
+[![Vite](https://img.shields.io/badge/Vite-7.0-646CFF.svg?logo=vite)](https://vitejs.dev/)
+[![Deployment](https://img.shields.io/badge/Deployed-Vercel-black.svg?logo=vercel)](https://vercel.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-Khoj is a comprehensive, multi-role frontend application for a modern healthcare management system. Built with Vue.js 3 (Composition API) and Pinia for state management, it provides tailored dashboard experiences for patients, doctors, and clinic administrators, ensuring a secure and intuitive user journey.
+**Khoj** is an enterprise-grade, multi-tenant digital healthcare management frontend designed for modern hospitals, clinics, practitioners, and patients. Built with **Vue 3 (Composition API)**, **Pinia**, **Tailwind CSS**, and **Axios**, it delivers role-tailored portals with real-time appointment booking, queue tracking, prescription management, health records, and clinic affiliation negotiations.
 
+---
+
+## 📑 Table of Contents
+- [✨ Key Features](#-key-features)
+- [🏗️ System Architecture & Portals](#️-system-architecture--portals)
+- [🛠️ Tech Stack](#️-tech-stack)
+- [🔗 Live Backend & API Specs](#-live-backend--api-specs)
+- [🚀 Quick Start & Installation](#-quick-start--installation)
+- [⚙️ Environment Configuration](#️-environment-configuration)
+- [☁️ Vercel Deployment Guide](#️-vercel-deployment-guide)
+- [📜 Git Commit Message Convention](#-git-commit-message-convention)
+- [📄 License](#-license)
+
+---
 
 ## ✨ Key Features
 
-* **🔐 Multi-Role Authentication:** Secure, distinct login and registration flows for three user types:
-    * **Patients:** Manage health records, appointments, and prescriptions.
-    * **Doctors:** View schedules, manage patient queues, and handle administrative tasks.
-    * **Clinics:** Oversee operations, manage staff, and view clinic-wide analytics.
-* **🛡️ JWT-based Secure Sessions:** Utilizes JSON Web Tokens (JWT) for authentication, with session persistence in `localStorage` for a seamless user experience.
-* **🚦 Role-Based Access Control (RBAC):** A robust navigation guard system built with Vue Router protects routes and ensures users can only access dashboards and features appropriate for their role.
-* **📊 Three Distinct Dashboards:** Each role is presented with a unique, feature-rich dashboard tailored to their specific needs and workflows.
-* **📝 Dynamic & Reusable UI Components:** A clean and modern UI built with custom, reusable Vue components, including forms with validation, dropdowns, calendars, and data visualization widgets.
-* **📱 Responsive Design:** Styled with scoped CSS for maintainability, ensuring a consistent and accessible experience on both desktop and mobile devices.
-* **🔔 User Notifications:** Integrated alert banners for important actions like email verification and other critical updates.
+- **🔐 Multi-Role Authentication & Onboarding:**
+  - Dedicated sign-in and multi-step registration pipelines for **Patients**, **Doctors**, and **Clinics**.
+  - Dynamic role theme accents (Blue for Patient, Teal for Doctor, Rose for Clinic).
+- **🛡️ JWT Token Management & Auto-Rotation:**
+  - Double interceptor architecture: proactive token expiration checks and silent `401 Unauthorized` token refresh with queued requests.
+  - Safe, non-blocking asynchronous session termination with instant local storage wipe.
+- **🚦 Role-Based Access Control (RBAC):**
+  - Navigation guards guarding routes by role, active authentication state, and session validity.
+- **🏥 Healthcare Directory & Search:**
+  - Real-time directory to explore doctors and clinics filtered by medical specialization, city, pin code, and gender.
+- **📅 Patient Portal:**
+  - Immediate appointment scheduling, queue token tracking, vitals tracking, interactive prescriptions, and downloadable records.
+- **🩺 Doctor Portal:**
+  - Today's appointment schedules, patient history, medication management, and affiliation request management.
+- **🏢 Clinic Portal:**
+  - Centralized consultation tracking, affiliated doctor shift management, and facility queue administration.
+- **🔔 Live Notifications:**
+  - Interactive notification centre with unread counters, mark-as-read toggles, and status badges.
 
-## 🛠️ Technology Stack
+---
 
-* **Frontend Framework:** [Vue.js 3](https://vuejs.org/) (Composition API with `<script setup>`)
-* **State Management:** [Pinia](https://pinia.vuejs.org/)
-* **Routing:** [Vue Router](https://router.vuejs.org/)
-* **Build Tool:** [Vite](https://vitejs.dev/)
-* **API Communication:** Native Fetch API
+## 🏗️ System Architecture & Portals
 
+```
+                      ┌────────────────────────────┐
+                      │    Khoj Landing Page &     │
+                      │  Search Directory (/search)│
+                      └──────────────┬─────────────┘
+                                     │
+                    ┌────────────────┼────────────────┐
+                    │                │                │
+            ┌───────▼──────┐  ┌──────▼──────┐  ┌──────▼──────┐
+            │   Patient    │  │   Doctor    │  │   Clinic    │
+            │    Portal    │  │   Portal    │  │   Portal    │
+            ├──────────────┤  ├──────────────┤  ├──────────────┤
+            │ Appointments │  │ Appointments │  │ Consultation│
+            │ Prescriptions│  │ Schedule     │  │ Doctors     │
+            │ Records      │  │ Patients     │  │ Queue       │
+            │ Profile      │  │ Affiliations │  │ Profile     │
+            └──────────────┘  └──────────────┘  └──────────────┘
+```
 
-## 🚀 Getting Started
+---
 
-Follow these instructions to set up and run the project on your local machine.
+## 🛠️ Tech Stack
+
+| Category | Technology |
+| :--- | :--- |
+| **Framework** | [Vue.js 3](https://vuejs.org/) (Composition API, `<script setup>`) |
+| **Build Tool** | [Vite 7](https://vitejs.dev/) |
+| **State Management** | [Pinia 3](https://pinia.vuejs.org/) |
+| **Routing** | [Vue Router 4](https://router.vuejs.org/) |
+| **Styling** | [Tailwind CSS 3](https://tailwindcss.com/) + Scoped CSS |
+| **HTTP Client** | [Axios](https://axios-http.com/) (with JWT Interceptors & Refresh Queue) |
+| **Icons & Assets** | [@heroicons/vue](https://heroicons.com/), SVG Icons |
+
+---
+
+## 🔗 Live Backend & API Specs
+
+- **Base URL:** `https://khoj-the-ultimate-guide.onrender.com`
+- **Interactive Swagger Documentation:** [https://khoj-the-ultimate-guide.onrender.com/swagger-ui/index.html](https://khoj-the-ultimate-guide.onrender.com/swagger-ui/index.html)
+- **OpenAPI Schema (JSON):** `https://khoj-the-ultimate-guide.onrender.com/v3/api-docs`
+
+---
+
+## 🚀 Quick Start & Installation
 
 ### Prerequisites
+- [Node.js](https://nodejs.org/) (`>= 20.19.0` or `>= 22.12.0`)
+- [npm](https://www.npmjs.com/) (bundled with Node)
 
-* [Node.js](https://nodejs.org/) (v16 or higher)
-* A package manager like [npm](https://www.npmjs.com/), [yarn](https://yarnpkg.com/), or [pnpm](https://pnpm.io/)
+### Local Setup
+```bash
+# 1. Clone the repository
+git clone https://github.com/rohannc/Khoj-The_Ultimate_Guide-FrontEnd.git
+cd Khoj-The_Ultimate_Guide-FrontEnd
 
-### Installation
+# 2. Install dependencies
+npm install
 
-1.  **Clone the repository:**
-    ```sh
-    git clone [https://github.com/your-username/khoj-frontend.git](https://github.com/your-username/khoj-frontend.git)
-    ```
-2.  **Navigate to the project directory:**
-    ```sh
-    cd khoj-frontend
-    ```
-3.  **Install dependencies:**
-    ```sh
-    npm install
-    ```
+# 3. Create .env file with backend target
+echo VITE_API_BASE_URL=https://khoj-the-ultimate-guide.onrender.com > .env
 
-### Environment Variables
+# 4. Start Vite development server
+npm run dev
+```
 
-This project requires a backend API to function correctly. You need to specify the base URL for the API in an environment file.
+The app will be accessible at `http://localhost:5173`.
 
-1.  Create a `.env` file in the root of the project by copying the example file:
-    ```sh
-    cp .env.example .env
-    ```
-2.  Open the `.env` file and set the `VITE_API_BASE_URL` to your backend server's address.
-    ```env
-    VITE_API_BASE_URL=http://localhost:8080/api
-    ```
+---
 
-### Running the Application
+## ⚙️ Environment Configuration
 
-1.  **Start the development server:**
-    ```sh
-    npm run dev
-    ```
-2.  Open your browser and navigate to the local URL provided in the terminal (usually `http://localhost:5173`).
+| Variable | Description | Default |
+| :--- | :--- | :--- |
+| `VITE_API_BASE_URL` | Base URL of the backend REST service | `https://khoj-the-ultimate-guide.onrender.com` |
 
-## 🔗 API Backend
+---
 
-This repository contains the **frontend application only**. For full functionality, it needs to be connected to a backend API that provides the necessary endpoints for:
+## ☁️ Vercel Deployment Guide
 
-* User registration (`/auth/register/...`)
-* User login (`/auth/login/...`)
-* Fetching role-specific dashboard data
+1. Push your latest code to your GitHub repository.
+2. Log in to [Vercel](https://vercel.com/) and click **"Add New..." > "Project"**.
+3. Import `Khoj-The_Ultimate_Guide-FrontEnd`.
+4. Under **Configure Project**:
+   - **Framework Preset**: `Vite` (auto-detected).
+   - **Root Directory**: `./`.
+   - In **Environment Variables**, add:
+     - **Key**: `VITE_API_BASE_URL`
+     - **Value**: `https://khoj-the-ultimate-guide.onrender.com`
+5. Click **Deploy**.
+6. The included [`vercel.json`](file:///d:/Desktop/Khoj-The_Ultimate_Guide-FrontEnd/vercel.json) handles client-side routing rewrites (`/(.*) -> /index.html`) automatically.
 
-## 🤝 Contributing
+---
 
-Contributions are welcome! If you have suggestions for improvements or want to fix a bug, please feel free to:
+## 📜 Git Commit Message Convention
 
-1.  Fork the Project
-2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4.  Push to the Branch (`git push origin feature/AmazingFeature`)
-5.  Open a Pull Request
+This project strictly follows the **Capitalized Conventional Commit** standard:
+
+```text
+Type : Description
+```
+
+*Note: Type and Description must each have their first letter capitalized, with exactly one space on each side of the colon (`Type : Description`).*
+
+### Supported Types:
+- **`Feat :`** A new feature or user-facing functionality.
+- **`Fix :`** A bug fix or error resolution.
+- **`Style :`** Visual UI styling, color palettes, layouts, or CSS adjustments without logic changes.
+- **`Chore :`** Configuration, dependencies, `.env`, tooling, or build scripts.
+- **`Refactor :`** Code reorganization or optimization without behavioral changes.
+- **`Docs :`** Documentation updates, guides, or README additions.
+- **`Perf :`** Performance improvements or bundle size optimizations.
+
+### Approved Examples:
+- `Feat : Add step-by-step patient appointment booking modal`
+- `Fix : Prevent logout hang and ensure immediate redirect`
+- `Style : Refine All Genders select dropdown with custom chevron and icon`
+- `Chore : Configure Vercel SPA routing and dynamic API URLs`
+- `Docs : Update comprehensive project README with deployment guide`
+
+---
 
 ## 📄 License
 
-This project is distributed under the MIT License. See `LICENSE.txt` for more information
+Distributed under the MIT License. See `LICENSE` for more information.

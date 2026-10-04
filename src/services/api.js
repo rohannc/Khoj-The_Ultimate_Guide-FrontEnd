@@ -1,7 +1,12 @@
 import axios from 'axios';
 
+export const API_BASE_URL = (
+  import.meta.env?.VITE_API_BASE_URL ||
+  'https://khoj-the-ultimate-guide.onrender.com'
+).replace(/\/$/, '');
+
 const api = axios.create({
-  baseURL: 'http://localhost:8080/api',
+  baseURL: `${API_BASE_URL}/api`,
 });
 
 // 1. Request interceptor: Attach access token & proactive expiry refresh
@@ -16,7 +21,7 @@ api.interceptors.request.use(async (config) => {
     const { isTokenExpired } = await import('@/utils/jwt');
     if (!accessToken || isTokenExpired(accessToken)) {
       try {
-        const refreshRes = await axios.post('http://localhost:8080/api/auth/refresh', { refreshToken });
+        const refreshRes = await axios.post(`${API_BASE_URL}/api/auth/refresh`, { refreshToken });
         const { accessToken: newAccessToken, refreshToken: newRefreshToken } = refreshRes.data;
         if (newAccessToken) {
           accessToken = newAccessToken;
@@ -93,7 +98,7 @@ api.interceptors.response.use(
 
       try {
         // Call backend refresh endpoint
-        const res = await axios.post('http://localhost:8080/api/auth/refresh', {
+        const res = await axios.post(`${API_BASE_URL}/api/auth/refresh`, {
           refreshToken,
         });
         const { accessToken: newAccessToken, refreshToken: newRefreshToken } = res.data;

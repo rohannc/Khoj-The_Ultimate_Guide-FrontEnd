@@ -607,6 +607,7 @@
 <script setup>
 import { ref, computed, watch, nextTick, onMounted, reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { API_BASE_URL } from '@/services/api';
 
 const route = useRoute();
 const router = useRouter();
@@ -931,7 +932,7 @@ const handleSignup = async () => {
       phoneNumbers: phoneNumbers,
       registrationIssueDate: selectedDate.value ? selectedDate.value.toISOString().split('T')[0] : null,
     };
-    endpoint = `http://localhost:8080/api/auth/register/doctor`;
+    endpoint = `${API_BASE_URL}/api/auth/register/doctor`;
 
   } else if (role === 'patient') {
     if (patientData.value.password !== patientData.value.confirmPassword) {
@@ -959,7 +960,7 @@ const handleSignup = async () => {
       phoneNumbers: phoneNumbers,
       bloodGroup: selectedBloodGroup.value === 'Blood Group' ? null : selectedBloodGroup.value,
     };
-    endpoint = `http://localhost:8080/api/auth/register/patient`;
+    endpoint = `${API_BASE_URL}/api/auth/register/patient`;
 
   } else if (role === 'clinic') {
     if (clinicData.value.password !== clinicData.value.confirmPassword) {
@@ -996,7 +997,7 @@ const handleSignup = async () => {
       website: clinicData.value.website,
       openingHours: formattedHours,
     };
-    endpoint = `http://localhost:8080/api/auth/register/clinic`;
+    endpoint = `${API_BASE_URL}/api/auth/register/clinic`;
 
   } else {
     showToast('Invalid role for signup.');

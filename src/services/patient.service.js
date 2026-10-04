@@ -1,4 +1,4 @@
-import { apiFetch } from './api';
+import { apiFetch, API_BASE_URL } from './api';
 
 export const PatientService = {
   _resolvedPatientId: null,
@@ -157,7 +157,7 @@ export const PatientService = {
       // Also try direct fetch fallback with bearer token
       try {
         const accessToken = localStorage.getItem('accessToken') || localStorage.getItem('authToken');
-        const res = await fetch(`http://localhost:8080/api/notifications/${notificationId}/read`, {
+        const res = await fetch(`${API_BASE_URL}/api/notifications/${notificationId}/read`, {
           method: 'PUT',
           headers: {
             'Authorization': `Bearer ${accessToken}`,
@@ -333,7 +333,7 @@ export const PatientService = {
 
     // 1. Primary: Direct fetch to /api/prescriptions/${prescription.id}/start-date
     try {
-      const response = await fetch(`http://localhost:8080/api/prescriptions/${prescriptionId}/start-date`, {
+      const response = await fetch(`${API_BASE_URL}/api/prescriptions/${prescriptionId}/start-date`, {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${accessToken}`,

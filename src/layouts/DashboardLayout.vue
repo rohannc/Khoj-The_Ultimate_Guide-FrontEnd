@@ -5,19 +5,13 @@
     <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-indigo-200/20 blur-3xl pointer-events-none"></div>
     <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-teal-200/20 blur-3xl pointer-events-none"></div>
 
-    <!-- Sticky Navbar Wrapper with background fill on scroll to prevent content bleed -->
+    <!-- Modern Clean Full-Width Sticky Header -->
     <header 
       v-if="!$route.meta.hideNavbar" 
-      class="sticky top-0 z-50 w-full transition-[padding,background-color,border-color,box-shadow] duration-500 ease-out"
-      :class="isScrolled ? 'py-2 bg-white/95 backdrop-blur-md shadow-md shadow-indigo-950/5 border-b border-slate-200/80' : 'py-3 sm:py-5 bg-transparent border-b border-transparent'"
+      class="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-xl border-b border-slate-200/80 transition-all duration-300"
+      :class="isScrolled ? 'shadow-md shadow-slate-900/5 bg-white/95 py-2.5' : 'shadow-sm py-3.5'"
     >
-      <div 
-        class="mx-auto max-w-[1600px] w-full px-4 sm:px-6"
-      >
-        <div 
-          class="w-full flex items-center justify-between transition-[padding,background-color,border-color,box-shadow,border-radius] duration-500 ease-out"
-          :class="isScrolled ? 'bg-transparent py-0 px-0 rounded-none border border-transparent shadow-none' : 'bg-white/85 backdrop-blur-xl border border-white/80 shadow-sm sm:shadow-lg shadow-indigo-900/5 rounded-2xl px-4 sm:px-6 py-2.5'"
-        >
+      <div class="mx-auto max-w-[1600px] w-full px-4 sm:px-6 flex items-center justify-between">
       
       <!-- Logo -->
       <div class="flex items-center gap-3">
@@ -398,8 +392,7 @@
           </button>
         </div>
       </div>
-    </div>
-  </header>
+    </header>
 
     <!-- Mobile Nav Overlay -->
     <div v-if="isMobileMenuOpen && !$route.meta.hideNavbar && !$route.meta.simpleNavbar" class="md:hidden fixed inset-0 z-40 bg-white/95 backdrop-blur-xl pt-24 px-6 flex flex-col gap-3 animate-fade-in-up">

@@ -1,16 +1,12 @@
 <template>
   <div class="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col">
-    <!-- Sticky Top Bar / Navbar (Adapts dynamically to Logged-in vs Guest, fills top on scroll to prevent content bleed) -->
+    <!-- Modern Clean Full-Width Sticky Header (Adapts dynamically to Logged-in vs Guest) -->
     <header 
-      class="sticky top-0 z-50 w-full transition-[padding,background-color,border-color,box-shadow] duration-500 ease-out"
-      :class="isScrolled ? 'py-2 bg-white/95 backdrop-blur-md shadow-md shadow-slate-900/5 border-b border-slate-200/80' : 'py-3 sm:py-4 bg-transparent border-b border-transparent'"
+      class="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-xl border-b border-slate-200/80 transition-all duration-300"
+      :class="isScrolled ? 'shadow-md shadow-slate-900/5 bg-white/95 py-2.5' : 'shadow-sm py-3.5'"
     >
-      <div class="mx-auto max-w-[1600px] w-full px-4 sm:px-6">
-        <div 
-          class="w-full flex items-center justify-between transition-[padding,background-color,border-color,box-shadow,border-radius] duration-500 ease-out"
-          :class="isScrolled ? 'bg-transparent py-0 px-0 rounded-none border border-transparent shadow-none' : 'bg-white/90 backdrop-blur-xl border border-slate-200/80 shadow-sm sm:shadow-lg shadow-slate-900/5 rounded-2xl px-4 sm:px-6 py-2.5'"
-        >
-          <div class="flex items-center gap-3">
+      <div class="mx-auto max-w-[1600px] w-full px-4 sm:px-6 flex items-center justify-between">
+        <div class="flex items-center gap-3">
         <router-link to="/" class="flex items-center gap-3 group">
           <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-indigo-700 text-white rounded-xl flex items-center justify-center font-black shadow-lg shadow-indigo-300 text-xl transform group-hover:rotate-12 transition-transform cursor-pointer">K</div>
           <div>
@@ -104,7 +100,6 @@
           </router-link>
         </template>
       </div>
-        </div>
       </div>
     </header>
 

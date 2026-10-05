@@ -209,6 +209,8 @@ export async function apiFetch(endpoint, options = {}) {
     const err = new Error(msg);
     err.status = status;
     err.response = error.response;
+    err.fieldErrors = error.response?.data?.fieldErrors || null;
+    err.data = error.response?.data || null;
     throw err;
   }
 }

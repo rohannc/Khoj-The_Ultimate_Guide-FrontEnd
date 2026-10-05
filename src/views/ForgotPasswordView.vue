@@ -161,16 +161,20 @@
                 <input 
                   type="email" 
                   v-model="email" 
-                  @input="errorMessage = ''"
+                  @input="clearFieldError('email'); errorMessage = ''"
                   required 
                   :class="[
                     'w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm',
-                    errorMessage ? 'border-rose-300 ring-1 ring-rose-100 bg-rose-50/30' : 'border-slate-200/80'
+                    fieldErrors.email || (errorMessage && !fieldErrors.primaryMobile) ? 'border-rose-300 ring-1 ring-rose-100 bg-rose-50/30' : 'border-slate-200/80'
                   ]" 
                   :style="{ '--tw-ring-color': roleColor }" 
                   placeholder="name@example.com"
                 />
               </div>
+              <p v-if="fieldErrors.email" class="text-rose-500 text-xs font-semibold mt-1.5 flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <span>{{ fieldErrors.email }}</span>
+              </p>
             </div>
 
             <!-- Primary Mobile -->
@@ -185,18 +189,22 @@
                 <input 
                   type="tel" 
                   v-model="primaryMobile" 
-                  @input="errorMessage = ''"
+                  @input="clearFieldError('primaryMobile'); errorMessage = ''"
                   maxlength="10" 
                   pattern="[0-9]{10}"
                   required 
                   :class="[
                     'w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm',
-                    errorMessage ? 'border-rose-300 ring-1 ring-rose-100 bg-rose-50/30' : 'border-slate-200/80'
+                    fieldErrors.primaryMobile ? 'border-rose-300 ring-1 ring-rose-100 bg-rose-50/30' : 'border-slate-200/80'
                   ]" 
                   :style="{ '--tw-ring-color': roleColor }" 
                   placeholder="e.g. 9876543210"
                 />
               </div>
+              <p v-if="fieldErrors.primaryMobile" class="text-rose-500 text-xs font-semibold mt-1.5 flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <span>{{ fieldErrors.primaryMobile }}</span>
+              </p>
             </div>
 
             <!-- Submit Button -->
@@ -252,18 +260,22 @@
                 <input 
                   type="text" 
                   v-model="otp" 
-                  @input="errorMessage = ''"
+                  @input="clearFieldError('otp'); errorMessage = ''"
                   maxlength="6" 
                   pattern="[0-9]{6}"
                   required 
                   :class="[
                     'w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border rounded-2xl text-slate-900 tracking-widest text-lg font-mono focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 placeholder:tracking-normal placeholder:text-sm font-semibold shadow-sm',
-                    errorMessage && (errorMessage.toLowerCase().includes('otp') || errorMessage.toLowerCase().includes('expired')) ? 'border-rose-300 ring-1 ring-rose-100 bg-rose-50/30' : 'border-slate-200/80'
+                    fieldErrors.otp || (errorMessage && (errorMessage.toLowerCase().includes('otp') || errorMessage.toLowerCase().includes('expired'))) ? 'border-rose-300 ring-1 ring-rose-100 bg-rose-50/30' : 'border-slate-200/80'
                   ]" 
                   :style="{ '--tw-ring-color': roleColor }" 
                   placeholder="Enter 6-digit OTP"
                 />
               </div>
+              <p v-if="fieldErrors.otp" class="text-rose-500 text-xs font-semibold mt-1.5 flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <span>{{ fieldErrors.otp }}</span>
+              </p>
             </div>
 
             <!-- New Password -->
@@ -278,12 +290,12 @@
                 <input 
                   :type="isPasswordVisible ? 'text' : 'password'" 
                   v-model="newPassword" 
-                  @input="errorMessage = ''"
+                  @input="clearFieldError('newPassword'); clearFieldError('password'); errorMessage = ''"
                   required 
                   minlength="8"
                   :class="[
                     'w-full pl-11 pr-12 py-3.5 bg-slate-50 border rounded-2xl text-slate-900 focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-medium',
-                    errorMessage && errorMessage.toLowerCase().includes('password') ? 'border-rose-300 ring-1 ring-rose-100 bg-rose-50/30' : 'border-slate-200'
+                    (fieldErrors.newPassword || fieldErrors.password) || (errorMessage && errorMessage.toLowerCase().includes('password')) ? 'border-rose-300 ring-1 ring-rose-100 bg-rose-50/30' : 'border-slate-200'
                   ]" 
                   :style="{ '--tw-ring-color': roleColor }" 
                   placeholder="Enter new password"
@@ -293,6 +305,10 @@
                   <svg v-else class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
                 </button>
               </div>
+              <p v-if="fieldErrors.newPassword || fieldErrors.password" class="text-rose-500 text-xs font-semibold mt-1.5 flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <span>{{ fieldErrors.newPassword || fieldErrors.password }}</span>
+              </p>
             </div>
 
             <!-- Confirm New Password -->
@@ -307,12 +323,12 @@
                 <input 
                   :type="isConfirmPasswordVisible ? 'text' : 'password'" 
                   v-model="confirmPassword" 
-                  @input="errorMessage = ''"
+                  @input="clearFieldError('confirmPassword'); errorMessage = ''"
                   required 
                   minlength="8"
                   :class="[
                     'w-full pl-11 pr-12 py-3.5 bg-slate-50 border rounded-2xl text-slate-900 focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-medium',
-                    errorMessage && (errorMessage.toLowerCase().includes('match') || errorMessage.toLowerCase().includes('password')) ? 'border-rose-300 ring-1 ring-rose-100 bg-rose-50/30' : 'border-slate-200'
+                    fieldErrors.confirmPassword || (errorMessage && errorMessage.toLowerCase().includes('match')) ? 'border-rose-300 ring-1 ring-rose-100 bg-rose-50/30' : 'border-slate-200'
                   ]" 
                   :style="{ '--tw-ring-color': roleColor }" 
                   placeholder="Re-enter new password"
@@ -322,6 +338,10 @@
                   <svg v-else class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
                 </button>
               </div>
+              <p v-if="fieldErrors.confirmPassword" class="text-rose-500 text-xs font-semibold mt-1.5 flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <span>{{ fieldErrors.confirmPassword }}</span>
+              </p>
             </div>
 
             <!-- Submit Button -->
@@ -332,7 +352,7 @@
               :style="{ backgroundColor: roleColor, boxShadow: `0 10px 15px -3px ${roleShadow}, 0 4px 6px -4px ${roleShadow}` }"
             >
               <span v-if="!isLoading && !isSuccess">Confirm & Reset Password</span>
-              <div v-if="isLoading" class="spinner">
+              <div v-else class="spinner">
                 <svg class="w-6 h-6 animate-spin text-white/80" viewBox="0 0 24 24" fill="none">
                   <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                   <path fill="#fff" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -392,8 +412,15 @@ const isLoading = ref(false);
 const isSuccess = ref(false);
 const errorMessage = ref('');
 const successMessage = ref('');
+const fieldErrors = ref({});
 const resendCooldown = ref(0);
 let cooldownTimer = null;
+
+const clearFieldError = (field) => {
+  if (fieldErrors.value[field]) {
+    delete fieldErrors.value[field];
+  }
+};
 
 const toastMessage = ref({ text: '', type: '' });
 let toastTimeout = null;
@@ -451,6 +478,7 @@ onUnmounted(() => {
 async function handleRequestOtp() {
   errorMessage.value = '';
   successMessage.value = '';
+  fieldErrors.value = {};
   
   // Basic validation
   if (!email.value || !primaryMobile.value) {
@@ -477,6 +505,12 @@ async function handleRequestOtp() {
     // Transition to Step 2
     currentStep.value = 2;
   } catch (err) {
+    // Check for backend field-level validation errors (HTTP 400 with fieldErrors map)
+    const backendFieldErrors = err.fieldErrors || err.response?.data?.fieldErrors;
+    if (backendFieldErrors && typeof backendFieldErrors === 'object' && Object.keys(backendFieldErrors).length > 0) {
+      fieldErrors.value = { ...backendFieldErrors };
+    }
+
     // Unmatched Email/Mobile: Show backend message directly in the UI
     const msg = err.response?.data?.message || err.message || 'Email or mobile number does not match our records.';
     errorMessage.value = msg;
@@ -490,6 +524,7 @@ async function handleRequestOtp() {
 async function handleResetPassword() {
   errorMessage.value = '';
   successMessage.value = '';
+  fieldErrors.value = {};
 
   // Basic validation
   if (!otp.value || !newPassword.value) {
@@ -530,6 +565,12 @@ async function handleResetPassword() {
       router.push(loginLink.value);
     }, 2000);
   } catch (err) {
+    // Check for backend field-level validation errors (HTTP 400 with fieldErrors map)
+    const backendFieldErrors = err.fieldErrors || err.response?.data?.fieldErrors;
+    if (backendFieldErrors && typeof backendFieldErrors === 'object' && Object.keys(backendFieldErrors).length > 0) {
+      fieldErrors.value = { ...backendFieldErrors };
+    }
+
     // Handles 400 Bad Request (e.g., "Invalid OTP. 4 attempts remaining", "OTP has expired")
     const msg = err.response?.data?.message || err.message || 'Failed to reset password.';
     errorMessage.value = msg;

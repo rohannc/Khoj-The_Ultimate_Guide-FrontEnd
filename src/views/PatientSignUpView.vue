@@ -84,16 +84,16 @@
           <div class="space-y-4">
             <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-2">Account Details</h3>
             
-            <div class="space-y-2">
-              <label class="block text-sm font-bold text-slate-700">Username</label>
-              <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+              <div class="space-y-2">
+                <label class="block text-sm font-bold text-slate-700">Username</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                  </div>
+                  <input type="text" v-model="patientData.username" @input="clearFieldError('username'); usernameError = ''" required :class="['w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm', (fieldErrors.username || usernameError) ? 'border-rose-300 ring-1 ring-rose-100 bg-rose-50/30' : 'border-slate-200/80']" :style="{ '--tw-ring-color': roleColor }" placeholder="Choose a username">
                 </div>
-                <input type="text" v-model="patientData.username" required class="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm" :style="{ '--tw-ring-color': roleColor }" placeholder="Choose a username">
+                <p v-if="fieldErrors.username || usernameError" class="text-rose-500 text-xs font-semibold mt-1">{{ fieldErrors.username || usernameError }}</p>
               </div>
-              <p v-if="usernameError" class="text-red-500 text-xs mt-1">{{ usernameError }}</p>
-            </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
@@ -102,7 +102,7 @@
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
                   </div>
-                  <input type="password" v-model="patientData.password" @input="onPasswordInput" @blur="onPasswordBlur" required class="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm" :style="{ '--tw-ring-color': roleColor }" placeholder="Password">
+                  <input type="password" v-model="patientData.password" @input="clearFieldError('password'); onPasswordInput()" @blur="onPasswordBlur" required :class="['w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm', (fieldErrors.password || passwordError) ? 'border-rose-300 ring-1 ring-rose-100 bg-rose-50/30' : 'border-slate-200/80']" :style="{ '--tw-ring-color': roleColor }" placeholder="Password">
                 </div>
               </div>
               <div class="space-y-2">
@@ -111,7 +111,7 @@
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
                   </div>
-                  <input :type="isPasswordVisible ? 'text' : 'password'" v-model="patientData.confirmPassword" @input="onPasswordInput" @blur="onPasswordBlur" required class="w-full pl-11 pr-12 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-medium" :style="{ '--tw-ring-color': roleColor }" placeholder="Confirm Password">
+                  <input :type="isPasswordVisible ? 'text' : 'password'" v-model="patientData.confirmPassword" @input="onPasswordInput" @blur="onPasswordBlur" required :class="['w-full pl-11 pr-12 py-3.5 bg-slate-50 border rounded-2xl text-slate-900 focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-medium', passwordError ? 'border-rose-300 ring-1 ring-rose-100 bg-rose-50/30' : 'border-slate-200']" :style="{ '--tw-ring-color': roleColor }" placeholder="Confirm Password">
                   <button type="button" @click="togglePasswordVisibility" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none">
                     <svg v-if="!isPasswordVisible" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                     <svg v-else class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
@@ -119,7 +119,7 @@
                 </div>
               </div>
             </div>
-            <p v-if="passwordError" class="text-red-500 text-xs mt-1">{{ passwordError }}</p>
+            <p v-if="fieldErrors.password || passwordError" class="text-rose-500 text-xs mt-1 font-semibold">{{ fieldErrors.password || passwordError }}</p>
           </div>
 
           <!-- Personal Information Section -->
@@ -133,8 +133,9 @@
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                   </div>
-                  <input type="text" v-model="patientData.firstName" required class="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm" :style="{ '--tw-ring-color': roleColor }" placeholder="John">
+                  <input type="text" v-model="patientData.firstName" @input="clearFieldError('firstName')" required :class="['w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm', fieldErrors.firstName ? 'border-rose-300 ring-1 ring-rose-100 bg-rose-50/30' : 'border-slate-200/80']" :style="{ '--tw-ring-color': roleColor }" placeholder="John">
                 </div>
+                <p v-if="fieldErrors.firstName" class="text-rose-500 text-xs mt-1 font-semibold">{{ fieldErrors.firstName }}</p>
               </div>
               <div class="space-y-2">
                 <label class="block text-sm font-bold text-slate-700">Last Name</label>
@@ -142,8 +143,9 @@
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                   </div>
-                  <input type="text" v-model="patientData.lastName" required class="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm" :style="{ '--tw-ring-color': roleColor }" placeholder="Doe">
+                  <input type="text" v-model="patientData.lastName" @input="clearFieldError('lastName')" required :class="['w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm', fieldErrors.lastName ? 'border-rose-300 ring-1 ring-rose-100 bg-rose-50/30' : 'border-slate-200/80']" :style="{ '--tw-ring-color': roleColor }" placeholder="Doe">
                 </div>
+                <p v-if="fieldErrors.lastName" class="text-rose-500 text-xs mt-1 font-semibold">{{ fieldErrors.lastName }}</p>
               </div>
             </div>
 
@@ -153,9 +155,9 @@
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                   </div>
-                  <input type="email" v-model="patientData.email" @input="onEmailInput" @blur="onEmailBlur" required class="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm" :style="{ '--tw-ring-color': roleColor }" placeholder="you@example.com">
+                  <input type="email" v-model="patientData.email" @input="clearFieldError('email'); clearFieldError('emailId'); onEmailInput()" @blur="onEmailBlur" required :class="['w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm', (fieldErrors.email || fieldErrors.emailId || emailError) ? 'border-rose-300 ring-1 ring-rose-100 bg-rose-50/30' : 'border-slate-200/80']" :style="{ '--tw-ring-color': roleColor }" placeholder="you@example.com">
                 </div>
-                <p v-if="emailError" class="text-red-500 text-xs mt-1">{{ emailError }}</p>
+                <p v-if="fieldErrors.email || fieldErrors.emailId || emailError" class="text-rose-500 text-xs mt-1 font-semibold">{{ fieldErrors.email || fieldErrors.emailId || emailError }}</p>
               </div>
 
               <!-- Date of Birth (Custom Component) -->
@@ -239,14 +241,15 @@
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
                   </div>
-                  <button type="button" @click="toggleDropdown('bloodGroup')" class="w-full flex justify-between items-center pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:border-transparent transition-all font-medium" :class="[selectedBloodGroup === 'Blood Group' ? 'text-slate-400' : 'text-slate-900', { 'ring-2 border-transparent': bloodGroupDropdownVisible }]" :style="{ '--tw-ring-color': roleColor }">
+                  <button type="button" @click="toggleDropdown('bloodGroup')" class="w-full flex justify-between items-center pl-11 pr-4 py-3.5 bg-slate-50 border rounded-2xl focus:outline-none focus:ring-2 focus:border-transparent transition-all font-medium" :class="[selectedBloodGroup === 'Blood Group' ? 'text-slate-400' : 'text-slate-900', fieldErrors.bloodGroup ? 'border-rose-300 ring-1 ring-rose-100 bg-rose-50/30' : 'border-slate-200', { 'ring-2 border-transparent': bloodGroupDropdownVisible }]" :style="{ '--tw-ring-color': roleColor }">
                     <span>{{ selectedBloodGroup }}</span>
                     <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': bloodGroupDropdownVisible }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                   </button>
                   <ul v-if="bloodGroupDropdownVisible" class="absolute z-10 w-full mt-2 bg-white border border-slate-200 rounded-xl shadow-xl max-h-48 overflow-y-auto">
-                    <li v-for="group in bloodGroupOptions" :key="group" @click="selectBloodGroup(group)" class="px-4 py-3 hover:bg-slate-50 cursor-pointer font-medium text-slate-700 transition-colors">{{ group }}</li>
+                    <li v-for="group in bloodGroupOptions" :key="group" @click="selectBloodGroup(group); clearFieldError('bloodGroup')" class="px-4 py-3 hover:bg-slate-50 cursor-pointer font-medium text-slate-700 transition-colors">{{ group }}</li>
                   </ul>
                 </div>
+                <p v-if="fieldErrors.bloodGroup" class="text-rose-500 text-xs mt-1 font-semibold">{{ fieldErrors.bloodGroup }}</p>
               </div>
             </div>
           </div>
@@ -261,8 +264,9 @@
                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                   <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                 </div>
-                <input type="text" v-model="patientData.street" required class="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm" :style="{ '--tw-ring-color': roleColor }" placeholder="123 Main St">
+                <input type="text" v-model="patientData.street" @input="clearFieldError('street')" required :class="['w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm', fieldErrors.street ? 'border-rose-300 ring-1 ring-rose-100 bg-rose-50/30' : 'border-slate-200/80']" :style="{ '--tw-ring-color': roleColor }" placeholder="123 Main St">
               </div>
+              <p v-if="fieldErrors.street" class="text-rose-500 text-xs mt-1 font-semibold">{{ fieldErrors.street }}</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -272,8 +276,9 @@
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                   </div>
-                  <input type="text" v-model="patientData.city" required class="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm" :style="{ '--tw-ring-color': roleColor }" placeholder="City">
+                  <input type="text" v-model="patientData.city" @input="clearFieldError('city')" required :class="['w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm', fieldErrors.city ? 'border-rose-300 ring-1 ring-rose-100 bg-rose-50/30' : 'border-slate-200/80']" :style="{ '--tw-ring-color': roleColor }" placeholder="City">
                 </div>
+                <p v-if="fieldErrors.city" class="text-rose-500 text-xs mt-1 font-semibold">{{ fieldErrors.city }}</p>
               </div>
               <div class="space-y-2">
                 <label class="block text-sm font-bold text-slate-700">State</label>
@@ -281,8 +286,9 @@
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                   </div>
-                  <input type="text" v-model="patientData.state" required class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-medium" :style="{ '--tw-ring-color': roleColor }" placeholder="State">
+                  <input type="text" v-model="patientData.state" @input="clearFieldError('state')" required :class="['w-full pl-11 pr-4 py-3.5 bg-slate-50 border rounded-2xl text-slate-900 focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-medium', fieldErrors.state ? 'border-rose-300 ring-1 ring-rose-100 bg-rose-50/30' : 'border-slate-200']" :style="{ '--tw-ring-color': roleColor }" placeholder="State">
                 </div>
+                <p v-if="fieldErrors.state" class="text-rose-500 text-xs mt-1 font-semibold">{{ fieldErrors.state }}</p>
               </div>
             </div>
 
@@ -293,9 +299,9 @@
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                   </div>
-                  <input type="text" v-model="patientData.pincode" maxlength="6" @input="onPincodeInput" @blur="onPincodeBlur" required class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-medium" :style="{ '--tw-ring-color': roleColor }" placeholder="6-digit PIN code">
+                  <input type="text" v-model="patientData.pincode" maxlength="6" @input="clearFieldError('pinCode'); clearFieldError('pincode'); onPincodeInput()" @blur="onPincodeBlur" required :class="['w-full pl-11 pr-4 py-3.5 bg-slate-50 border rounded-2xl text-slate-900 focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-medium', (fieldErrors.pinCode || fieldErrors.pincode || pincodeError) ? 'border-rose-300 ring-1 ring-rose-100 bg-rose-50/30' : 'border-slate-200']" :style="{ '--tw-ring-color': roleColor }" placeholder="6-digit PIN code">
                 </div>
-                <p v-if="pincodeError" class="text-red-500 text-xs mt-1">{{ pincodeError }}</p>
+                <p v-if="fieldErrors.pinCode || fieldErrors.pincode || pincodeError" class="text-rose-500 text-xs mt-1 font-semibold">{{ fieldErrors.pinCode || fieldErrors.pincode || pincodeError }}</p>
               </div>
               <div class="space-y-2">
                 <label class="block text-sm font-bold text-slate-700">Country</label>
@@ -315,9 +321,9 @@
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
                   </div>
-                  <input type="tel" v-model="patientData.primaryPhone" maxlength="10" @input="onPrimaryPhoneInput" @blur="onPrimaryPhoneBlur" required class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-medium" :style="{ '--tw-ring-color': roleColor }" placeholder="10-digit mobile number">
+                  <input type="tel" v-model="patientData.primaryPhone" maxlength="10" @input="clearFieldError('primaryMobile'); clearFieldError('primaryPhone'); onPrimaryPhoneInput()" @blur="onPrimaryPhoneBlur" required :class="['w-full pl-11 pr-4 py-3.5 bg-slate-50 border rounded-2xl text-slate-900 focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-medium', (fieldErrors.primaryMobile || fieldErrors.primaryPhone || phoneError) ? 'border-rose-300 ring-1 ring-rose-100 bg-rose-50/30' : 'border-slate-200']" :style="{ '--tw-ring-color': roleColor }" placeholder="10-digit mobile number">
                 </div>
-                <p v-if="phoneError" class="text-red-500 text-xs mt-1">{{ phoneError }}</p>
+                <p v-if="fieldErrors.primaryMobile || fieldErrors.primaryPhone || phoneError" class="text-rose-500 text-xs mt-1 font-semibold">{{ fieldErrors.primaryMobile || fieldErrors.primaryPhone || phoneError }}</p>
               </div>
               <div class="space-y-2">
                 <label class="block text-sm font-bold text-slate-700">Secondary Phone</label>
@@ -325,9 +331,9 @@
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
                   </div>
-                  <input type="tel" v-model="patientData.secondaryPhone" maxlength="10" @input="onSecondaryPhoneInput" @blur="onSecondaryPhoneBlur" class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-medium" :style="{ '--tw-ring-color': roleColor }" placeholder="Optional (10 digits)">
+                  <input type="tel" v-model="patientData.secondaryPhone" maxlength="10" @input="clearFieldError('secondaryMobile'); clearFieldError('secondaryPhone'); onSecondaryPhoneInput()" @blur="onSecondaryPhoneBlur" :class="['w-full pl-11 pr-4 py-3.5 bg-slate-50 border rounded-2xl text-slate-900 focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-medium', (fieldErrors.secondaryMobile || fieldErrors.secondaryPhone || secondaryPhoneError) ? 'border-rose-300 ring-1 ring-rose-100 bg-rose-50/30' : 'border-slate-200']" :style="{ '--tw-ring-color': roleColor }" placeholder="Optional (10 digits)">
                 </div>
-                <p v-if="secondaryPhoneError" class="text-red-500 text-xs mt-1">{{ secondaryPhoneError }}</p>
+                <p v-if="fieldErrors.secondaryMobile || fieldErrors.secondaryPhone || secondaryPhoneError" class="text-rose-500 text-xs mt-1 font-semibold">{{ fieldErrors.secondaryMobile || fieldErrors.secondaryPhone || secondaryPhoneError }}</p>
               </div>
             </div>
           </div>
@@ -403,7 +409,14 @@ const emailError = ref('');
 const pincodeError = ref('');
 const phoneError = ref('');
 const secondaryPhoneError = ref('');
+const fieldErrors = ref({});
 const isPasswordVisible = ref(false);
+
+const clearFieldError = (field) => {
+  if (fieldErrors.value[field]) {
+    delete fieldErrors.value[field];
+  }
+};
 
 const togglePasswordVisibility = () => {
   isPasswordVisible.value = !isPasswordVisible.value;
@@ -686,6 +699,7 @@ const handleSignup = async () => {
   phoneError.value = '';
   secondaryPhoneError.value = '';
   signupError.value = '';
+  fieldErrors.value = {};
 
   const isEmailValid = validateEmail();
   const isPwdValid = validatePassword();
@@ -753,7 +767,18 @@ const handleSignup = async () => {
 
   } catch (error) {
     isLoading.value = false;
-    const errorMessage = error.message || "Signup failed";
+    const backendFieldErrors = error.fieldErrors || error.response?.data?.fieldErrors;
+    if (backendFieldErrors && typeof backendFieldErrors === 'object' && Object.keys(backendFieldErrors).length > 0) {
+      fieldErrors.value = { ...backendFieldErrors };
+      if (backendFieldErrors.username) usernameError.value = backendFieldErrors.username;
+      if (backendFieldErrors.password) passwordError.value = backendFieldErrors.password;
+      if (backendFieldErrors.email || backendFieldErrors.emailId) emailError.value = backendFieldErrors.email || backendFieldErrors.emailId;
+      if (backendFieldErrors.primaryMobile || backendFieldErrors.primaryPhone) phoneError.value = backendFieldErrors.primaryMobile || backendFieldErrors.primaryPhone;
+      if (backendFieldErrors.pinCode || backendFieldErrors.pincode) pincodeError.value = backendFieldErrors.pinCode || backendFieldErrors.pincode;
+      return;
+    }
+
+    const errorMessage = error.response?.data?.message || error.message || "Signup failed";
     if (errorMessage.toLowerCase().includes('username')) {
       usernameError.value = errorMessage;
     } else if (errorMessage.toLowerCase().includes('email')) {

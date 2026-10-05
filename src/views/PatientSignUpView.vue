@@ -348,8 +348,8 @@
         </form>
         
         <p class="mt-8 text-center text-sm font-medium text-slate-500">
-          Already a member?&nbsp;&nbsp;
-          <router-link :to="loginLink" class="ml-1.5 font-bold hover:underline transition-colors" :style="{ color: roleColor }">Login now</router-link>
+          Already a member?
+          <router-link :to="loginLink" class="font-bold hover:underline transition-colors ml-1" :style="{ color: roleColor }">Login now</router-link>
         </p>
 
       </div>

@@ -99,7 +99,7 @@
           <div class="space-y-2">
             <div class="flex items-center justify-between">
               <label class="block text-sm font-bold text-slate-700">Password</label>
-              <a href="#" class="text-sm font-bold transition-colors hover:underline" :style="{ color: roleColor }">Forgot password?</a>
+              <router-link :to="forgotPasswordLink" class="text-sm font-bold transition-colors hover:underline" :style="{ color: roleColor }">Forgot password?</router-link>
             </div>
             <div class="relative">
               <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -177,6 +177,7 @@ const currentRole = computed(() => {
 });
 
 const signupLink = computed(() => `/signup/${currentRole.value}`);
+const forgotPasswordLink = computed(() => `/forgot-password/${currentRole.value}`);
 
 const currentRoleFormatted = computed(() => {
   if (!currentRole.value || currentRole.value === 'default') return 'User';

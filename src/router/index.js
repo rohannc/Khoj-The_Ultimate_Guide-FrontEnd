@@ -73,6 +73,12 @@ const routes = [
         name: 'Clinic Sign Up',
         component: ClinicSignUpView,
         meta: { isGuest: true },
+      },
+      {
+        path: 'forgot-password/:role?',
+        name: 'Forgot Password',
+        component: () => import('@/views/ForgotPasswordView.vue'),
+        meta: { isGuest: true },
       }
     ]
   },

@@ -27,5 +27,19 @@ export const AuthService = {
       method: 'POST',
       body: JSON.stringify(payload),
     });
+  },
+
+  forgotPassword(payload) {
+    return apiFetch('/auth/forgot-password', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  },
+
+  resetPassword(payload) {
+    return apiFetch('/auth/reset-password', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
   }
 };

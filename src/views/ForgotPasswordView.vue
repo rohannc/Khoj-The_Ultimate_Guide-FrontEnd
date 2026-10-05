@@ -112,18 +112,31 @@
         </div>
 
         <!-- Inline Success / Error Banner (if any) -->
-        <div v-if="successMessage" class="mb-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-semibold flex items-center gap-3">
-          <svg class="w-5 h-5 text-emerald-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span>{{ successMessage }}</span>
+        <div v-if="successMessage" class="mb-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200/90 text-emerald-900 text-sm font-semibold flex items-start gap-3 shadow-sm animate-fade-in">
+          <div class="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center shrink-0 mt-0.5">
+            <svg class="w-4 h-4 text-emerald-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <div class="flex-1">
+            <p class="font-bold text-emerald-950">Success</p>
+            <p class="text-xs text-emerald-800 mt-0.5 leading-relaxed">{{ successMessage }}</p>
+          </div>
         </div>
 
-        <div v-if="errorMessage" class="mb-6 p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-sm font-semibold flex items-center gap-3">
-          <svg class="w-5 h-5 text-rose-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span>{{ errorMessage }}</span>
+        <div v-if="errorMessage" class="mb-6 p-4 rounded-2xl bg-rose-50 border border-rose-200/90 text-rose-900 text-sm font-semibold flex items-start gap-3 shadow-sm animate-shake">
+          <div class="w-6 h-6 rounded-full bg-rose-100 flex items-center justify-center shrink-0 mt-0.5">
+            <svg class="w-4 h-4 text-rose-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <div class="flex-1">
+            <p class="font-bold text-rose-950">Incorrect Information</p>
+            <p class="text-xs text-rose-800 mt-0.5 leading-relaxed">{{ errorMessage }}</p>
+          </div>
+          <button @click="errorMessage = ''" class="text-rose-400 hover:text-rose-700 transition-colors p-0.5">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
         </div>
 
         <!-- ============================================ -->
@@ -148,8 +161,12 @@
                 <input 
                   type="email" 
                   v-model="email" 
+                  @input="errorMessage = ''"
                   required 
-                  class="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm" 
+                  :class="[
+                    'w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm',
+                    errorMessage ? 'border-rose-300 ring-1 ring-rose-100 bg-rose-50/30' : 'border-slate-200/80'
+                  ]" 
                   :style="{ '--tw-ring-color': roleColor }" 
                   placeholder="name@example.com"
                 />
@@ -168,10 +185,14 @@
                 <input 
                   type="tel" 
                   v-model="primaryMobile" 
+                  @input="errorMessage = ''"
                   maxlength="10" 
                   pattern="[0-9]{10}"
                   required 
-                  class="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm" 
+                  :class="[
+                    'w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border rounded-2xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-semibold shadow-sm',
+                    errorMessage ? 'border-rose-300 ring-1 ring-rose-100 bg-rose-50/30' : 'border-slate-200/80'
+                  ]" 
                   :style="{ '--tw-ring-color': roleColor }" 
                   placeholder="e.g. 9876543210"
                 />
@@ -231,10 +252,14 @@
                 <input 
                   type="text" 
                   v-model="otp" 
+                  @input="errorMessage = ''"
                   maxlength="6" 
                   pattern="[0-9]{6}"
                   required 
-                  class="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-900 tracking-widest text-lg font-mono focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 placeholder:tracking-normal placeholder:text-sm font-semibold shadow-sm" 
+                  :class="[
+                    'w-full pl-11 pr-4 py-3.5 bg-slate-50/50 hover:bg-slate-50 border rounded-2xl text-slate-900 tracking-widest text-lg font-mono focus:bg-white focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 placeholder:tracking-normal placeholder:text-sm font-semibold shadow-sm',
+                    errorMessage && (errorMessage.toLowerCase().includes('otp') || errorMessage.toLowerCase().includes('expired')) ? 'border-rose-300 ring-1 ring-rose-100 bg-rose-50/30' : 'border-slate-200/80'
+                  ]" 
                   :style="{ '--tw-ring-color': roleColor }" 
                   placeholder="Enter 6-digit OTP"
                 />
@@ -253,9 +278,13 @@
                 <input 
                   :type="isPasswordVisible ? 'text' : 'password'" 
                   v-model="newPassword" 
+                  @input="errorMessage = ''"
                   required 
                   minlength="8"
-                  class="w-full pl-11 pr-12 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-medium" 
+                  :class="[
+                    'w-full pl-11 pr-12 py-3.5 bg-slate-50 border rounded-2xl text-slate-900 focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-medium',
+                    errorMessage && errorMessage.toLowerCase().includes('password') ? 'border-rose-300 ring-1 ring-rose-100 bg-rose-50/30' : 'border-slate-200'
+                  ]" 
                   :style="{ '--tw-ring-color': roleColor }" 
                   placeholder="Enter new password"
                 />
@@ -278,9 +307,13 @@
                 <input 
                   :type="isConfirmPasswordVisible ? 'text' : 'password'" 
                   v-model="confirmPassword" 
+                  @input="errorMessage = ''"
                   required 
                   minlength="8"
-                  class="w-full pl-11 pr-12 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-medium" 
+                  :class="[
+                    'w-full pl-11 pr-12 py-3.5 bg-slate-50 border rounded-2xl text-slate-900 focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-slate-400 font-medium',
+                    errorMessage && (errorMessage.toLowerCase().includes('match') || errorMessage.toLowerCase().includes('password')) ? 'border-rose-300 ring-1 ring-rose-100 bg-rose-50/30' : 'border-slate-200'
+                  ]" 
                   :style="{ '--tw-ring-color': roleColor }" 
                   placeholder="Re-enter new password"
                 />
@@ -421,7 +454,7 @@ async function handleRequestOtp() {
   
   // Basic validation
   if (!email.value || !primaryMobile.value) {
-    errorMessage.value = 'Please enter both email and registered 10-digit mobile.';
+    errorMessage.value = 'Please enter both email and mobile number.';
     showToast(errorMessage.value);
     return;
   }
@@ -444,7 +477,8 @@ async function handleRequestOtp() {
     // Transition to Step 2
     currentStep.value = 2;
   } catch (err) {
-    const msg = err.response?.data?.message || err.message || 'Failed to initiate password reset.';
+    // Unmatched Email/Mobile: Show backend message directly in the UI
+    const msg = err.response?.data?.message || err.message || 'Email or mobile number does not match our records.';
     errorMessage.value = msg;
     showToast(msg);
   } finally {
@@ -469,7 +503,7 @@ async function handleResetPassword() {
     return;
   }
   if (newPassword.value.length < 8) {
-    errorMessage.value = 'Password must be at least 8 characters.';
+    errorMessage.value = 'Password must be at least 8 characters long.';
     showToast(errorMessage.value);
     return;
   }
@@ -491,10 +525,10 @@ async function handleResetPassword() {
     isSuccess.value = true;
     showToast(successMessage.value, 'success');
 
-    // Reset complete -> redirect to Login page after a short delay
+    // Reset complete -> redirect to Login page after 2 seconds
     setTimeout(() => {
       router.push(loginLink.value);
-    }, 1500);
+    }, 2000);
   } catch (err) {
     // Handles 400 Bad Request (e.g., "Invalid OTP. 4 attempts remaining", "OTP has expired")
     const msg = err.response?.data?.message || err.message || 'Failed to reset password.';
@@ -517,6 +551,24 @@ async function handleResendOtp() {
 
 .font-jakarta {
   font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* Animations */
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Toast Transitions */

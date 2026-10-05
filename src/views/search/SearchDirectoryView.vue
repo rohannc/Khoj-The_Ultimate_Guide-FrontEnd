@@ -47,7 +47,7 @@
             <input
               v-model="searchQuery"
               type="text"
-              placeholder="Search by doctor name..."
+              placeholder="Search by doctor name, specialty, qualification..."
               class="w-full bg-transparent outline-none border-none focus:ring-0 text-sm text-slate-700 px-2 placeholder-slate-400"
             />
           </div>
@@ -672,90 +672,108 @@ const updateUrlParams = () => {
 const fetchResults = async () => {
   isLoading.value = true;
   try {
-    let url = '';
-    const params = new URLSearchParams();
-    
-    if (searchQuery.value) params.append('query', searchQuery.value);
-    params.append('page', currentPage.value);
-    params.append('size', 10);
+    const q = (searchQuery.value || '').trim().toLowerCase();
+    const loc = (searchLocation.value || '').trim().toLowerCase();
+    const pin = (searchPincode.value || '').trim();
 
     if (searchType.value === 'doctors') {
-      url = '/doctors/search';
-      if (filterSpecialization.value) params.append('specialization', filterSpecialization.value);
-      if (filterGender.value) params.append('gender', filterGender.value);
-      if (searchLocation.value) params.append('city', searchLocation.value);
-    } else {
-      url = '/clinics/search';
-      // Use dedicated pincode field first, then fall back to location
-      if (searchPincode.value && /^\d{6}$/.test(searchPincode.value)) {
-        params.append('pinCode', searchPincode.value);
-      }
-      if (searchLocation.value) {
-        params.append('city', searchLocation.value);
-      }
-    }
-
-    let searchSucceeded = false;
-    try {
-      const qs = params.toString();
-      const { data } = await apiFetch(`${url}${qs ? '?' + qs : ''}`);
-      if (data && (Array.isArray(data.content) || Array.isArray(data))) {
-        const list = Array.isArray(data) ? data : data.content;
-        results.value = list;
-        totalPages.value = data.totalPages !== undefined ? data.totalPages : Math.ceil(list.length / 10);
-        totalElements.value = data.totalElements !== undefined ? data.totalElements : list.length;
-        searchSucceeded = true;
-      }
-    } catch (err) {
-      console.warn(`Search endpoint ${url} failed or returned error, attempting fallback to full directory list:`, err);
-    }
-
-    // Fallback: If backend search endpoint fails (e.g. 500), fetch from standard /doctors or /clinics
-    if (!searchSucceeded) {
-      const fallbackUrl = searchType.value === 'doctors' ? '/doctors' : '/clinics';
-      const { data } = await apiFetch(fallbackUrl);
+      // Fetch full doctors list to ensure robust, comprehensive partial string matching across all doctor fields
+      const { data } = await apiFetch('/doctors');
       let list = Array.isArray(data) ? data : (data?.content || []);
 
-      const q = (searchQuery.value || '').trim().toLowerCase();
-      const loc = (searchLocation.value || '').trim().toLowerCase();
+      // If user typed a search query, match if ANY portion matches name, specialization, qualification, username, or email
+      if (q) {
+        list = list.filter(d => {
+          const fullName = `${d.firstName || ''} ${d.lastName || ''}`.toLowerCase();
+          const spec = (d.specializations || '').toLowerCase();
+          const qual = (d.qualifications || '').toLowerCase();
+          const username = (d.username || '').toLowerCase();
+          const email = (d.emailId || '').toLowerCase();
+          return fullName.includes(q) || spec.includes(q) || qual.includes(q) || username.includes(q) || email.includes(q);
+        });
+      }
 
-      if (searchType.value === 'doctors') {
-        if (q) {
-          list = list.filter(d => 
-            `${d.firstName || ''} ${d.lastName || ''}`.toLowerCase().includes(q) ||
-            (d.specializations || '').toLowerCase().includes(q) ||
-            (d.qualifications || '').toLowerCase().includes(q)
-          );
-        }
-        if (filterSpecialization.value) {
-          list = list.filter(d => (d.specializations || '').toLowerCase().includes(filterSpecialization.value.toLowerCase()));
-        }
-        if (filterGender.value) {
-          list = list.filter(d => (d.gender || '').toUpperCase() === filterGender.value.toUpperCase());
-        }
-        if (loc) {
-          list = list.filter(d => (d.city || '').toLowerCase().includes(loc));
-        }
-      } else {
-        if (q) {
-          list = list.filter(c => 
-            (c.name || '').toLowerCase().includes(q) ||
-            (c.city || '').toLowerCase().includes(q) ||
-            (c.street || '').toLowerCase().includes(q)
-          );
-        }
-        if (loc) {
-          list = list.filter(c => 
-            (c.city || '').toLowerCase().includes(loc) ||
-            (c.pinCode || '').toLowerCase().includes(loc)
-          );
-        }
+      // Filter by specialization dropdown if selected
+      if (filterSpecialization.value) {
+        const specFilter = filterSpecialization.value.toLowerCase();
+        list = list.filter(d => (d.specializations || '').toLowerCase().includes(specFilter));
+      }
+
+      // Filter by gender if selected
+      if (filterGender.value) {
+        list = list.filter(d => (d.gender || '').toUpperCase() === filterGender.value.toUpperCase());
+      }
+
+      // Filter by location/city if selected or typed
+      if (loc) {
+        list = list.filter(d => (d.city || '').toLowerCase().includes(loc));
       }
 
       totalElements.value = list.length;
       totalPages.value = Math.ceil(list.length / 10) || 1;
       const startIndex = currentPage.value * 10;
       results.value = list.slice(startIndex, startIndex + 10);
+    } else {
+      // Clinic Search
+      let list = [];
+      let backendSuccess = false;
+
+      // First attempt backend search endpoint if applicable
+      try {
+        const params = new URLSearchParams();
+        if (q) params.append('query', q);
+        if (pin && /^\d{6}$/.test(pin)) params.append('pinCode', pin);
+        if (loc) params.append('city', loc);
+        params.append('page', currentPage.value);
+        params.append('size', 10);
+
+        const qs = params.toString();
+        const { data } = await apiFetch(`/clinics/search${qs ? '?' + qs : ''}`);
+        if (data && (Array.isArray(data.content) || Array.isArray(data))) {
+          const fetchedList = Array.isArray(data) ? data : data.content;
+          if (fetchedList.length > 0 || (!q && !pin && !loc)) {
+            results.value = fetchedList;
+            totalPages.value = data.totalPages !== undefined ? data.totalPages : Math.ceil(fetchedList.length / 10);
+            totalElements.value = data.totalElements !== undefined ? data.totalElements : fetchedList.length;
+            backendSuccess = true;
+          }
+        }
+      } catch (err) {
+        console.warn('Clinic search endpoint failed, falling back to full clinics directory:', err);
+      }
+
+      // If backend search returned empty or failed, run partial string matching over the full clinics list
+      if (!backendSuccess) {
+        const { data } = await apiFetch('/clinics');
+        let fullClinics = Array.isArray(data) ? data : (data?.content || []);
+
+        if (q) {
+          fullClinics = fullClinics.filter(c => {
+            const name = (c.name || '').toLowerCase();
+            const city = (c.city || '').toLowerCase();
+            const street = (c.street || '').toLowerCase();
+            const username = (c.username || '').toLowerCase();
+            return name.includes(q) || city.includes(q) || street.includes(q) || username.includes(q);
+          });
+        }
+
+        if (pin) {
+          fullClinics = fullClinics.filter(c => (c.pinCode || '').includes(pin));
+        }
+
+        if (loc) {
+          fullClinics = fullClinics.filter(c => 
+            (c.city || '').toLowerCase().includes(loc) ||
+            (c.state || '').toLowerCase().includes(loc) ||
+            (c.street || '').toLowerCase().includes(loc)
+          );
+        }
+
+        totalElements.value = fullClinics.length;
+        totalPages.value = Math.ceil(fullClinics.length / 10) || 1;
+        const startIndex = currentPage.value * 10;
+        results.value = fullClinics.slice(startIndex, startIndex + 10);
+      }
     }
   } catch (error) {
     console.error('Failed to fetch search results', error);

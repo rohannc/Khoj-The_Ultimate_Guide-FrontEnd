@@ -8,9 +8,14 @@
           {{ greeting }}, <span class="text-indigo-600">{{ authStore.user?.firstName || 'Patient' }}</span>
         </h1>
         <p class="text-slate-500 mt-1 font-medium">Your personalized health dashboard.</p>
-        <div v-if="!isLoading" class="mt-2 text-xs font-bold px-2 py-1 inline-block rounded-md" :class="dataSource === 'Live API' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'">
-          Data Source: {{ dataSource }}
-        </div>
+        <span 
+          v-if="!isLoading" 
+          class="mt-2 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border uppercase tracking-wider inline-flex items-center gap-1.5"
+          :class="dataSource === 'Live API' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'"
+        >
+          <span class="w-1.5 h-1.5 rounded-full" :class="dataSource === 'Live API' ? 'bg-emerald-500' : 'bg-amber-500'"></span>
+          {{ dataSource }}
+        </span>
       </div>
     </div>
 

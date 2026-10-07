@@ -407,18 +407,7 @@ export const PatientService = {
         activePrescriptions: this.transformPrescriptions(data.activePrescriptions),
         healthRecords: this.transformHealthRecords(data.recentHealthRecords),
         notifications: data.unreadNotifications || [],
-        pendingActions: [
-          {
-            title: 'Confirm Appointment',
-            description: 'Your appointment with Dr. Sharma is unconfirmed.',
-            cta: 'Confirm Now'
-          },
-          {
-            title: 'Upload Previous Records',
-            description: 'Please upload MRI reports before the next visit.',
-            cta: 'Upload'
-          }
-        ]
+        pendingActions: []
       };
     } catch (error) {
       console.error('Error fetching dashboard data:', error);

@@ -1031,114 +1031,45 @@ const fetchClinicData = async () => {
         }
       }
     } else {
-      // Demo / Fallback Data if unauthenticated preview
-      dataSource.value = 'Preview Demo';
-      populateDemoData();
+      // Clean Zero State if not yet loaded or unlinked
+      dataSource.value = 'Offline';
+      populateEmptyClinicState();
     }
   } catch (err) {
-    console.error('Failed to fetch clinic data:', err);
-    errorMessage.value = err.response?.data?.message || 'Could not load live clinic dashboard. Showing preview data.';
-    dataSource.value = 'Preview Demo';
-    populateDemoData();
+    console.warn('Failed to fetch clinic data:', err);
+    errorMessage.value = err.response?.data?.message || 'Could not load live clinic dashboard. Showing local state.';
+    dataSource.value = 'Offline';
+    populateEmptyClinicState();
   } finally {
     isLoading.value = false;
   }
 };
 
-const populateDemoData = () => {
+const populateEmptyClinicState = () => {
   clinicProfile.value = {
-    name: authStore.user?.username || 'Metro Care Super Speciality Clinic',
-    street: 'Plot 42, Healthcare Avenue',
-    city: 'Mumbai',
-    state: 'Maharashtra',
-    pinCode: '400001',
-    country: 'India',
-    emailId: 'admin@metrocare.org',
-    phoneNumbers: ['+91 98765 43210'],
-    website: 'https://metrocareclinic.in'
+    name: authStore.user?.clinicName || authStore.user?.username || 'Clinic Facility',
+    street: authStore.user?.street || '',
+    city: authStore.user?.city || '',
+    state: authStore.user?.state || '',
+    pinCode: authStore.user?.pinCode || '',
+    country: authStore.user?.country || 'India',
+    emailId: authStore.user?.emailId || authStore.user?.email || '',
+    phoneNumbers: authStore.user?.primaryMobile ? [authStore.user.primaryMobile] : [],
+    website: authStore.user?.website || ''
   };
 
   stats.value = {
-    todayAppointmentsCount: 18,
-    totalPatients: 240,
-    activeDoctorsCount: 6,
-    pendingAffiliationsCount: 2,
-    totalAppointments: 480
+    todayAppointmentsCount: 0,
+    totalPatients: 0,
+    activeDoctorsCount: 0,
+    pendingAffiliationsCount: 0,
+    totalAppointments: 0
   };
 
-  todayAppointments.value = [
-    {
-      id: 'apt-1',
-      tokenNumber: 1,
-      patientFullName: 'Aarav Patel',
-      doctorFullName: 'Vikram Mehta',
-      doctorSpecialization: ['Cardiology'],
-      appointmentDate: selectedDate.value,
-      appointmentTime: { hour: 9, minute: 30 },
-      reason: 'Regular BP follow up and ECG review',
-      status: 'CONFIRMED'
-    },
-    {
-      id: 'apt-2',
-      tokenNumber: 2,
-      patientFullName: 'Priya Sharma',
-      doctorFullName: 'Ananya Roy',
-      doctorSpecialization: ['Pediatrics'],
-      appointmentDate: selectedDate.value,
-      appointmentTime: { hour: 10, minute: 15 },
-      reason: 'Child immunization schedule',
-      status: 'IN_PROGRESS'
-    },
-    {
-      id: 'apt-3',
-      tokenNumber: 3,
-      patientFullName: 'Rohan Deshmukh',
-      doctorFullName: 'Vikram Mehta',
-      doctorSpecialization: ['Cardiology'],
-      appointmentDate: selectedDate.value,
-      appointmentTime: { hour: 11, minute: 0 },
-      reason: 'Chest pain evaluation',
-      status: 'SCHEDULED'
-    }
-  ];
-
-  activeAffiliations.value = [
-    {
-      affiliationId: 'aff-1',
-      doctorId: 'doc-1',
-      doctorName: 'Vikram Mehta',
-      clinicCharge: 800,
-      patientLimits: 30,
-      joiningDate: '2025-04-10',
-      status: 'APPROVED'
-    },
-    {
-      affiliationId: 'aff-2',
-      doctorId: 'doc-2',
-      doctorName: 'Ananya Roy',
-      clinicCharge: 600,
-      patientLimits: 25,
-      joiningDate: '2025-06-15',
-      status: 'APPROVED'
-    }
-  ];
-
-  pendingAffiliations.value = [
-    {
-      affiliationId: 'aff-3',
-      doctorId: 'doc-3',
-      doctorName: 'Rajesh Kothari (Neurology)',
-      doctorCharge: 1200,
-      patientLimits: 15,
-      status: 'PENDING'
-    }
-  ];
-
-  recentPatients.value = [
-    { username: 'aarav_patel', firstName: 'Aarav', lastName: 'Patel', gender: 'Male', bloodGroup: 'B+' },
-    { username: 'priya_sharma', firstName: 'Priya', lastName: 'Sharma', gender: 'Female', bloodGroup: 'O+' },
-    { username: 'rohan_d', firstName: 'Rohan', lastName: 'Deshmukh', gender: 'Male', bloodGroup: 'A+' }
-  ];
+  todayAppointments.value = [];
+  activeAffiliations.value = [];
+  pendingAffiliations.value = [];
+  recentPatients.value = [];
 };
 
 // Handlers

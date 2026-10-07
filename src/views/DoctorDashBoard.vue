@@ -725,85 +725,28 @@ const fetchDoctorData = async () => {
       throw new Error('Doctor profile ID not found in session');
     }
   } catch (err) {
-    console.warn('Live doctor dashboard fetch error, falling back to cached profile/state:', err);
-    dataSource.value = 'Offline';
-    // Provide clean elegant state based on authStore user
+    // Provide clean real state based on authStore user
     doctorProfile.value = {
       firstName: authStore.user?.firstName || 'Doctor',
       lastName: authStore.user?.lastName || '',
       specializations: authStore.user?.specializations || 'Consulting Physician',
-      yearsOfExperience: authStore.user?.yearsOfExperience || 8,
-      registrationNumber: authStore.user?.registrationNumber || 'MCI-2026-X89'
+      yearsOfExperience: authStore.user?.yearsOfExperience || 0,
+      registrationNumber: authStore.user?.registrationNumber || ''
     };
 
-    // Fallback demo dataset in the identical aesthetic shade
+    // Clean zero-state dataset
     stats.value = {
-      todayAppointmentsCount: 4,
-      totalPatients: 18,
-      activeAffiliationsCount: 2,
-      pendingAffiliationsCount: 1,
-      totalPrescriptionsIssued: 26,
+      todayAppointmentsCount: 0,
+      totalPatients: 0,
+      activeAffiliationsCount: 0,
+      pendingAffiliationsCount: 0,
+      totalPrescriptionsIssued: 0,
     };
 
-    todayAppointments.value = [
-      {
-        id: '1',
-        tokenNumber: 1,
-        patientFullName: 'Rohan Chakraborty',
-        reason: 'General Checkup & Routine Bloodwork',
-        clinicName: 'Apollo Clinic & Diagnostic Center',
-        appointmentTime: { hour: 10, minute: 30 },
-        status: 'CONFIRMED'
-      },
-      {
-        id: '2',
-        tokenNumber: 2,
-        patientFullName: 'Ananya Sharma',
-        reason: 'Cardio Follow-up Consultation',
-        clinicName: 'Fortis Health Point',
-        appointmentTime: { hour: 11, minute: 15 },
-        status: 'SCHEDULED'
-      },
-      {
-        id: '3',
-        tokenNumber: 3,
-        patientFullName: 'Vikram Patel',
-        reason: 'Post-Op Blood Pressure Monitoring',
-        clinicName: 'Apollo Clinic & Diagnostic Center',
-        appointmentTime: { hour: 14, minute: 0 },
-        status: 'SCHEDULED'
-      }
-    ];
-
-    activeAffiliations.value = [
-      {
-        affiliationId: 'aff-1',
-        clinicName: 'Apollo Clinic & Diagnostic Center',
-        clinicAddress: '12th Floor, Premier Medical Tower, Mumbai, Maharashtra 400001',
-        doctorCharge: 600,
-        patientLimits: 25,
-        status: 'APPROVED'
-      },
-      {
-        affiliationId: 'aff-2',
-        clinicName: 'Fortis Health Point',
-        clinicAddress: 'Sector 4, Vashi, Navi Mumbai, Maharashtra 400703',
-        doctorCharge: 800,
-        patientLimits: 15,
-        status: 'APPROVED'
-      }
-    ];
-
-    recentPatients.value = [
-      { id: 'p1', firstName: 'Rohan', lastName: 'Chakraborty', gender: 'Male', bloodGroup: 'O+', city: 'Mumbai' },
-      { id: 'p2', firstName: 'Ananya', lastName: 'Sharma', gender: 'Female', bloodGroup: 'B+', city: 'Navi Mumbai' },
-      { id: 'p3', firstName: 'Vikram', lastName: 'Patel', gender: 'Male', bloodGroup: 'A+', city: 'Thane' },
-    ];
-
-    recentPrescriptions.value = [
-      { id: 'rx1', medicationName: 'Amoxicillin 500mg', dosage: '1 tablet twice daily', frequency: 'After meals', patientName: 'Rohan Chakraborty', isActive: true },
-      { id: 'rx2', medicationName: 'Atorvastatin 10mg', dosage: '1 tablet once daily', frequency: 'At bedtime', patientName: 'Vikram Patel', isActive: true },
-    ];
+    todayAppointments.value = [];
+    activeAffiliations.value = [];
+    recentPatients.value = [];
+    recentPrescriptions.value = [];
   } finally {
     isLoading.value = false;
   }

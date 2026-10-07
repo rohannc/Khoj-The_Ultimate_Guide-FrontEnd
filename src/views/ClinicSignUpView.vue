@@ -443,7 +443,9 @@ const onPincodeInput = () => {
 const validatePhone = (immediate = false) => {
   if (phoneDebounceTimer) clearTimeout(phoneDebounceTimer);
   const run = () => {
-    if (clinicData.value.primaryPhone && !/^\d{10}$/.test(clinicData.value.primaryPhone)) {
+    if (!clinicData.value.primaryPhone) {
+      phoneError.value = 'Primary phone number is required.';
+    } else if (!/^\d{10}$/.test(clinicData.value.primaryPhone)) {
       phoneError.value = 'Primary phone number must be exactly 10 digits.';
     } else {
       phoneError.value = '';
@@ -561,6 +563,8 @@ const handleSignup = async () => {
     state: clinicData.value.state,
     pinCode: clinicData.value.pincode,
     country: clinicData.value.country,
+    primaryMobile: clinicData.value.primaryPhone ? clinicData.value.primaryPhone.trim() : '',
+    secondaryMobile: clinicData.value.secondaryPhone ? clinicData.value.secondaryPhone.trim() : null,
     phoneNumbers: phoneNumbers,
     website: clinicData.value.website,
     openingHours: formattedHours,

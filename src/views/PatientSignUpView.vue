@@ -505,7 +505,11 @@ const onPincodeBlur = () => {
 
 const validatePrimaryPhone = () => {
   const phone = patientData.value.primaryPhone.trim();
-  if (phone && !/^\d{10}$/.test(phone)) {
+  if (!phone) {
+    phoneError.value = 'Primary phone number is required.';
+    return false;
+  }
+  if (!/^\d{10}$/.test(phone)) {
     phoneError.value = 'Phone number must be exactly 10 numeric digits.';
     return false;
   }
@@ -736,6 +740,8 @@ const handleSignup = async () => {
     state: patientData.value.state,
     pinCode: patientData.value.pincode,
     country: patientData.value.country || 'India',
+    primaryMobile: patientData.value.primaryPhone ? patientData.value.primaryPhone.trim() : '',
+    secondaryMobile: patientData.value.secondaryPhone ? patientData.value.secondaryPhone.trim() : null,
     phoneNumbers: phoneNumbers,
     bloodGroup: selectedBloodGroup.value === 'Blood Group' ? null : selectedBloodGroup.value,
   };

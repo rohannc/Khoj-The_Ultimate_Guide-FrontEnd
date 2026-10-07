@@ -929,6 +929,8 @@ const handleSignup = async () => {
       specialization: specializations.value,
       qualifications: qualifications.value,
       registrationNumber: doctorData.value.registrationNumber,
+      primaryMobile: doctorData.value.primaryPhone ? doctorData.value.primaryPhone.trim() : '',
+      secondaryMobile: doctorData.value.secondaryPhone ? doctorData.value.secondaryPhone.trim() : null,
       phoneNumbers: phoneNumbers,
       registrationIssueDate: selectedDate.value ? selectedDate.value.toISOString().split('T')[0] : null,
     };
@@ -957,6 +959,8 @@ const handleSignup = async () => {
       state: patientData.value.state,
       pinCode: patientData.value.pincode,
       country: patientData.value.country,
+      primaryMobile: patientData.value.primaryPhone ? patientData.value.primaryPhone.trim() : '',
+      secondaryMobile: patientData.value.secondaryPhone ? patientData.value.secondaryPhone.trim() : null,
       phoneNumbers: phoneNumbers,
       bloodGroup: selectedBloodGroup.value === 'Blood Group' ? null : selectedBloodGroup.value,
     };
@@ -993,6 +997,8 @@ const handleSignup = async () => {
       state: clinicData.value.state,
       pinCode: clinicData.value.pincode,
       country: clinicData.value.country,
+      primaryMobile: clinicData.value.primaryPhone ? clinicData.value.primaryPhone.trim() : '',
+      secondaryMobile: clinicData.value.secondaryPhone ? clinicData.value.secondaryPhone.trim() : null,
       phoneNumbers: phoneNumbers,
       website: clinicData.value.website,
       openingHours: formattedHours,

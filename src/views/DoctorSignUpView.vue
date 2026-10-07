@@ -449,7 +449,11 @@ const onPasswordBlur = () => {
 
 const validatePrimaryPhone = () => {
   const phone = doctorData.value.primaryPhone.trim();
-  if (phone && !/^\d{10}$/.test(phone)) {
+  if (!phone) {
+    phoneError.value = 'Primary phone number is required.';
+    return false;
+  }
+  if (!/^\d{10}$/.test(phone)) {
     phoneError.value = 'Phone number must be exactly 10 numeric digits.';
     return false;
   }
@@ -723,6 +727,8 @@ const handleSignup = async () => {
     specialization: specializations.value,
     qualifications: qualifications.value,
     registrationNumber: doctorData.value.registrationNumber,
+    primaryMobile: doctorData.value.primaryPhone ? doctorData.value.primaryPhone.trim() : '',
+    secondaryMobile: doctorData.value.secondaryPhone ? doctorData.value.secondaryPhone.trim() : null,
     phoneNumbers: phoneNumbers,
     registrationIssueDate: selectedDate.value ? new Date(selectedDate.value).toISOString().split('T')[0] : null,
   };

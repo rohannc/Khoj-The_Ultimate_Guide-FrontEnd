@@ -193,39 +193,79 @@
         </div>
       </div>
 
-      <!-- GUEST / LOGGED-OUT VIEW: Public Discovery Hero with Registration Call-to-Action -->
-      <div 
-        v-else 
-        class="bg-gradient-to-br from-indigo-50 via-white to-blue-50 border border-indigo-100 rounded-3xl p-6 sm:p-8 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden"
+      <!-- GUEST / LOGGED-OUT VIEW: Sleek Compact Modern Discovery Banner -->
+      <transition
+        enter-active-class="transition duration-200 ease-out"
+        enter-from-class="opacity-0 -translate-y-2"
+        enter-to-class="opacity-100 translate-y-0"
+        leave-active-class="transition duration-150 ease-in"
+        leave-from-class="opacity-100 translate-y-0"
+        leave-to-class="opacity-0 -translate-y-2"
       >
-        <div class="max-w-2xl relative z-10">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100/70 text-blue-700 text-xs font-bold mb-3">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            Public Care Directory
-          </div>
-          <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-snug">
-            Find Top Doctors & Clinics in Your Area
-          </h1>
-          <p class="text-slate-600 text-sm sm:text-base mt-1.5 leading-relaxed">
-            Browse qualified specialists and facilities. To confirm an instant appointment, securely view medical prescriptions, or manage health records, please sign in.
-          </p>
-        </div>
+        <div 
+          v-if="!authStore.isLoggedIn && !isGuestBannerDismissed" 
+          class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-50/80 via-white to-blue-50/70 border border-indigo-100/80 p-4 sm:p-5 shadow-sm backdrop-blur-sm"
+        >
+          <!-- Subtle decorative radial background glow -->
+          <div class="pointer-events-none absolute -right-12 -top-12 h-36 w-36 rounded-full bg-indigo-400/10 blur-2xl"></div>
+          <div class="pointer-events-none absolute left-1/3 -bottom-8 h-24 w-48 rounded-full bg-blue-300/10 blur-xl"></div>
 
-        <div class="flex items-center gap-3 w-full sm:w-auto relative z-10 flex-shrink-0">
-          <router-link 
-            to="/login/patient" 
-            class="flex-1 sm:flex-initial text-center px-5 py-3 rounded-2xl bg-white border border-slate-200 text-slate-700 font-bold text-sm hover:bg-slate-50 transition-all shadow-sm"
-          >
-            Sign In
-          </router-link>
-          <router-link 
-            to="/signup/patient" 
-            class="flex-1 sm:flex-initial text-center px-5 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-md shadow-indigo-200 hover:-translate-y-0.5 transition-all"
-          >
-            Create Patient Account
-          </router-link>
+          <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <!-- Left Info Section with icon -->
+            <div class="flex items-start sm:items-center gap-3.5 max-w-3xl">
+              <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-blue-500 text-white flex items-center justify-center shrink-0 shadow-md shadow-indigo-200 mt-0.5 sm:mt-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+              </div>
+
+              <div>
+                <div class="flex flex-wrap items-center gap-2 mb-1">
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold tracking-wide uppercase bg-indigo-100 text-indigo-700">
+                    Public Directory
+                  </span>
+                  <h2 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
+                    Find Top Doctors & Clinics in Your Area
+                  </h2>
+                </div>
+                <p class="text-xs sm:text-sm text-slate-600 leading-normal">
+                  Browse verified practitioners and facilities. Sign in to book instant appointments, access prescriptions, and track records.
+                </p>
+              </div>
+            </div>
+
+            <!-- Right CTA Action buttons + Dismiss -->
+            <div class="flex items-center gap-2.5 shrink-0 self-end md:self-center w-full md:w-auto pt-1 md:pt-0 border-t border-slate-100 md:border-t-0">
+              <router-link 
+                to="/login/patient" 
+                class="flex-1 md:flex-initial text-center px-3.5 py-2 rounded-xl bg-white border border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900 text-xs sm:text-sm font-semibold transition-all shadow-xs hover:bg-slate-50"
+              >
+                Sign In
+              </router-link>
+              <router-link 
+                to="/signup/patient" 
+                class="flex-1 md:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-semibold shadow-sm hover:shadow transition-all"
+              >
+                <span>Create Account</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </router-link>
+
+              <!-- Optional dismiss button -->
+              <button
+                @click="isGuestBannerDismissed = true"
+                type="button"
+                class="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-200/50 rounded-lg transition-colors ml-1"
+                title="Dismiss banner"
+                aria-label="Dismiss banner"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
+      </transition>
 
     </div>
 
@@ -556,6 +596,7 @@ const router = useRouter();
 const authStore = useAuthStore();
 const showLogoutModal = ref(false);
 const isScrolled = ref(false);
+const isGuestBannerDismissed = ref(false);
 
 const handleWindowScroll = () => {
   isScrolled.value = window.scrollY > 15;
